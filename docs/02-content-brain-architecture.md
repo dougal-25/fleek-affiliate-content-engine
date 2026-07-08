@@ -1,0 +1,88 @@
+# Content Brain — Architecture
+
+## Design principles
+
+1. **LLM for judgment, code for money.** Claude writes profiles, briefs, and insight
+   narratives. Deterministic Python computes CAC, activation %, and budget splits. A model
+   never allocates spend; a human never writes 300 briefs.
+2. **Everything flows through the segment.** The atomic unit of strategy is a segment
+   (tier × channel × geo × niche × lifecycle). Insights are learned per segment, budgets are
+   allocated per segment, campaigns are launched per segment — briefs are the only
+   per-creator artifact.
+3. **Closed loop by construction.** A brief is not "sent and forgotten": it records its
+   predictions (expected format/hook performance), the post records actuals, and the delta is
+   what the feedback agent learns from.
+
+## Data model (`content_brain/models.py`)
+
+| Entity | Key fields | Notes |
+|---|---|---|
+| `Creator` | id, handle, tier (nano→mega), channel, geo (UK/FR), niche, lifecycle, follower count, join date, gifting cost, incentive rate | Lifecycle is derived: `new`, `active`, `at_risk` (no post 30–60d), `dormant` (60d+), `core` (top decile by buyers) |
+| `Post` | creator id, date, format, hook type, views, clicks, signups, first orders, revenue, spend | The funnel: views → clicks → signups → first orders. Spend = gifting amortisation + incentives |
+| `PartnerProfile` | strengths, best formats/hooks, audience-ICP fit, recommended ask, risk flags, one-line "how to work with them" | **LLM-generated**, cached, refreshed when new posts land |
+| `Brief` | hooks (3 options), format, CTA stack (code/link/deadline/incentive), do's, don'ts, reference examples, success target | **LLM-generated** from profile + segment insights + campaign spec |
+| `SegmentInsight` | segment key, what worked, what didn't, recommended play, confidence | LLM narrative over deterministic aggregates |
+| `BudgetPlan` | per-segment allocation, test budgets, caps, kill/scale calls | Deterministic |
+
+## The agents
+
+### 1. Partner Profiler (`profiler.py`)
+**Input:** creator record + last 90 days of posts + segment benchmarks.
+**Output (structured):** `PartnerProfile`.
+**Why an agent:** the judgment call — "this creator's audience skews hobbyist-reseller, her
+storytime hooks outperform tutorials 2:1, she goes quiet when briefs feel corporate" — is
+pattern recognition over messy evidence, exactly what an LLM is for. The profile is the
+persistent memory that makes the *next* brief better than the last.
+
+### 2. Brief Generator (`brief_generator.py`)
+**Input:** `PartnerProfile` + current `SegmentInsight`s + campaign spec (objective, offer,
+geo/language, deadline).
+**Output (structured):** `Brief` with the JD's exact field list — hook, format, full CTA
+stack, do's and don'ts, reference examples.
+**Personalisation levers:** the creator's own best past post is cited as reference #1;
+hooks are written in the creator's register; the CTA stack carries their unique code; French
+creators get French briefs.
+
+### 3. Feedback Loop (`feedback.py`)
+**Input:** cycle's posts joined to their briefs, aggregated per segment (deterministic), plus
+brief-adherence signal.
+**Output:** `SegmentInsight`s — "codify what works into the system." These are stored and
+injected into the next cycle's brief-generation context, and the deterministic aggregates
+update creator lifecycles (active/at-risk/dormant transitions) and CAC tables.
+
+### 4. Budget engine (`budget.py`) — deterministic
+Weekly reallocation: rank segments by blended CAC (with a volume-confidence penalty so a
+lucky 2-post segment doesn't eat the budget), apply floor/cap rules, ring-fence a test budget
+(default 20%) for under-observed segments, flag kill candidates (CAC > threshold with
+sufficient volume). This is the "trading desk" from the JD.
+
+### 5. Activation targeting (`activation.py`) — deterministic
+Computes the headline metric (% posting this month) and produces the target list for the next
+cycle: due-for-brief actives, at-risk saves, dormant re-activation batch, new-recruit
+onboarding.
+
+## Claude API usage (`llm.py`)
+
+- Model: `claude-opus-4-8`, adaptive thinking, structured outputs via `client.messages.parse`
+  with Pydantic schemas — briefs come back as validated objects, no JSON parsing.
+- **Prompt caching:** the system prompt (Fleek context, ICP definition, brief style guide) is
+  stable and cached with `cache_control: {"type": "ephemeral"}`; per-creator evidence goes
+  after the breakpoint. At 300 briefs/cycle this is most of the token bill.
+- **Batch API for scale:** generating briefs for the whole roster is not latency-sensitive —
+  the Message Batches API runs it at 50% cost. The prototype runs sequentially for clarity;
+  the production path is batching (noted in code).
+- **Mock mode:** with no API key, agents return deterministic template outputs so the whole
+  loop is runnable and testable offline.
+
+## What I'd build next (talk track)
+
+1. **Adherence scoring** — did the post actually use the briefed hook/format/CTA? (Vision +
+   transcript analysis of the post itself.) Separates "brief was wrong" from "brief was ignored".
+2. **Outreach agent** — drafts the personalised send (email/DM) that wraps the brief, with
+   re-activation variants; human approves, system sends and schedules the follow-up.
+3. **Auto-refresh cadence** — profiles refresh on new-post events, not on a cron; briefs
+   regenerate when a segment insight materially changes.
+4. **French-first market pack** — FR-language briefs, FR reference library, FR Discord tie-ins
+   (France is the flagship community market).
+5. **Attribution hardening** — code + link + post-purchase survey triangulation, so weekly
+   reallocation runs on numbers the finance team trusts.
