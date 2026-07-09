@@ -29,6 +29,16 @@ A thorough enrichment pass to harden the foundation. Weighted to the four docume
 4. [[Creator Affiliate Mechanics]] — **the operating manual, deeper**: FR is coupon-first not influencer-first; tiering/payout models; the activation playbook (14-day first-sale challenge, seeding, buddy system).
 5. [[French Secondhand Market Trends 2026]] — **the "why now, why France" backdrop**: Vinted is France's biggest clothing retailer; +140% in 2yrs; anti-fast-fashion laws; social-first discovery.
 
+## The deep-read layer (2026-07-09 — primary-source method: fetch + deep-read named sources, not AI summaries)
+
+The richness upgrade. One Substack + a 4-agent fan-out over named French primary sources — the method that fixed the "not rich enough" thinness. Governed by the [[Enrichment Leads Backlog]] (job-first, `Feeds:`-guarded, run as manual passes).
+
+1. [[Paris Secondhand Retail Map]] — 9 named boutiques + 5-tier taxonomy; the Marais/Rue de Turenne cluster gives geo-content a literal address.
+2. [[French Cities Secondhand Retail Map]] — Lyon/Marseille/Bordeaux/Lille/Nantes/Toulouse/Strasbourg named shops, the national kilo-pricing standard (€20–60/kg), MMV Lyon + Braderie de Lille.
+3. [[FR Bale Sourcing Playbook]] — the grossiste directory, grade vocabulary (crème/original/A-B-C), bale economics (x3–5 realistic, 20–40% waste), scam red-flags. The supply reality Fleek beats.
+4. [[Enrichment Leads Backlog]] — the compounding to-do: leads every source spawned + the method itself.
+- Also deep-enriched: [[French Reseller Creator Shortlist]] (Nathan Vialle bulk→Whatnot, Bichette Kids bale-unboxing), [[French Secondhand Market Trends 2026]] (institutional numbers + anti-fast-fashion law dated 29 Jun 2026), [[French Reseller Community Sentiment]] (verbatim grade-scam quotes), [[FR Reseller Vocabulary and Hashtags]] (trade + retail vocab).
+
 ## 🎯 The strategic thesis (why this case study wins)
 
 Three findings converge into one wedge:

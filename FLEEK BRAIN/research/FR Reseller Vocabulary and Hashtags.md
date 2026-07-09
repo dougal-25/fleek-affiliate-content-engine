@@ -26,9 +26,30 @@ Part of [[FLEEK BRAIN Index]] · siblings: [[FR Creator Content Formats]], [[FR 
 - Professional resellers: #revente, #vinted, #sourcing, #modecirculaire
 - Eco-positioning sellers: #secondemain, #modecirculaire
 
+### 2026-07-09 deep-read enrichment — confirmed vocabulary (upgrades the weak lane)
+
+**Hashtags actually used by FR resale creators** (from deep-read creator content, higher confidence than v1):
+`#friperie` `#friperieparis` `#friperiepascher` `#fripeparis` `#haulfriperie` `#vintagehaul` `#secondemain` `#secondemainvintage` `#balledefriperie` `#emmaus` (>80M views) `#defiriendeneuf` (~13K posts) `#freepstar` `#thrift`.
+
+**Trade grade-vocabulary (the sourcing language — was entirely missing):**
+- **balle / ballot** — compressed bale (10–50kg) · **au kilo** / **à la pièce** — by weight / by item
+- **original** — unsorted raw stock (cheapest, riskiest) · **crème / extra crème** — near-new top tier
+- **grade A / B / C** — like-new / light-wear / acceptable; **A+ CRÈME** = top-of-A
+- **tri / trié / 1er choix** — sorting / sorted / first-pick · **dégriffé** — label removed
+- **semi-grossiste** — buy smaller/cherry-picked lots · **déballage** — bale-unboxing content · **colis mystère** — mystery box
+- Full definitions + economics on [[FR Bale Sourcing Playbook]].
+
+**Retail shop-type vocabulary** (from the city maps):
+- **friperie** (frip' / la fripe) — thrift shop · **dépôt-vente** — consignment · **ressourcerie / recyclerie** — reuse centre
+- **friperie solidaire** — charity thrift (Emmaüs, Croix-Rouge) · **vente au kilo/au poids** — by weight
+- **brocante** — flea/antiques market · **vide-grenier** — car-boot · **vide-dressing** — wardrobe-clearing sale · **braderie** — big street clearance (Lille) · **troc** — barter · **destock/déstockage** — clearance
+- Full context on [[Paris Secondhand Retail Map]] + [[French Cities Secondhand Retail Map]].
+
+**Correction logged**: v1 wrongly doubted `#friperie` — confirmed the core FR thrift tag.
+
 ### Open questions / gaps
-- Real FR-native tag frequencies unknown — **first scrape run reports back actual result counts per tag** (that table becomes a deck receipt).
-- Live-selling vocabulary (Whatnot FR streams) unswept.
+- Real FR-native tag frequencies still unknown — **first scrape run reports back actual result counts per tag** (that table becomes a deck receipt).
+- Live-selling vocabulary (Whatnot FR streams) — partial; `#whatnotfr` + déballage/live terms to validate.
 - Add validated tags back to this page after each discovery run (engine feeds Brain, not just Brain feeds engine).
 
 Feeds: **discovery** (Apify keyword seeds), **outreach** (caption vocabulary), **briefs** (native phrasing).

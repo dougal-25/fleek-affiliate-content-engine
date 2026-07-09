@@ -23,8 +23,32 @@ Search returned **no** verified rising *friperie-specific* TikTok handles for 20
 ### Instagram (business accounts, not creators)
 Search mostly returned **wholesale suppliers**, useful as competitor/partner map, not creators: @eurekafripevintage (Eureka Fripe, 36,000 m² A-grade stock), @frenchpick, @common_marseille (Marseille physical shop). [Q7 raw]
 
+### 2026-07-09 deep-read enrichment — the real roster (follower counts source-reported, verify live)
+
+**Tier 1 — closest to a Fleek wholesale-affiliate (bulk sourcing + resale content):**
+- **Nathan Vialle** — @nathanvialle (IG), @nathanviall3 (YT/TikTok) + Discord. **Buys in bulk on Vinted (bots + team of 4) → resells live on Whatnot.** Claims €5–10K/livestream, targeting €100K/mo. Streetwear/vintage/accessible-luxury. Monetisation-transparent; built around "impossible to track hundreds of articles weekly." **The template bulk-sourcing affiliate.** — [vintedcrm](https://vintedcrm.com/ressources/achat-vinted-revente-whatnot/)
+- **Bichette Kids** — @bichettekids (Lolita Cattelan Bour). Children's secondhand; **sources 30kg+ compressed bales, films bale-unboxing** ("on dirait un gigot de Noël"). A literal bale buyer. — [cm-cm](https://www.cm-cm.fr/post/etonnante-transition-seconde-main-neuf-decryptage-point-bascule-influence)
+- **Giulia Castellucci** — @giu.cst (TikTok ~202K). Runs a pro friperie; films **vide-maison/estate-clearance sourcing** trips ("haul brocante 2.0"). Large audience, active reseller.
+- **Emmanuelle Sits** (YT/IG) — luxury secondhand bags; buys **50kg mystery-box bales**, dramatic unboxings ("MysteryBox XXL de 50kg (grosse arnaque)"). Handle (unverified).
+
+**Tier 2 — thrift-haul / vintage-styling (large audiences, brand-deal active):**
+- **Clara Victorya** — @claravictorya (YT 216K, IG 135K). Opened Paris friperie "Relique"; **did a Leboncoin partnership** (proof brands pay this niche).
+- **Juliette Kitsch** — @juliettekitsch (IG ~93K, +40K in a year). Vestiaire/Vinted sourced; **Balzac Paris** deal.
+- **Rosa Boh-neur** @rosabohneur (IG 60K); **Rubi Pigeon** @rubipigeon (own upcycle label Rusmin); **Mango and Salt** @mangoandsalt (IG 108K); Nawal Bonnefoy @nawalbonnefoy (18.6K); Charlotte Lemay @chamellow (<€50-outfit thrift challenges); Safya @blackmaroccan (Jacquemus deal).
+
+**Grossistes courting creators (competitors for creator attention — or partners):** Five Vintage (TikTok-native pop-up "friperies géantes"), Jonathan Frip's (Rouen, 3€/kg, IG-sponsored), Pawpick Vintage, DHEM, Once Again, Eureka Fripe, Gebetex. → these are exactly who a Fleek affiliate program competes with.
+
+**Scene-wide pain points (outreach angles):**
+- **Inventory tracking at scale** — the problem Nathan Vialle/VintedCRM productised.
+- **Authenticity vs brand-deals** — creators built audiences on "100% seconde main," then fast-fashion gifting undercuts the value prop; several drifted to ~30% new. **A resale-native affiliate (Fleek) is on-brand where fast-fashion gifting is not — a genuine wedge.**
+- **Proof-of-margin** content performs — audiences ask *"combien coûte une balle? ça vaut le coup?"*
+
+**Hashtags/formats:** #friperie #friperieparis #haulfriperie #balledefriperie #secondemain #emmaus (>80M views) #defiriendeneuf; formats = bale/mystery-box unboxing, entrepôt walk-throughs, vide-maison vlogs, Whatnot live-selling.
+
+**Highest-value pitch targets:** Nathan Vialle (bulk→Whatnot, transparent), Bichette Kids (already bale-buying), Emmanuelle Sits (mystery-box format), Giulia Castellucci (large + active). ⚠️ Verify all handles/counts live before outreach — source-reported, not profile-checked (TikTok/IG pages don't render to fetch).
+
 ### Creator brand deals
-**None found.** No French reseller creator was identified with an existing resale-marketplace or wholesale-supplier brand deal — reinforcing the greenfield wedge: the creator-partnership space is *unclaimed* in FR resale. [Q9 raw]
+Deep-read update: brand deals **do exist** in adjacent styling niche — Clara Victorya × Leboncoin, Juliette Kitsch × Balzac, Safya × Jacquemus. But **none is a wholesale-sourcing / resale-marketplace deal** — the greenfield wedge holds: the *sourcing-affiliate* space is unclaimed. [Q9 + 2026-07-09 deep-read]
 
 ### Open questions / gaps
 - **Verified live metrics** for every name above (followers, engagement, posting cadence) — press-sourced, needs scrape confirmation.

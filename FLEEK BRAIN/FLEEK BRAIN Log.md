@@ -4,6 +4,24 @@ Dated record of what entered the vault and how. Newest first. Hub: [[FLEEK BRAIN
 
 ---
 
+## 2026-07-09 (night) — Deep-read enrichment: primary-source method (Substack + 4-agent fan-out)
+
+**Why**: Doug flagged the vault as "not rich enough." Root cause named: Perplexity `sonar` is a *summariser* — 1–3k-char syntheses, thin on named FR detail, "no data found" on niche lanes. Fix = a **method shift**: fetch and deep-read named primary sources, not ask an AI to summarise the web.
+
+**Method**: (1) Deep-read a reader-supplied Paris shopping Substack. (2) Fanned out **4 parallel research agents** (general-purpose, WebSearch+WebFetch), each deep-reading ~8–12 real pages in a different vein: FR cities retail, reseller-creator profiles, market intelligence, sourcing practitioner voice. ~30 sources deep-read total (~266k subagent tokens). Agreed the enrichment loop with Doug — **job-first, `Feeds:`-guarded, manual passes**, compounding via a leads backlog.
+
+**Pages created**: [[Paris Secondhand Retail Map]], [[French Cities Secondhand Retail Map]], [[FR Bale Sourcing Playbook]], [[Enrichment Leads Backlog]] (method + compounding to-do).
+
+**Pages deep-enriched**: [[French Reseller Creator Shortlist]] (tiered roster — Nathan Vialle bulk→Whatnot €5–10K/live, Bichette Kids bale-unboxing, Giulia Castellucci; grossistes courting creators; authenticity-vs-brand-deal wedge), [[French Secondhand Market Trends 2026]] (IFM €6bn/2022 + 10.9% share, Xerfi €14bn, Vinted 2025 €10.8bn GMV, **anti-fast-fashion law adopted 29 Jun 2026** — €20 malus by 2030, targets Shein/Temu, spares Zara/Kiabi), [[French Reseller Community Sentiment]] (verbatim grade-A-scam quotes + waste-reality), [[FR Reseller Vocabulary and Hashtags]] (full trade grade-vocab + retail terms — fixes the founding sweep's weakest lane).
+
+**Headline wins**: the practitioner-voice gap is now richly filled with real quotes; named bulk-sourcing creators (the exact Fleek-affiliate archetype) identified; the anti-fast-fashion law dated and specced (a hard positioning asset — it even restricts influencers from promoting Shein/Temu, pushing them toward resale-native offers); the full grade vocabulary (crème/original/A-B-C) now documented.
+
+**Honest caveats**: creator follower counts are source-reported, not profile-checked (TikTok/IG don't render to WebFetch — verify live before outreach); Trustpilot quotes are snippet-level (pages block fetch); market-size figures span €6–14bn by scope definition; several sources 403'd (FashionNetwork, bpifrance) — all logged in [[Enrichment Leads Backlog]] for a browser pass.
+
+**Method proven**: this pass produced ~10× the named detail of the Perplexity sweeps. The deep-read loop is the way forward; leads backlog seeded for the next pass.
+
+---
+
 ## 2026-07-09 (latest) — Deep-dive enrichment: 25-question France-primary sweep
 
 **What**: A thorough enrichment pass to harden the foundation. 5 new pages + 4 enriched pages, weighted to the four documented backlog gaps (practitioner sentiment, named creators, supplier referral programs, affiliate mechanics deep-dive).

@@ -30,9 +30,23 @@ Search surfaced **no** public FR reseller forums/Discords/subreddits — consist
 - **Physical hubs**: Marché de la Mode Vintage de Lyon (200+ stands, founded 2001); Le Salon du Vintage (Paris + ~12 cities) — [alalyonnaise](https://www.alalyonnaise.fr/dossier/mode-la-seconde-main-en-premiere-ligne)
 - Community exchange happens *inside* Vinted and at events, not on dedicated forums. → the primary-source voice still needs a browser/FB-group pass or the Apify scrape.
 
+### 2026-07-09 deep-read enrichment — verbatim FR practitioner voice
+
+The sourcing-scam complaint, in resellers' own words (via Trustpilot snippets — pages block fetch, wording high-fidelity):
+- **Arfrip**: *"Quand vous commandez un article dit grade A et Grade B vous recevrez que du grade B et quand on les contacte ils font les morts."* → order Grade A, get only Grade B, and they play dead when contacted.
+- **Kloset Box**: ordered 25 Grade A Polo Ralph Lauren, received "roughly double" the promised Grade B share; months of delays; no reply to emails.
+- **Vinqa**: *"un point de consensus négatif… manque de réactivité du service client… retards de livraison importants."*
+
+The waste-reality (the *honest* economic pain, not a scam) — this is the reseller's real math:
+- *"Compte 20 à 40 % de pièces invendables sur Vinted dans un ballot brut (taches, trous, démodé, hors saison)."*
+- *"Un ballot à 4€/kg avec 35% de perte et 6 heures de tri peut revenir plus cher qu'une box triée, une fois ton temps intégré."*
+- Bichette Kids opening a bale: *"On dirait un gigot de Noël."* · Emmanuelle Sits on a 50kg mystery bale: *"Ça m'a presque tuée."*
+
+The honest-supplier red-flags resellers watch for (opaque packaging, refusing to open a bale, price-too-good) live in full on [[FR Bale Sourcing Playbook]]. **Every one of these is a Fleek outreach hook** — Fleek Sort's trustworthy grading is the direct answer to "grade A ordered, grade B received."
+
 ### Open questions / gaps
-- Direct Reddit/FB-group threads from **French** resellers (not Trustpilot aggregation) — still unreached by search.
-- Vinted/Whatnot-specific FR seller sentiment — not captured; TikTok Shop dominated the results.
+- Direct Reddit/FB-group threads from **French** resellers (not Trustpilot aggregation) — still unreached by search. Verbatim quotes now captured via snippets, but *on-page* threads remain a browser job.
+- Vinted/Whatnot-specific FR seller sentiment — partial (Vinted litige/colis-perdu = "vraie galère" per vintedcrm); deeper pass owed.
 
 Feeds: **outreach** (the bale-complaint list = cold-DM hooks), **positioning** (Fleek Sort solves the #1 stated pain), **scoring** (platform-pain awareness → which creators are switch-ready).
 
