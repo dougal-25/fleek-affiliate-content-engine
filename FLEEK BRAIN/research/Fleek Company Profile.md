@@ -30,6 +30,7 @@ B2B wholesale marketplace connecting secondhand/vintage clothing **suppliers** (
 - **⚠️ Disambiguation trap**: a "Fleek Affiliate Program" at **getfleek.app** (up to 50% subscription commission) is an **unrelated Web3/hosting company**. Do NOT conflate with joinfleek.com.
 - What joinfleek.com actually runs is a **referral/discount-code system**, not a formal affiliate program: codes in the format `RFD-[username]`, ~£25–$35 off a referred buyer's first order, shared by creators on TikTok/IG/FB, plus periodic giveaways (leaderboard, £300 gift-card prize for top referrers). — [TikTok @joinfleek](https://www.tiktok.com/@joinfleek/video/7417883442064461088)
 - The reseller-onboarding page leads with peer profit testimonials, **not** an affiliate structure — signalling Fleek's creator motion, if any, is early/thin. This is the gap the content engine is pitched into. — [new-reseller](https://www.joinfleek.com/en/resources/new-reseller)
+- **2026-07-09 re-confirmation** (deep-dive sweep, Q22): the $25M Series B announcement carried **no new creator or affiliate program** — capital is earmarked for Fleek Sort, engineering, and buyer/supplier network growth. The whitespace is still open at the moment of maximum capital. Series B participant list also includes **Pioneer Fund**. — [thenextweb](https://thenextweb.com/news/fleek-25m-series-b-secondhand-fashion-ai)
 
 ## Reseller sentiment
 

@@ -4,6 +4,24 @@ Dated record of what entered the vault and how. Newest first. Hub: [[FLEEK BRAIN
 
 ---
 
+## 2026-07-09 (latest) — Deep-dive enrichment: 25-question France-primary sweep
+
+**What**: A thorough enrichment pass to harden the foundation. 5 new pages + 4 enriched pages, weighted to the four documented backlog gaps (practitioner sentiment, named creators, supplier referral programs, affiliate mechanics deep-dive).
+
+**Method**: `wiki-knowledge-base-builder` skill — 25 questions, hard cap 35, `sonar`, **25/35 calls used** (10 under cap). France-primary framing throughout (creators/trends France-first; B2B mechanics as comparison backdrop). "friperie" baked into 10 questions per Doug's steer. Mock run first (0 cost), then live. Raw JSONL at `_raw/perplexity_fr_deepdive_2026-07-09.jsonl`. Every one of the 25 answers returned 8–10 citations, zero errors, nothing thin.
+
+**Pages created**: [[French Reseller Community Sentiment]], [[French Reseller Creator Shortlist]], [[Supplier and B2B Referral Mechanics]], [[Creator Affiliate Mechanics]], [[French Secondhand Market Trends 2026]].
+
+**Pages enriched**: [[TikTok Shop France]] (commission %s + By-Application resale gate — closed its own two gaps), [[Competitor Creator Programs]] (Whatnot FR/EU 6.67%+VAT economics + resale-affiliate landscape), [[Fleek Company Profile]] (Series B carried no creator program — re-confirmed; +Pioneer Fund), [[FR Creator Content Formats]] (virality drivers, flagged US-extrapolated).
+
+**Headline wins vs the risky lanes I flagged**: both "search-blocked" lanes actually delivered. **Q1** produced verbatim reseller bale complaints (Trustpilot: "Grade A" = dirty/stained/unsellable) — pre-written outreach ammunition. **Q8** produced a real named FR micro-creator seed list (Na Nin Vintage, @emmaverdierkremer, @veryfrip, Zoé Léger, Nawal Bonnefoy). **Q16/Q17** closed [[TikTok Shop France]]'s outstanding gaps outright.
+
+**Strategic reinforcement**: the wedge held under deeper scrutiny — bale suppliers almost never run referral programs (whitespace confirmed, Q11); wholesale marketplaces can't stack creator commission on 25% platform fees but Fleek doesn't need to (sourcing margin funds the incentive, Q15); Series B brought capital but *no* creator program (Q22). France is a structurally favourable launch market (Vinted = biggest FR clothing retailer, anti-fast-fashion tailwind, social-first discovery, Q24/Q25).
+
+**Honest misses**: direct FR Reddit/FB-group threads still unreached by search (Trustpilot aggregation is the proxy); verified TikTok creator handles + live metrics still owed (IG-heavy shortlist only); virality/format data is US-extrapolated (Q10 flagged). All three are scrape/browser jobs, not Perplexity jobs — carried to the Index backlog.
+
+---
+
 ## 2026-07-09 (evening) — ENGINE MILESTONE: discovery live, real creators in Airtable
 
 **What**: The discovery stage of the engine ran end-to-end for real. Not a mock — 12 actual French reseller creators scraped, scored by Claude, and written to the Airtable ecosystem, with an observability Run row.
