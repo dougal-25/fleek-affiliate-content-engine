@@ -114,6 +114,8 @@ A research agent (Claude Code + Perplexity) produces a small wiki on French/EU r
 
 **Filtering:** score signals, not followers — wholesale mentions, selling tutorials, audience comments, posting frequency, evidence of sourcing, community engagement, business-owner signals, referral friendliness.
 
+**Kalodata validation snippet (in this section):** before a creator makes the shortlist, their commercial reality gets checked in Kalodata — TikTok Shop GMV, revenue trend, product categories. Search → export (API where the plan allows) → validation fields on the Airtable record. One line for the room: "the scrape finds them, the enrichment reads them, Kalodata proves they actually sell." Fuller tool showcase sits in §10/appendix.
+
 **The shortlist = Airtable Gallery view.** Each card: photo, followers, audience, strength, weakness, predicted CAC, confidence score. Screenshot for the deck; scroll it live in the demo.
 
 **AI receipts:** Apify run screenshot (input) → enrichment JSON (output) → scored cards (system).
