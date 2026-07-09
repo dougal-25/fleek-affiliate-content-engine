@@ -4,6 +4,23 @@ Dated record of what entered the vault and how. Newest first. Hub: [[index]].
 
 ---
 
+## 2026-07-09 (night, 3) — vault renamed and repaired; no content changed
+
+Structural only, **no research content touched**. The vault is now `Fleek Wiki/` — one vault, at the repo's
+top level. Git history was preserved through the move (renames, not delete-and-recreate).
+
+- `FLEEK BRAIN/` → `Fleek Wiki/`. `FLEEK BRAIN Index.md` → `index.md`, `FLEEK BRAIN Log.md` → `log.md`; all
+  21 notes' wikilinks repointed to `[[index]]` / `[[log]]`.
+- An empty Obsidian vault (`Fleek Wiki Base/`) had been created *nested inside* this one — a nested vault,
+  which is what breaks the parent's graph view. Retired to `_attic/`, along with two empty `Untitled.canvas`
+  files.
+- **Naming:** Fleek uses *the Brain* for the whole affiliate content engine, so the repo is the Brain and no
+  subfolder claims the word. This vault is *the wiki*. The `brain_refresh` job is now `wiki_refresh`.
+- The research agent lives at `.claude/agents/wiki-researcher.md` and is now actually invocable. It had been
+  pointing at `FLEEK BRAIN/` and at a runner script that never existed.
+
+---
+
 ## 2026-07-09 (night, 2) — Reddit/Quora practitioner ingest + Apify Reddit actor built
 
 **Why**: Close the Phase 0 "where resellers congregate" + practitioner-voice gaps with real forum voice, and stand up a reliable Reddit-ingest tool for the living Brain.
