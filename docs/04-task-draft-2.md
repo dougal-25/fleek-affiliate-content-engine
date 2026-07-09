@@ -87,7 +87,7 @@ One honest line for the interview: "I run this on Claude + Apify + Airtable glue
 A research agent (Claude Code + Perplexity) produces a small wiki on French/EU reselling:
 - Platform landscape: Vinted, Vestiaire Collective, Leboncoin, Whatnot France, eBay FR
 - Reseller archetypes and their economics (thrift flippers, wholesale buyers, live sellers, educators)
-- Community vocabulary and slang (FR) — feeds search keywords and outreach tone
+- Community vocabulary and slang (FR) — feeds search keywords and outreach tone, e.g. "friperie"
 - Trends and formats currently working (sourcing-trip vlogs, live selling, "come thrift with me")
 - Where resellers congregate (Discord, Facebook groups, subreddits, TikTok hashtags)
 
