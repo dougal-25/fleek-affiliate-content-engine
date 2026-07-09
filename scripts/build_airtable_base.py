@@ -105,7 +105,7 @@ CREATORS_FIELDS = [
 RUNS_FIELDS = [
     {"name": "Run", "type": "singleLineText"},  # primary
     {"name": "Job", "type": "singleSelect",
-     "options": sel(("brain_refresh", "blueLight2"), ("discovery", "cyanLight2"),
+     "options": sel(("wiki_refresh", "blueLight2"), ("discovery", "cyanLight2"),
                     ("outreach_drafts", "yellowLight2"), ("brief_generator", "purpleLight2"),
                     ("weekly_report", "greenLight2"))},
     {"name": "Started", "type": "dateTime",

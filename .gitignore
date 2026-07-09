@@ -4,9 +4,9 @@ __pycache__/
 .env
 data/
 
-# Obsidian per-machine UI state
-FLEEK BRAIN/.obsidian/workspace.json
+# macOS
+.DS_Store
 
-# Obsidian per-machine UI state
-FLEEK BRAIN/.obsidian/workspace.json
-FLEEK BRAIN/.obsidian/graph.json
+# Obsidian per-machine UI state (the vault's shared config IS committed)
+Fleek Wiki/.obsidian/workspace.json
+Fleek Wiki/.obsidian/graph.json

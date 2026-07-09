@@ -22,7 +22,7 @@ from content_brain.engine_io import (  # noqa: E402
     load_env, apify_tiktok_scrape, videos_to_creators, Airtable, claude_json,
 )
 
-# FR reseller seed hashtags — from FLEEK BRAIN / FR Reseller Vocabulary and Hashtags.
+# FR reseller seed hashtags — from "Fleek Wiki/research/FR Reseller Vocabulary and Hashtags.md".
 # The scrape itself validates which of these actually return reseller content.
 DEFAULT_HASHTAGS = ["friperie", "vinted", "secondemain", "revente", "fripe", "thriftfrance"]
 

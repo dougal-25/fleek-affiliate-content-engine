@@ -1,92 +1,81 @@
-# Fleek Content Brain — Agentic Affiliate Content Engine
+# Fleek Content Brain — an agentic affiliate content engine
 
-Case-study prep for the **Influencer Marketing Manager** role at Fleek. A working prototype of
-the "Content Brain" described in the JD: an AI system that profiles every creator partner,
-generates personalised campaign briefs, and closes the loop from post performance back into
-the next brief — so one operator can run many segmented campaigns concurrently across a
-1,000+ creator roster.
+A working prototype of the **Content Brain**: an AI system that profiles every creator partner, generates a
+personalised campaign brief for each one, and closes the loop from post performance back into the next brief
+— so a single operator can run many segmented campaigns across a 1,000+ creator roster.
 
-## What it does
+Built as case-study prep for the Influencer Marketing Manager role at Fleek.
+
+**The argument in one line:** Fleek's next unit of growth isn't more creators — it's *more posts per existing
+creator*, and the way to get them without headcount is an engine that makes every brief feel hand-written,
+then learns from every post.
+
+## The weekly cycle
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        THE WEEKLY CYCLE                             │
-│                                                                     │
-│  Roster (1,000 creators) ──► Segmentation ──► Activation targeting  │
-│        ▲                    (tier × channel     (who to brief:      │
-│        │                     × geo × niche       active, at-risk,   │
-│        │                     × lifecycle)        dormant)           │
-│        │                                             │              │
-│  Profile updates                                     ▼              │
-│        ▲                                    Partner Profiler agent  │
-│        │                                    (what works for THIS    │
-│        │                                     creator)               │
-│  Feedback loop agent                                 │              │
-│  (codify what worked,                                ▼              │
-│   kill what didn't)                        Brief Generator agent    │
-│        ▲                                   (hook, format, CTA stack,│
-│        │                                    do's/don'ts, references)│
-│        │                                             │              │
-│  Post performance ◄──── creators post ◄─────────────┘              │
-│  (views→clicks→signups→first orders→CAC/AOV)                        │
-│                                                                     │
-│  Budget engine: weekly reallocation toward best-CAC segments        │
-└─────────────────────────────────────────────────────────────────────┘
+Roster ──► Segmentation ──► Activation targeting ──► Partner Profiler ──► Brief Generator
+  ▲          (tier × channel   (who to brief:          (what works for      (hook, format,
+  │           × geo × niche     active, at-risk,        THIS creator)        CTA stack, do's,
+  │           × lifecycle)      dormant)                                     references)
+  │                                                                                │
+Profile updates ◄── Feedback loop ◄── Post performance ◄── creators post ◄────────┘
+                    (codify what      (views → clicks → signups
+                     worked, kill      → first orders → CAC/AOV)
+                     what didn't)
+
+Budget engine (deterministic): weekly reallocation toward best-CAC segments.
 ```
 
-The metrics mirror the JD exactly: **# and % of partners posting each month** (the headline
-activation metric), **channel CAC, payback, first-order AOV**, segmented by tier (mega→nano),
-channel (TikTok/YouTube/Instagram), geo (UK/FR), niche, and lifecycle.
+The metrics mirror the JD: **# and % of partners posting each month** as the headline activation metric, then
+channel CAC, payback and first-order AOV — segmented by tier (mega→nano), channel (TikTok / YouTube /
+Instagram), geo (UK / FR), niche and lifecycle.
+
+The division of labour is deliberate and worth stating: **LLMs for judgment at scale** (profiles, briefs,
+narrative insight), **deterministic code for money and measurement** (CAC, budgets, attribution). Never let a
+model allocate budget; never ask a human to write 300 briefs.
 
 ## Quick start
 
 ```bash
-cd fleek-content-engine
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
-# 1. Generate a synthetic 1,000-creator roster with 90 days of post history
-python run_campaign.py generate-data
-
-# 2. See the state of the channel (activation %, CAC by segment)
-python run_campaign.py report
-
-# 3. Plan next week's budget (reallocation toward best-CAC segments)
-python run_campaign.py plan-budget
-
-# 4. Profile a creator and generate their personalised brief
-python run_campaign.py brief CRE-0042
-
-# 5. Run a full weekly cycle: target → profile → brief → simulate posts → feed back
-python run_campaign.py weekly-cycle --limit 10
+python run_campaign.py generate-data          # 1,000 synthetic creators, 90 days of post history
+python run_campaign.py report                 # state of the channel: activation %, CAC by segment
+python run_campaign.py plan-budget            # next week's reallocation toward best-CAC segments
+python run_campaign.py brief CRE-0042         # profile one creator → their personalised brief
+python run_campaign.py weekly-cycle --limit 10  # target → profile → brief → simulate posts → feed back
 ```
 
-Works **without an API key** (deterministic mock mode, useful for understanding the data
-flow). With `ANTHROPIC_API_KEY` set, the profiler, brief generator, and insight agents run on
-Claude (`claude-opus-4-8`) with structured outputs, so briefs are genuinely personalised.
+Runs **without an API key** in deterministic mock mode, which is the fastest way to understand the data flow.
+With `ANTHROPIC_API_KEY` set, the profiler, brief generator and insight agents run on Claude with structured
+outputs, so the briefs are genuinely personalised.
 
 ```bash
-cp .env.example .env   # add your key, or: export ANTHROPIC_API_KEY=sk-ant-...
+cp .env.example .env   # add your key
 ```
 
 ## Repo map
 
 | Path | What it is |
 |---|---|
-| `docs/01-case-study-strategy.md` | How to attack the case study — the argument, mapped to the JD |
-| `docs/02-content-brain-architecture.md` | System design: agents, data model, feedback loops |
-| `docs/03-campaign-playbook.md` | The operating cadence: segments, calendar, budget rules |
-| `scripts/generate_roster.py` | Synthetic roster: 1,000 creators, 90 days of posts |
+| `mission/` | The constants: the verbatim job description and task brief, and what they oblige |
+| `Fleek Wiki/` | The knowledge base — 21 cited pages of ground truth on FR/EU reselling. An Obsidian vault |
+| `spec/` | Design intent: architecture, operating playbook, autonomy layer, decision records |
 | `content_brain/` | The engine: segmentation, profiler, briefs, feedback, budget |
-| `run_campaign.py` | CLI to drive it all |
+| `scripts/` | Discovery scrape, roster generation, Airtable setup |
+| `run_campaign.py` | The CLI that drives it all |
+| `deliverables/` | What Fleek receives: the strategy, the approach, the evidence pack |
+| `.claude/agents/` | The research agent that builds and refreshes the wiki |
 
-## Moving this to its own private repo
+Start with `spec/overview.md` for the design, or `deliverables/strategy.md` for the argument.
 
-This folder is fully self-contained. To lift it into a new private repo:
+## Why a wiki sits underneath it
 
-```bash
-gh repo create fleek-affiliate-content-engine --private
-git clone git@github.com:<you>/fleek-affiliate-content-engine.git
-cp -r fleek-content-engine/* fleek-affiliate-content-engine/
-cd fleek-affiliate-content-engine && git add -A && git commit -m "Content Brain prototype" && git push
-```
+Before finding a single creator, the engine builds the knowledge base that teaches it what "good" looks like:
+the FR platform landscape, reseller archetypes and their economics, community vocabulary that feeds discovery
+keywords, the formats working right now, and where resellers congregate. Every claim carries its source;
+single-sourced claims are marked unverified.
+
+Discovery keywords, scoring factors, personalisation variables and brief content all reason from it.
+**Perplexity teaches the engine; Apify feeds it.**
