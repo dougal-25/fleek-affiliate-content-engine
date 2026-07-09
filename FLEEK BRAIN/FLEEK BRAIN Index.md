@@ -16,8 +16,18 @@ Operational ground truth for the French discovery/outreach/brief pipeline:
 1. [[FR Reseller Vocabulary and Hashtags]] — the scrape's keyword seeds. ⚠️ Weakest lane; hypothesis list that the discovery run itself validates (Brain proposes → scrape verifies).
 2. [[FR Resale Platform Landscape]] — Vinted 0%-fee volume lane (pros camouflage as closet-cleaners), Whatnot FR = live-selling hub, Vestiaire = luxury. Platform presence → scoring signals.
 3. [[FR Creator Content Formats]] — hauls-with-storytelling rising, generic hauls fading; bale unboxing IS the product demo. → brief rules.
-4. [[TikTok Shop France]] — live since 2025-03; **81.7% affiliate dependency, €31.98 avg unit price**. France is structurally affiliate-first: exec-summary stat.
+4. [[TikTok Shop France]] — live since 2025-03; **81.7% affiliate dependency, €31.98 avg unit price**. France is structurally affiliate-first: exec-summary stat. *(2026-07-09: +commission %s + By-Application resale gate.)*
 5. [[Wholesale Sourcing and Buying Triggers FR-EU]] — named grossistes, the complaint list (opaque sorting, fake Grade A, MOQs), switch triggers. → outreach ammunition.
+
+## The deep-dive layer (2026-07-09 second Perplexity sweep — 25 Q, France-primary)
+
+A thorough enrichment pass to harden the foundation. Weighted to the four documented backlog gaps:
+
+1. [[French Reseller Community Sentiment]] — **the practitioner voice** (#1 gap): real Trustpilot bale complaints ("Grade A" = dirty/stained/unsellable), named fripier "Jules", TikTok Shop = "most frustrating for support". The bale-complaint list is pre-written outreach copy.
+2. [[French Reseller Creator Shortlist]] — **the seed list** (#2 gap): named FR micro creators — Na Nin Vintage (Hannah Stioui), @emmaverdierkremer, @veryfrip, Zoé Léger, Nawal Bonnefoy. Treat as hypotheses the discovery scrape verifies.
+3. [[Supplier and B2B Referral Mechanics]] — **Fleek's analogues** (#3 gap): bale suppliers almost never run referral programs (= whitespace); Faire/Ankorstore mechanics to borrow; the commission-stacking edge only Fleek escapes.
+4. [[Creator Affiliate Mechanics]] — **the operating manual, deeper**: FR is coupon-first not influencer-first; tiering/payout models; the activation playbook (14-day first-sale challenge, seeding, buddy system).
+5. [[French Secondhand Market Trends 2026]] — **the "why now, why France" backdrop**: Vinted is France's biggest clothing retailer; +140% in 2yrs; anti-fast-fashion laws; social-first discovery.
 
 ## 🎯 The strategic thesis (why this case study wins)
 
@@ -41,11 +51,12 @@ Three findings converge into one wedge:
 
 ## Biggest gaps to fill next (research backlog)
 
-- **Reddit/Discord practitioner sentiment** — blocked in this sweep across every lane. Needs a browser/Reddit-capable pass. *Top priority — it's the missing primary-source voice.* (2026-07-09 FR sweep confirmed: no public FR communities findable via search; likely private Facebook groups — « vente mode vintage France », « achat-revente vêtements ».)
-- ~~**TikTok Shop** resale/thrift affiliate mechanics~~ → swept 2026-07-09: [[TikTok Shop France]]. Remaining: resale-category restrictions + creator-side commission % ranges.
-- **Named UK/FR reseller creators** shortlist — Perplexity couldn't produce verified handles (2026-07-09). **Being built empirically by the discovery engine's first Apify run** — the scrape IS the seed list.
-- **Wholesale-supplier referral programs** — Fleek's closest analogues. Still unswept.
+- **Reddit/Discord practitioner sentiment** — 🟡 *partially closed 2026-07-09*: [[French Reseller Community Sentiment]] captured real Trustpilot bale complaints + a named fripier, but **direct FR Reddit/FB-group threads remain unreached by search** — still needs a browser/FB-group pass. Likely private groups (« vente mode vintage France », « achat-revente vêtements »).
+- ~~**TikTok Shop** resale/thrift affiliate mechanics~~ → ✅ fully swept 2026-07-09: [[TikTok Shop France]] now has creator-side commission %s (10–25%, up to 50%) **and** the By-Application resale-category gate.
+- **Named FR reseller creators** shortlist — 🟡 *partially closed 2026-07-09*: [[French Reseller Creator Shortlist]] has named FR micro creators (IG-heavy); **verified TikTok handles + live metrics still owed** — the Apify discovery run confirms/extends the list.
+- ~~**Wholesale-supplier referral programs**~~ → ✅ swept 2026-07-09: [[Supplier and B2B Referral Mechanics]] — the finding is they mostly *don't exist* (the whitespace). Remaining: direct-competitor (BankandVogue etc.) terms.
 - **Hashtag validation table** — after the first discovery run, write actual per-tag result counts back into [[FR Reseller Vocabulary and Hashtags]].
+- **FR-specific virality/format metrics** — [[FR Creator Content Formats]] Q10 data is US-extrapolated; the scrape must measure FR empirically. (New gap surfaced 2026-07-09.)
 
 ## Meta
 

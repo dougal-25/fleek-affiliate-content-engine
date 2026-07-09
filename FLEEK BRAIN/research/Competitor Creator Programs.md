@@ -33,12 +33,20 @@ Two more open flanks:
 
 Depop won't disclose ambassador pay, Whatnot's UGC selection odds are unstated, ThredUp's rate varies by network with no canonical number. **A program that publishes clear, fixed payout terms stands out purely by contrast.**
 
+## 2026-07-09 enrichment — Whatnot FR/EU economics + resale-affiliate landscape
+
+- **Whatnot operates in France/EU** at **6.67% + VAT** seller commission (vs 8% US/CA/AU); electronics 5%; **0% on the portion over €1,500** (limited-time); **tips 0% commission** (seller keeps 100%). Affiliate side: link-sharing commission with a **72-hour (3-day) cookie**. — [crosslist](https://crosslist.com/blog/whatnot-fees-for-sellers), [whatnotaffiliates](https://www.whatnotaffiliates.com)
+- **Vinted still has no official affiliate program** — only user-to-user referral vouchers ($5–15) and third-party SaaS tools (Redrip.app: 30% mo1–3 then 20% lifetime on seller *subscription* renewals, 60-day cookie). Vinted itself charges sellers **no sales commission** (revenue = buyer-protection + shipping fees). — [redrip](https://www.redrip.app/en/affiliate), [sharetribe](https://www.sharetribe.com/how-to-build/how-does-vinted-make-money/)
+- **Vestiaire Collective, Depop, ThredUp**: no affiliate commission data surfaced this sweep (still gaps). *(unverified — absence of data, not confirmed absence of program.)*
+- **Takeaway**: Whatnot is the FR live-selling benchmark but pays creators only on *content/links*, never on *sourcing* — the fusion wedge holds even in-market. → full mechanics on [[Creator Affiliate Mechanics]] and [[Supplier and B2B Referral Mechanics]].
+
 ## Open questions / gaps
 
-- **TikTok Shop** affiliate/creator structure for resale/thrift — unresolved, highest-priority follow-up.
-- Any **wholesale-supplier** (pallet/bulk vintage) creator or reseller-referral programs — Fleek's closest analogues, unexplored.
-- **Direct creator sentiment** — all Reddit fetches blocked (r/Depop, r/whatnot, r/ThredUp, r/Mercari, r/ResellingOnline are known-active); needs a browser tool or Reddit search UI.
+- ~~**TikTok Shop** affiliate/creator structure for resale~~ → swept: [[TikTok Shop France]] (commission %s + By-Application resale gate).
+- ~~**Wholesale-supplier** referral programs~~ → swept: [[Supplier and B2B Referral Mechanics]] (they mostly don't exist — that's the whitespace).
+- **Direct creator sentiment** — Reddit fetches still blocked; partial win via [[French Reseller Community Sentiment]] (Trustpilot + named fripier), full voice still needs a browser/FB pass.
 - eBay's authoritative current rate card (fetch failed twice).
+- Vestiaire/Depop/ThredUp affiliate terms — data not found this sweep.
 
 ## Sources swept
 
