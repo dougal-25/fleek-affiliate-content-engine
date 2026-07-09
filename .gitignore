@@ -10,3 +10,8 @@ data/
 # Obsidian per-machine UI state (the vault's shared config IS committed)
 Fleek Wiki/.obsidian/workspace.json
 Fleek Wiki/.obsidian/graph.json
+
+# Obsidian sometimes recreates a vault folder INSIDE the vault. A nested vault
+# breaks the parent's graph view. Never commit one. If one appears on disk,
+# delete it and reopen Obsidian on "Fleek Wiki/" itself.
+Fleek Wiki/*/.obsidian/
