@@ -5,6 +5,33 @@ Dated record of design intent changing. Newest first. Decisions with reasoning g
 
 ---
 
+## 2026-07-10 — The mission is real; two load-bearing claims were wrong
+
+Doug supplied the JD and the case-study brief. Both are now captured verbatim in `mission/`, and
+`mission/mission.md` is rewritten against them — the *awaiting sign-off* banner is gone.
+
+Reading the sources against the repo surfaced two claims that had been built on inference:
+
+1. **"Fleek has no structured creator program — greenfield, not a fix-up."** False. The JD describes a 1,000+
+   creator roster built over two years, recruitment largely automated, running on an internal Content Brain.
+   The wiki had inferred "no programme" from Fleek's *public surface* — the `RFD-` referral codes visible on
+   joinfleek.com and TikTok. The programme exists; it isn't public. Corrected on
+   `Fleek Wiki/research/Fleek Company Profile.md`, and the strategic thesis on `Fleek Wiki/index.md` revised
+   and flagged for Doug's sign-off. **Method lesson recorded on the page:** absence of public evidence was
+   treated as evidence of absence.
+
+2. **"Anchor on activation; recruitment is a supporting motion."** Written into `deliverables/strategy.md`
+   before the brief existed. The brief asks for both — Part 1 (discovery) is explicitly *"the core
+   AI-nativeness test"*, and Part 5 splits budget across recruitment and re-activation. Corrected in place.
+
+**What the sources add that the repo didn't have:** ~20,000 total addressable resellers (bounds every scale
+claim); three named real top-performing partners (`@behindthesale`, `@theliveneedham`, `@juliacrcl`) that
+should calibrate the scoring model instead of guessed archetypes; the exact attribution mechanic; and Fleek's
+self-declared hardest problem — *pro resellers think Fleek is for beginners.* Nothing in the vault addresses
+that yet, and it is the most interesting thing in the brief.
+
+**Open:** the revised strategic thesis needs Doug's call before it drives the deck.
+
 ## 2026-07-09 — Repo restructured around mission / wiki / spec / code
 
 **Why:** the repo had grown by accretion. Things got built, then a home was found for them. Three concrete

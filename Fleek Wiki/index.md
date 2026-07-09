@@ -41,13 +41,26 @@ The richness upgrade. One Substack + a 4-agent fan-out over named French primary
 
 ## 🎯 The strategic thesis (why this case study wins)
 
+> [!CAUTION] **Revised 2026-07-10.** The original first bullet read *"Fleek has no structured creator program —
+> greenfield, not a fix-up."* That was inferred from Fleek's public surface and is **false**. The JD describes a
+> 1,000+ creator roster, recruitment largely automated, running on an internal Content Brain. See the correction
+> on [[Fleek Company Profile]] and the full list in `mission/mission.md`. The thesis below is the surviving
+> version — **it needs Doug's sign-off before it drives the deck.**
+
 Three findings converge into one wedge:
 
-- **Fleek has no structured creator program** ([[Fleek Company Profile]]) — greenfield, not a fix-up.
+- **Fleek has the roster but not the activation** (`mission/job-description.md`) — 1,000+ creators, recruitment
+  automated, and *"the next chapter is keep scaling recruiting while activating better at scale."* The problem
+  is not finding creators. It's getting the ones they have to post.
 - **Its creators are already buyers** ([[Vintage Reseller Creator Ecosystem]]) — sourcing is their #1 time-sink, so promoting Fleek helps them *operationally*, before any commission.
 - **No competitor can copy the obvious offer** ([[Competitor Creator Programs]]) — rivals pay for *either* sales *or* content; **only a wholesale marketplace can pay commission AND give wholesale sourcing margin in one relationship.**
 
 → The pitch: a creator program where the reward is *become a better-stocked reseller who also earns commission*. The [[Affiliate Program Playbooks]] tell you how to run it at scale — **activation % as the north star** (which is exactly Fleek's own JD headline metric), a small top tier carrying GMV, one operator running many segmented campaigns via tooling not headcount. That's the Content Brain.
+
+**The sharper wedge, unused so far:** Fleek's own hardest problem, in their words, is that *"many [pro
+resellers] think Fleek is for beginners and not for them."* Pro resellers are fewer and much higher value. A
+creator programme aimed at *pro* credibility — real sourcing, real margins, live-selling operators — attacks
+the perception problem and the acquisition number at once. Nothing in this vault addresses it yet.
 
 ## How this feeds the engine
 

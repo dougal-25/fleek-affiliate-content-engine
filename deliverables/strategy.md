@@ -8,9 +8,21 @@
 
 The JD says this almost verbatim: *"The next chapter is keep scaling recruiting while
 **activating better at scale**"* and *"The # and % of partners posting each month is the
-headline metric."* Whatever the case study prompt turns out to be, anchor the answer on
-**activation of the existing 1,000+ roster**, with recruitment as a supporting motion
-(quality over headcount, YouTube as the compounding channel).
+headline metric."*
+
+> [!WARNING] **Corrected 2026-07-10.** This paragraph originally ended: *"Whatever the case study prompt turns
+> out to be, anchor the answer on activation of the existing 1,000+ roster, with recruitment as a supporting
+> motion."* The prompt is no longer unknown — see `mission/task-brief.md`. It asks for **both**. Parts 1–3 are
+> recruitment, and Part 1 (discovery) is explicitly *"the core AI-nativeness test"* — the thing they say they
+> are testing above all else. Part 4 activates the new recruits **and** the inherited dormant French partners.
+> Part 5 splits budget across recruitment and re-activation. Recruitment is not a supporting motion here.
+>
+> Lead with the **engine that does both**. Activation is still where the number moves, and *"activation is the
+> whole game"* is the brief's own phrase — but a submission that treats discovery as a footnote fails the one
+> test they named.
+
+The activation argument below is correct and is the heart of Parts 4 and 5. Read it as *why activation is the
+whole game*, not as *why recruitment doesn't matter*.
 
 ## The problem, framed as an operator
 

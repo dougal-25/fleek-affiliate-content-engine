@@ -45,7 +45,26 @@ B2B wholesale marketplace connecting secondhand/vintage clothing **suppliers** (
 
 ## So what — for the content engine
 
-Fleek's headline metric is **# and % of partners posting each month** (activation). The company already has organic haul/QC content and informal referral codes but **no structured creator program** — which is exactly the whitespace [[Competitor Creator Programs]] confirms rivals also leave, and the wedge described in [[index]].
+Fleek's headline metric is **# and % of partners posting each month** (activation).
+
+> [!CAUTION] **Corrected 2026-07-10 against the primary source.** This page previously concluded that Fleek has
+> **no structured creator program** — inferred from the outside, because only the public `RFD-` referral codes
+> on joinfleek.com and TikTok were visible. **The job description says otherwise:** *"Over the past two years
+> we've built a 1,000+ creator roster across TikTok, YouTube, and Instagram, with recruitment already largely
+> automated"*, run on a **Content Brain**, *"our internal AI system that profiles every partner and generates
+> personalised campaign briefs."* The case study adds that influencer is *"currently one of our biggest
+> channels for new customer acquisition."*
+>
+> The programme exists and is substantial. It simply isn't public — which is why open-web research missed it.
+> Sources: `mission/job-description.md`, `mission/task-brief.md`.
+>
+> **What survives:** the *offer* wedge in [[Competitor Creator Programs]] — only a wholesale marketplace can
+> pay commission **and** give wholesale sourcing margin in one relationship. That is a wedge against rivals,
+> not against a gap at Fleek. What Fleek lacks is not a programme; it's activation of the one they have.
+
+**Method lesson:** open-web research reveals a company's *public surface*, not its internal systems. Absence of
+public evidence was treated as evidence of absence. Flag this class of claim as *(inferred — unverified)* until
+a primary source confirms it.
 
 ## Sources swept
 
