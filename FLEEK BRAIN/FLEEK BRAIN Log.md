@@ -4,6 +4,27 @@ Dated record of what entered the vault and how. Newest first. Hub: [[FLEEK BRAIN
 
 ---
 
+## 2026-07-09 (evening) — ENGINE MILESTONE: discovery live, real creators in Airtable
+
+**What**: The discovery stage of the engine ran end-to-end for real. Not a mock — 12 actual French reseller creators scraped, scored by Claude, and written to the Airtable ecosystem, with an observability Run row.
+
+**Pipeline proven** (`scripts/run_discovery.py` + `content_brain/engine_io.py`):
+Brain hashtags → Apify TikTok scrape (90 videos, 6 FR hashtags) → dedupe to 79 unique creators → FR-language + follower-band pre-filter (27) → Claude enrich+score against the Brain's rubric → **12 confirmed resellers upserted to Airtable** (15 non-resellers auto-rejected: news, music, UGC accounts).
+
+**Proof points for the deck**:
+- Score breakdowns follow the Brain's exact rubric (audience relevance 30 / reseller credibility 25 / …) — visible per creator in Airtable.
+- The AI catches nuance a filter can't: flagged a high-follower friperie owner as Benin-not-France and docked audience relevance.
+- Bio emails auto-extracted (2/12) → Contact Route = "Bio email"; rest → DM. Directly answers the "how do we contact them / is Apollo needed" comment.
+- Idempotent upsert on Handle — re-runs refresh, never duplicate. This is what makes it schedulable.
+
+**Infra built**: `scripts/build_airtable_base.py` (schema-as-code — Creators 25 fields + Runs 8 fields), reusable `content_brain/engine_io.py` (Apify + Airtable + Claude helpers), project `.venv` + `requirements.txt` (requests added).
+
+**Honest gaps**: FR-language ≠ France (some Québec creators surfaced; scoring flags them). Broad hashtags surface mid-fit creators (scores 32–68); tighter tags + more volume find the 80+ gems. First-run population is deliberately small to prove the loop.
+
+**Next**: outreach_drafts + brief_generator jobs (reuse engine_io), then wrap discovery in a GitHub Actions cron for the autonomy proof.
+
+---
+
 ## 2026-07-09 (later) — FR ops enrichment: Perplexity sweep for the live engine
 
 **What**: 5 new pages closing the founding sweep's FR-operational gaps, ahead of the case-study engine build (live deadline 2026-07-10 13:00).
