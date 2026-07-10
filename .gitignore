@@ -23,3 +23,6 @@ Fleek Wiki/*/.obsidian/
 # the working tree at ~/claude-transcript-archive/fleek-2026-07-10/ and are read
 # from there by scripts/extract_receipts.py. This line is a backstop, not the control.
 _evidence_raw/
+
+# Playwright MCP byproduct — screenshots of our own UI mid-iteration, never source.
+.playwright-mcp/

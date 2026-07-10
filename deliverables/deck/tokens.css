@@ -1,0 +1,112 @@
+/* Design tokens — the only place a raw colour, size or duration is written down.
+   deck.css references these and never hardcodes. See spec/deck.md. */
+
+:root {
+  /* ---- Type ------------------------------------------------------------ */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Sizes are em, relative to the stage font-size, so the deck scales with the
+     viewport rather than with the browser's root font size. */
+  --t-xs: 0.62em;
+  --t-sm: 0.78em;
+  --t-base: 1em;
+  --t-md: 1.25em;
+  --t-lg: 1.7em;
+  --t-xl: 2.4em;
+  --t-2xl: 3.4em;
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.35;
+  --leading-normal: 1.6;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold: 650;
+
+  /* ---- Space ----------------------------------------------------------- */
+  --space-1: 0.25em;
+  --space-2: 0.5em;
+  --space-3: 0.75em;
+  --space-4: 1em;
+  --space-5: 1.5em;
+  --space-6: 2em;
+  --space-7: 3em;
+  --space-8: 4em;
+
+  /* ---- Motion ---------------------------------------------------------- */
+  --dur-fast: 90ms;
+  --dur-base: 180ms;
+  --dur-slow: 420ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* ---- Lines & radii --------------------------------------------------- */
+  --rule: 1px;
+  --radius: 3px;
+  --border-accent: 2px;
+
+  /* ---- Colour: dark (default — presented live) ------------------------- */
+  --c-bg: #0c0d0d;
+  --c-surface: #15181a;
+  --c-surface-2: #1d2124;
+  --c-rule: #2b3033;
+
+  --c-text: #e8e6e1;
+  --c-text-dim: #9aa0a2;
+  --c-text-faint: #6a7073;
+
+  /* Amber: anything the machine said, did, or timestamped. */
+  --c-machine: #e0a02e;
+  /* Near-white: Doug's own words. Louder than the machine, deliberately. */
+  --c-human: #f4f2ee;
+  /* Red: a claim that was false. */
+  --c-false: #e0655b;
+  /* Green: a claim that survived. */
+  --c-true: #6fae7f;
+}
+
+/* ---- Colour: light (print, PDF, and the `t` toggle) -------------------- */
+:root[data-theme="light"] {
+  --c-bg: #fbfaf8;
+  --c-surface: #f2f0ec;
+  --c-surface-2: #e8e5df;
+  --c-rule: #d3cfc7;
+
+  --c-text: #16181a;
+  --c-text-dim: #55595c;
+  --c-text-faint: #83888b;
+
+  --c-machine: #8a5b06;
+  --c-human: #000000;
+  --c-false: #a8322a;
+  --c-true: #2f6b41;
+}
+
+/* Print and PDF always use the light theme, whatever the screen was set to.
+   Declared here rather than in deck.css so no colour value lives outside this file. */
+@media print {
+  :root, :root[data-theme="dark"] {
+    --c-bg: #ffffff;
+    --c-surface: #f4f2ee;
+    --c-surface-2: #e8e5df;
+    --c-rule: #c9c5bd;
+
+    --c-text: #101214;
+    --c-text-dim: #4a4e51;
+    --c-text-faint: #74797c;
+
+    --c-machine: #7a4f05;
+    --c-human: #000000;
+    --c-false: #982c24;
+    --c-true: #285c38;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur-base: 0ms;
+    --dur-slow: 0ms;
+  }
+}
