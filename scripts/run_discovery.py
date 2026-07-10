@@ -19,7 +19,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from content_brain.engine_io import (  # noqa: E402
-    load_env, apify_tiktok_scrape, videos_to_creators, Airtable, claude_json,
+    load_env, apify_tiktok_scrape, videos_to_creators, Airtable, claude_json, creator_key,
 )
 
 # FR reseller seed hashtags — from "Fleek Wiki/research/FR Reseller Vocabulary and Hashtags.md".
@@ -41,9 +41,15 @@ SCORE_SCHEMA = """Return a JSON object:
   "weakness": "one sentence — the risk or gap",
   "score": int 0-100,            // weighted: audience relevance 30, reseller credibility 25, posting consistency 15, wholesale content 10, engagement 10, professionalism 10
   "score_breakdown": "factor: points, ... (compact)",
-  "confidence": one of ["High","Medium","Low"],
-  "predicted_cac_gbp": number    // rough £ CAC estimate to activate them
+  "confidence": one of ["High","Medium","Low"]
 }"""
+# No `predicted_cac_gbp`. The model never emits a currency figure — Python computes CAC from
+# measured reach and a stated funnel assumption. See spec/cac-model.md §6.
+#
+# The `score` above is the LEGACY single score. It weights posting consistency (which penalises
+# @juliacrcl, a top partner posting once every five weeks) and engagement (which is inverted:
+# the worst-fit creator in the calibration set had the highest). It is superseded by the Fit
+# Score in spec/discovery-scoring.md §5 and stays only until the audience pass is wired in here.
 
 
 def enrich(c: dict) -> dict | None:
@@ -70,6 +76,7 @@ def to_airtable_fields(c: dict, e: dict) -> dict:
     photo = [{"url": c["avatar"]}] if c.get("avatar") else None
     f = {
         "Handle": c["handle"],
+        "Creator Key": creator_key("TikTok", c["handle"]),
         "Platform": "TikTok",
         "Profile URL": c.get("profile_url"),
         "Followers": c.get("followers"),
@@ -79,7 +86,6 @@ def to_airtable_fields(c: dict, e: dict) -> dict:
         "Weakness": e.get("weakness"),
         "Score": e.get("score"),
         "Score Breakdown": e.get("score_breakdown"),
-        "Predicted CAC": e.get("predicted_cac_gbp"),
         "Confidence": e.get("confidence"),
         "Stage": "Prospect",
         "Outreach Status": "Not started",
@@ -152,7 +158,8 @@ def main():
         return
 
     at = Airtable(os.environ["AIRTABLE_API_KEY"])
-    n = at.upsert("Creators", rows, merge_on=["Handle"]) if rows else 0
+    # merge on Creator Key, never Handle: @behindthesale is a different person on each platform.
+    n = at.upsert("Creators", rows, merge_on=["Creator Key"]) if rows else 0
     at.create("Runs", {
         "Run": f"discovery {started}",
         "Job": "discovery",
