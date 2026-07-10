@@ -5,6 +5,40 @@ Dated record of design intent changing. Newest first. Decisions with reasoning g
 
 ---
 
+## 2026-07-10 — The proof of how it was built is now part of the deliverable
+
+The brief tests AI-nativeness and asks for *"the actual prompts including the failures."* The engine existed;
+the evidence did not — `deliverables/evidence/` was named in the approach doc and empty. Three things landed,
+in this order, because the order matters. Full reasoning:
+[`decisions/2026-07-10-evidence-and-deck.md`](decisions/2026-07-10-evidence-and-deck.md).
+
+**Preserve.** Nine sessions, 13.7 MB, 59 real prompts, in one place, outside git, and 30 days from automatic
+deletion. Archived outside the working tree at `~/claude-transcript-archive/`; `cleanupPeriodDays: 365`.
+Deliberately *not* `_evidence_raw/` in the repo behind a `.gitignore` line — this repo is public, and an ignore
+rule prevents an accident, not a mistake.
+
+**Secure.** `gitleaks` wired as pre-commit, pre-push and CI *before* the extractor was written. Both hooks
+proved to block by planting a token. The archive audited: **zero real secrets** — every hit was a command
+reading `.env`, never a value.
+
+**Extract.** `scripts/extract_receipts.py` renders 17 curated exchanges verbatim from the raw transcripts,
+redacting on the way out. Deterministic, so the pages regenerate rather than drift.
+
+**Then the deck.** Vanilla HTML, 14 slides, dark to present and light to send —
+[`deck.md`](deck.md). This **reverses the Canva decision** of 2026-07-09, per Doug the same day. The reversal
+is logged on the original record, not backdated.
+
+**Two bugs found by driving the deck rather than reading it:** `1.3cqw` sat on its own container-query
+container and silently resolved against the viewport (26px type in a 1067px stage on a short, wide projector);
+and the speaker notes were printing into the PDF that goes to Fleek — page 11 was instructing *them* to pause
+for two seconds before speaking.
+
+**And a stale claim, still live.** `Fleek Wiki/index.md`'s first pillar bullet still asserted *"no structured
+creator program yet"* while the retraction sat fifty lines below in a `[!CAUTION]` block. Fixed.
+**A correction that lives only in the footnotes is not a correction.**
+
+---
+
 ## 2026-07-10 — The mission is real; two load-bearing claims were wrong
 
 Doug supplied the JD and the case-study brief. Both are now captured verbatim in `mission/`, and
