@@ -10,21 +10,37 @@ import json
 import os
 import re
 import time
-import urllib.parse
 from typing import Any
 
 import requests
 
-ENV_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "..", ".env")
 AIRTABLE_BASE_NAME = "Fleek Affiliate Ecosystem"
 EMAIL_RE = re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}")
+
+
+def find_env() -> str | None:
+    """Walk up from this file looking for the workspace .env.
+
+    A fixed ../../../.env resolves correctly from the real checkout but lands on
+    `.claude/.env` when the repo is checked out as a git worktree — where it silently
+    finds nothing and every job dies later on KeyError.
+    """
+    d = os.path.dirname(os.path.abspath(__file__))
+    while True:
+        candidate = os.path.join(d, ".env")
+        if os.path.exists(candidate):
+            return candidate
+        parent = os.path.dirname(d)
+        if parent == d:  # hit the filesystem root
+            return None
+        d = parent
 
 
 def load_env() -> dict[str, str]:
     """Read the workspace .env into os.environ (once). Returns the parsed dict too."""
     parsed: dict[str, str] = {}
-    path = os.path.abspath(ENV_PATH)
-    if os.path.exists(path):
+    path = find_env()
+    if path:
         with open(path) as f:
             for line in f:
                 line = line.strip()
@@ -39,23 +55,41 @@ def load_env() -> dict[str, str]:
 
 # ---------------- Apify ----------------
 
+# Counted, not assumed — this number goes in the "how does this scale?" receipt.
+APIFY_STATS = {"calls": 0, "items": 0}
+
+
+def apify_run(actor: str, payload: dict, token: str, timeout: int = 600) -> list[dict]:
+    """Run any Apify actor synchronously and return its dataset items.
+
+    `actor` is the tilde form, e.g. "clockworks~tiktok-scraper".
+
+    The token goes in the Authorization header, never the query string: `requests` embeds the
+    full URL in HTTPError, so a `?token=` would print the secret into stdout and into every
+    GitHub Actions log the moment a run fails.
+    """
+    APIFY_STATS["calls"] += 1
+    url = f"https://api.apify.com/v2/acts/{actor}/run-sync-get-dataset-items"
+    r = requests.post(url, json=payload, timeout=timeout,
+                      headers={"Authorization": f"Bearer {token}"})
+    if r.status_code >= 400:
+        # Apify puts the useful part (e.g. "field X must be one of ...") in the body.
+        raise RuntimeError(f"Apify {actor} -> {r.status_code}: {r.text[:300]}")
+    items = r.json()
+    APIFY_STATS["items"] += len(items)
+    return items
+
+
 def apify_tiktok_scrape(hashtags: list[str], per_hashtag: int, token: str) -> list[dict]:
     """Run clockworks/tiktok-scraper synchronously; return raw video items."""
-    url = (
-        "https://api.apify.com/v2/acts/clockworks~tiktok-scraper/"
-        f"run-sync-get-dataset-items?token={urllib.parse.quote(token)}"
-    )
-    payload = {
+    return apify_run("clockworks~tiktok-scraper", {
         "hashtags": hashtags,
         "resultsPerPage": per_hashtag,
         "shouldDownloadVideos": False,
         "shouldDownloadCovers": False,
         "shouldDownloadSubtitles": False,
         "shouldDownloadSlideshowImages": False,
-    }
-    r = requests.post(url, json=payload, timeout=600)
-    r.raise_for_status()
-    return r.json()
+    }, token)
 
 
 def videos_to_creators(videos: list[dict]) -> dict[str, dict]:
@@ -157,19 +191,58 @@ class Airtable:
         r.raise_for_status()
         return r.json()["id"]
 
+    def list(self, table: str, formula: str | None = None, max_records: int = 100) -> list[dict]:
+        """Fetch records as plain field dicts. Follows pagination."""
+        tid = self.tables[table]
+        url = f"https://api.airtable.com/v0/{self.base_id}/{tid}"
+        params: dict[str, Any] = {"pageSize": 100}
+        if formula:
+            params["filterByFormula"] = formula
+        out: list[dict] = []
+        while len(out) < max_records:
+            r = requests.get(url, headers=self.h, params=params, timeout=30)
+            r.raise_for_status()
+            body = r.json()
+            out.extend(rec["fields"] for rec in body["records"])
+            offset = body.get("offset")
+            if not offset:
+                break
+            params["offset"] = offset
+            time.sleep(0.25)  # stay under 5 req/s
+        return out[:max_records]
+
 
 # ---------------- Claude ----------------
 
-def claude_json(prompt: str, system: str, max_tokens: int = 1500) -> Any:
-    """Single Claude call that must return JSON. Robust parse with fenced-block fallback."""
+# Running tally so a job can print what it actually spent (the "how does this scale?" receipt).
+CLAUDE_STATS = {"calls": 0, "input_tokens": 0, "output_tokens": 0, "cache_read_tokens": 0}
+
+
+def claude_json(prompt: str, system: str, max_tokens: int = 1500, cache: bool = True) -> Any:
+    """Single Claude call that must return JSON. Robust parse with fenced-block fallback.
+
+    `cache=True` marks the system prompt as an ephemeral cache breakpoint. Jobs that reuse
+    one long system prompt across many creators (outreach, briefs) then pay for it once
+    per 5-minute window instead of once per creator — which is what makes a 1,000-creator
+    run affordable rather than theoretical.
+    """
     import anthropic
     client = anthropic.Anthropic()
+    system_block: Any = (
+        [{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}]
+        if cache else system
+    )
     msg = client.messages.create(
         model="claude-opus-4-8",
         max_tokens=max_tokens,
-        system=system,
+        system=system_block,
         messages=[{"role": "user", "content": prompt}],
     )
+    u = msg.usage
+    CLAUDE_STATS["calls"] += 1
+    CLAUDE_STATS["input_tokens"] += u.input_tokens
+    CLAUDE_STATS["output_tokens"] += u.output_tokens
+    CLAUDE_STATS["cache_read_tokens"] += getattr(u, "cache_read_input_tokens", 0) or 0
     text = "".join(b.text for b in msg.content if getattr(b, "type", None) == "text").strip()
     try:
         return json.loads(text)
