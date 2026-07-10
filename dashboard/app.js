@@ -21,6 +21,13 @@ const span = (cls, text) => {
   return n;
 };
 
+/* Single-file build: build_html.py injects window.__DATA__ (creators/funnel/trends/avatars)
+   and the page runs from disk with no server. Without it, we fetch from serve.py. */
+async function getData(kind) {
+  if (window.__DATA__) return window.__DATA__[kind];
+  return (await fetch("/api/" + kind)).json();
+}
+
 let creators = [];
 const filters = { Segment: new Set(), Platform: new Set(), Stage: new Set(), Confidence: new Set() };
 let query = "";
@@ -34,12 +41,16 @@ document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () =>
 
 /* ---------- creators ---------- */
 async function loadCreators() {
-  const res = await fetch("/api/creators");
-  const data = await res.json();
+  const data = await getData("creators");
   creators = data.records.map(r => ({ id: r.id, ...r.fields }));
   const badge = $("#source-badge");
-  badge.textContent = data.source === "live" ? "● live · Airtable" : "snapshot · 09 Jul";
-  badge.className = "badge " + (data.source === "live" ? "badge-live" : "badge-snapshot");
+  if (window.__DATA__) {
+    badge.textContent = "airtable data · " + (data.fetched || "").slice(0, 10);
+    badge.className = "badge badge-live";
+  } else {
+    badge.textContent = data.source === "live" ? "● live · Airtable" : "snapshot · 09 Jul";
+    badge.className = "badge " + (data.source === "live" ? "badge-live" : "badge-snapshot");
+  }
   renderStats();
   renderChips();
   renderCards();
@@ -102,11 +113,18 @@ function visible(c) {
 }
 
 function avatarNode(c) {
+  const baked = window.__DATA__?.avatars?.[c.Handle];
+  if (window.__DATA__ && !baked) {
+    const fb = div("avatar-fallback", (c.Handle || "?").slice(0, 2).toUpperCase());
+    fb.style.background = AVATAR_COLORS[(c.Handle || "").length % AVATAR_COLORS.length];
+    return fb;
+  }
   const img = document.createElement("img");
   img.className = "avatar";
   img.loading = "lazy";
   img.alt = "";
-  img.src = `/avatar/${encodeURIComponent(c.Handle)}?platform=${encodeURIComponent(c.Platform || "TikTok")}`;
+  img.src = baked ||
+    `/avatar/${encodeURIComponent(c.Handle)}?platform=${encodeURIComponent(c.Platform || "TikTok")}`;
   img.addEventListener("error", () => {
     const fb = div("avatar-fallback", (c.Handle || "?").slice(0, 2).toUpperCase());
     fb.style.background = AVATAR_COLORS[(c.Handle || "").length % AVATAR_COLORS.length];
@@ -253,12 +271,12 @@ function parseBreakdown(s) {
 
 /* ---------- funnel ---------- */
 async function loadFunnel() {
-  const res = await fetch("/api/funnel");
-  const data = await res.json();
+  const data = await getData("funnel");
   const stages = STAGES.map(s => ({ label: s, value: data.stages[s] || 0 }));
   const total = stages.reduce((a, s) => a + s.value, 0);
-  $("#funnel-sub").textContent =
-    `${total} creators in pipeline · ${data.source === "live" ? "live from Airtable" : "snapshot data"}`;
+  $("#funnel-sub").textContent = `${total} creators in pipeline · ` +
+    (window.__DATA__ ? "Airtable data at last build"
+      : data.source === "live" ? "live from Airtable" : "snapshot data");
   funnelChart($("#funnel-chart"), stages);
 
   /* history (real) + modelled projection over 8 weeks */
@@ -292,8 +310,7 @@ async function loadFunnel() {
 
 /* ---------- trends ---------- */
 async function loadTrends() {
-  const res = await fetch("/api/trends");
-  const t = await res.json();
+  const t = await getData("trends");
   const strip = $("#trend-stats");
   const weeks = t.weekly_posts.reduce((a, w) => a + w.count, 0);
   const stats = [

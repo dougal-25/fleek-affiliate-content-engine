@@ -19,10 +19,12 @@ front of the room. Everything else supports this.
 **Anti-examples:** generic admin-template dashboards (AdminLTE / dark "crypto dashboard" look), Airtable's own
 grid view (if it looks like the spreadsheet, we've failed), chart-junk (gauges, 3-D, gradients-for-no-reason).
 
-**Constraints:** desktop-only, runs **locally** from the repo (one command, open browser, full-screen — no
-deploy, nothing leaks). **Live Airtable fetch** via a small stdlib Python proxy server (key stays in workspace
-`.env`, never touches the browser); automatic fallback to the committed snapshot if offline, with a visible
-LIVE / SNAPSHOT badge so the room is never lied to. Vanilla HTML/CSS/JS, no frameworks, hand-rolled SVG charts.
+**Constraints:** desktop-only, presented locally. Doug's call 2026-07-10 (superseding the server-first
+packaging): the deliverable is **one self-contained HTML file** — `dashboard/fleek-affiliate-dashboard.html`,
+double-click to open, works offline, zero moving parts in the room. Data is pulled **fresh from Airtable at
+build time** by `python3 dashboard/build_html.py` (key stays in the workspace `.env`; the file carries data,
+never the key) and the header badge states the data date. `serve.py` remains as the dev/live mode and the
+build's data layer. Vanilla HTML/CSS/JS, no frameworks, hand-rolled SVG charts.
 
 ## Pages
 

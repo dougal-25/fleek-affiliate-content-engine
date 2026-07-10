@@ -94,3 +94,14 @@ views, 90-day risers, top-performing posts — the feed for outreach personalisa
 
 **Follow-ups:** funnel-over-time gets interesting only as stages move in Airtable — the display is ready
 for it. Consider a fourth "Brief" view later (show a generated brief in situ) if the deck needs it.
+
+## 2026-07-10 — Dashboard repackaged as one self-contained HTML file
+
+Doug's call: scrap the run-a-server presentation flow; the deliverable is a single HTML file.
+`dashboard/build_html.py` pulls the roster fresh from Airtable, computes funnel + trends, embeds the
+avatars as data URIs, inlines all CSS/JS, and writes `dashboard/fleek-affiliate-dashboard.html` (~3.3 MB) —
+double-click, works offline, zero server calls (verified: 0 network requests to /api or /avatar). Badge now
+reads "airtable data · <date>" so the data's freshness is stated, not implied. `serve.py` stays as the
+build's data layer and the live dev mode; `app.js` prefers injected `window.__DATA__` and falls back to
+fetch. Rebuild = one command; note the built file embeds the full creator records (incl. bio-scraped
+emails) — fine to hand to Fleek, worth remembering if it ever goes anywhere public.
