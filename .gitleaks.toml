@@ -1,0 +1,48 @@
+# gitleaks config — fleek-affiliate-content-engine
+#
+# This repo is public and carries evidence pages generated from real Claude Code
+# transcripts. Secret scanning is a gate on every commit, every push, and CI.
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "apify-api-token"
+description = "Apify API token"
+regex = '''apify_api_[A-Za-z0-9]{20,}'''
+
+[[rules]]
+id = "perplexity-api-key"
+description = "Perplexity API key"
+regex = '''pplx-[A-Za-z0-9]{20,}'''
+
+[[rules]]
+id = "airtable-pat"
+description = "Airtable personal access token"
+regex = '''\bpat[A-Za-z0-9]{14}\.[a-f0-9]{64}\b'''
+
+[[rules]]
+id = "airtable-legacy-key"
+description = "Airtable legacy API key"
+regex = '''\bkey[A-Za-z0-9]{14}\b'''
+
+[[rules]]
+id = "firecrawl-key"
+description = "Firecrawl API key"
+regex = '''\bfc-[a-f0-9]{30,}\b'''
+
+[allowlist]
+description = "Known-safe placeholders and generated evidence"
+paths = [
+  # The only secret-shaped string we ship on purpose: `ANTHROPIC_API_KEY=sk-ant-...`
+  '''\.env\.example$''',
+  # This config names the patterns it hunts for; it is not a leak.
+  '''\.gitleaks\.toml$''',
+]
+regexes = [
+  # Truncated placeholders used in docs and evidence pages.
+  '''sk-ant-\.\.\.''',
+  '''<[A-Z_]+_(KEY|TOKEN|SECRET)>''',
+  # The extractor's own redaction marker.
+  '''\[REDACTED:[a-z-]+\]''',
+]

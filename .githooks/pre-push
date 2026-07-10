@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Last gate before anything leaves the machine. Scans full history, not just the diff.
+set -euo pipefail
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-push: gitleaks not installed — refusing to push blind." >&2
+  exit 1
+fi
+
+echo "pre-push: scanning full history with gitleaks…"
+gitleaks detect --redact --config .gitleaks.toml
