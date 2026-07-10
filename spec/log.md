@@ -153,3 +153,26 @@ Doug's second review round, all six landed:
 Ship-check note: `app.js` hit 565 lines → split into `helpers.js` (shared consts/DOM utils),
 `views.js` (funnel/trends/inspiration) and `app.js` (cards/toolbar/drawer, 399). All files < 500.
 Rebuilt file: 6.7 MB, 38/49 real photos, zero network calls verified.
+
+## 2026-07-10 — Dashboard live on Vercel: https://fleek-affiliate-dashboard.vercel.app
+
+The dashboard is now a public site, truly live from Airtable — the stage-motion demo works end-to-end:
+edit a creator's Stage in Airtable, reload the page, the card moves funnel sections and the counts update
+(proven: moved @felixbeauregard Prospect→Qualified, live site went 39/10 → 38/11 within seconds, then
+reverted — data left untouched).
+
+**Architecture (grug-minimal):** static files + ONE Python serverless function (`dashboard/api/data.py`)
+that fetches Airtable live (key in Vercel env, added with Doug's explicit approval — never in the page or
+repo), enriches via the same `serve.py` code the local server uses, and returns creators + funnel + the
+precomputed trends/inspiration/avatar-manifest in one call, edge-cached 60s. `make_static.py` precomputes
+what's static (trends and inspiration from the committed post jsonl, avatars as real files, funnel history
+baseline, snapshot fallback).
+
+**Public redaction:** Contact Email and Outreach Draft are stripped server-side before any response, and
+the snapshot inside the deployment bundle is pre-redacted at build time (belt + braces — verified the
+bundle path also 404s). Full contact data remains in the local and baked versions only.
+
+`helpers.js` getData now serves three modes with one accessor: baked `__DATA__` file / hosted `/api/data`
+/ local dev `/api/<kind>`. Avatars unified behind an `AVATARS` manifest (data URIs when baked, static
+`/avatars/*.jpg` when hosted, proxy in local dev). Deploys via `cd dashboard && npx vercel deploy --prod`;
+re-run `make_static.py` after a new ingest.

@@ -17,3 +17,4 @@ Fleek Wiki/.obsidian/appearance.json
 # writes its own settings — Obsidian advises against it. Never commit one.
 # If one appears on disk, delete it and reopen Obsidian on "Fleek Wiki/" itself.
 Fleek Wiki/*/.obsidian/
+.vercel/

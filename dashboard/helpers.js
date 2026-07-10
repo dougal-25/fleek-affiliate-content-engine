@@ -29,9 +29,19 @@ const span = (cls, text) => {
   return n;
 };
 
-/* Single-file build: build_html.py injects window.__DATA__ (creators/funnel/trends/
-   inspiration/avatars) and the page runs from disk with no server. Else fetch serve.py. */
+/* Three data modes, one accessor:
+   1. baked single file — build_html.py injects window.__DATA__
+   2. hosted (Vercel)   — one serverless call to /api/data, fetched once and shared
+   3. local dev         — serve.py exposes /api/<kind> endpoints            */
+let _remoteAll = null;
 async function getData(kind) {
   if (window.__DATA__) return window.__DATA__[kind];
+  if (_remoteAll === null) {
+    _remoteAll = fetch("/api/data")
+      .then(r => (r.ok ? r.json() : false))
+      .catch(() => false);
+  }
+  const all = await _remoteAll;
+  if (all) return all[kind];
   return (await fetch("/api/" + kind)).json();
 }

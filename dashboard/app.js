@@ -16,6 +16,7 @@ function creatorType(c) {
 }
 
 let creators = [];
+let AVATARS = null;  // handle → src map (data URIs when baked, static paths when hosted)
 const chipFilters = { Segment: new Set(), Confidence: new Set() };
 const platformFilter = new Set();
 let typeFilter = "";
@@ -32,6 +33,7 @@ document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () =>
 /* ---------- creators ---------- */
 async function loadCreators() {
   const data = await getData("creators");
+  AVATARS = (await getData("avatars").catch(() => null)) || null;
   creators = data.records.map(r => ({ id: r.id, ...r.fields }));
   creators.forEach(c => { c._type = creatorType(c); });
   const badge = $("#source-badge");
@@ -186,13 +188,13 @@ function renderSections() {
 }
 
 function avatarNode(c) {
-  const baked = window.__DATA__?.avatars?.[c.Handle];
-  if (window.__DATA__ && !baked) return initialsNode(c);
+  const known = AVATARS ? AVATARS[c.Handle] : null;
+  if (AVATARS && !known) return initialsNode(c);
   const img = document.createElement("img");
   img.className = "avatar";
   img.loading = "lazy";
   img.alt = "";
-  img.src = baked ||
+  img.src = known ||
     `/avatar/${encodeURIComponent(c.Handle)}?platform=${encodeURIComponent(c.Platform || "TikTok")}`;
   img.addEventListener("error", () => img.replaceWith(initialsNode(c)));
   return img;
