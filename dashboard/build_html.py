@@ -15,8 +15,8 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from serve import (HERE, compute_funnel, compute_trends, get_avatar,  # noqa: E402
-                   get_creators, image_type)
+from serve import (HERE, compute_funnel, compute_inspiration, compute_trends,  # noqa: E402
+                   get_avatar, get_creators, image_type)
 
 OUT = os.path.join(HERE, "fleek-affiliate-dashboard.html")
 
@@ -31,9 +31,10 @@ def main():
     creators = get_creators()
     print(f"  {len(creators['records'])} creators ({creators['source']})")
 
-    print("Computing funnel + trends…")
+    print("Computing funnel + trends + inspiration…")
     funnel = compute_funnel(creators)
     trends = compute_trends()
+    inspiration = compute_inspiration(creators)
 
     print("Embedding avatars (first run fetches; later runs hit the disk cache)…")
     avatars = {}
@@ -48,7 +49,8 @@ def main():
             avatars[handle] = f"data:{mime};base64," + base64.b64encode(body).decode()
     print(f"  {len(avatars)}/{len(creators['records'])} photos (rest get branded initials)")
 
-    data = {"creators": creators, "funnel": funnel, "trends": trends, "avatars": avatars}
+    data = {"creators": creators, "funnel": funnel, "trends": trends,
+            "inspiration": inspiration, "avatars": avatars}
     # </script> inside a JSON string would end the script block early
     payload = json.dumps(data).replace("</", "<\\/")
 
@@ -64,8 +66,9 @@ def main():
     html = html.replace('<script src="charts.js"></script>',
                         "<script>window.__DATA__ = " + payload + "</script>\n"
                         "<script>\n" + read("charts.js") + "\n</script>")
-    html = html.replace('<script src="app.js"></script>',
-                        "<script>\n" + read("app.js") + "\n</script>")
+    for script in ("translations.js", "helpers.js", "views.js", "app.js"):
+        html = html.replace(f'<script src="{script}"></script>',
+                            "<script>\n" + read(script) + "\n</script>")
 
     with open(OUT, "w") as f:
         f.write(html)

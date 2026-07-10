@@ -20,8 +20,10 @@
     <button class="tab active" data-view="creators" role="tab">Creators</button>
     <button class="tab" data-view="funnel" role="tab">Recruitment funnel</button>
     <button class="tab" data-view="trends" role="tab">Trends &amp; keywords</button>
+    <button class="tab" data-view="inspiration" role="tab">Inspiration</button>
   </nav>
   <div class="topbar-right">
+    <button id="lang-toggle" class="lang-toggle" title="Translate keywords & niches">🇫🇷 Original</button>
     <span id="source-badge" class="badge badge-loading">connecting…</span>
   </div>
 </header>
@@ -100,6 +102,16 @@
   </div>
 </section>
 
+<!-- ============ INSPIRATION ============ -->
+<section id="view-inspiration" class="view">
+  <div class="panel-head inspiration-head">
+    <h2>Top-performing videos from the roster</h2>
+    <p class="panel-sub">What already works — the raw feed for the next stage: the brief &amp; activation
+    generator studies these formats, hooks and hashtags before writing a creator's brief.</p>
+  </div>
+  <div class="insp-grid" id="insp-grid"></div>
+</section>
+
 </main>
 
 <!-- creator detail drawer -->
@@ -109,6 +121,9 @@
 <div id="tooltip" class="tooltip" hidden></div>
 
 <script src="charts.js"></script>
+<script src="translations.js"></script>
+<script src="helpers.js"></script>
+<script src="views.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

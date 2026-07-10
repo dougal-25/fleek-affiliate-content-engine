@@ -124,3 +124,32 @@ Doug's six-point review implemented:
 6. **Audience detail** — each card quotes the creator's bio/audience line (emails/URLs stripped); the
    drawer leads with a full "Audience & bio" section.
 Rebuilt single file: 6.7 MB (more avatars resolved on rebuild — 17 embedded photos).
+
+## 2026-07-10 — Dashboard v3: marketplace theme, audience tags, channels, translation, Inspiration page
+
+Doug's second review round, all six landed:
+1. **Audience-type tags** — derived deterministically in `serve.py` (regex rules over keywords + bio +
+   strength): wholesale buyers, aspiring resellers, bargain hunters, vintage lovers, live-shopping
+   viewers, sneakerheads, luxury-resale shoppers, eco-conscious shoppers, fashion-inspo seekers. Max 3
+   per creator, shown as gold-tinted 👥 pills on cards and in the drawer.
+2. **Channel links** — every creator's drawer now has a Channels row: primary profile + auto-detected
+   channels from bio text (found 2 multi-channel creators: intemporal_paris, gdefou) across TikTok /
+   Instagram / YouTube / Vinted / Depop / Whatnot patterns. Manual additions: an Airtable "Channels"
+   field ("Platform: url" per line) is picked up automatically and wins over auto-detection.
+3. **Marketplace theme** — inspected joinfleek.com/collections/womens live (Playwright): white bg, black
+   ink, gold CTAs, black active states, light-gray pills. Retheme swaps cream→white, coral actives→black,
+   gold accents throughout (stat underlines, niche chips, score rings, platform toggles). Coral demoted
+   to hover/status. Real logo already in from v2.
+4. **Translation toggle** — 🇫🇷 Original / 🇬🇧 English button in the header; ~80-entry curated FR→EN
+   dictionary (`translations.js`) built against the actual 198-keyword vocabulary. Applies to keyword
+   tags, niche chips and drawer keywords; unknown terms pass through untranslated, never guessed.
+5. **Contact clearly displayed** — gold contact box at the top of every drawer: mailto link when an email
+   is on file, otherwise the route ("DM") stated plainly.
+6. **Inspiration page** (4th tab) — top 24 roster videos by views, each with a derived format label
+   (Live selling / Bale unboxing / Haul / Tutorial / Sourcing vlog), caption, hashtags, author, date and
+   a Watch link to the actual TikTok. Framed on-page as the input feed for the next stage: the brief &
+   activation generator.
+
+Ship-check note: `app.js` hit 565 lines → split into `helpers.js` (shared consts/DOM utils),
+`views.js` (funnel/trends/inspiration) and `app.js` (cards/toolbar/drawer, 399). All files < 500.
+Rebuilt file: 6.7 MB, 38/49 real photos, zero network calls verified.

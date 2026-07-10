@@ -89,11 +89,107 @@ def get_creators():
     key = load_key()
     if key:
         try:
-            return {"source": "live", "fetched": now_iso(), "records": fetch_creators_live(key)}
+            data = {"source": "live", "fetched": now_iso(), "records": fetch_creators_live(key)}
+            return enrich(data)
         except Exception as e:
             print(f"  ! live fetch failed ({e}); serving snapshot")
     with open(SNAPSHOT) as f:
-        return {"source": "snapshot", "fetched": "2026-07-09", "records": json.load(f)}
+        return enrich({"source": "snapshot", "fetched": "2026-07-09", "records": json.load(f)})
+
+
+# ---- enrichment: audience-type tags + channel links, derived deterministically ----
+
+AUDIENCE_RULES = [
+    ("wholesale buyers", r"grossiste|wholesale|en gros|fournisseur|bulk|destockage|b2b"),
+    ("aspiring resellers", r"formation|course|coaching|make money|de 0 [aà]|business|astuces vente|reselling tips|selling tips|monetize"),
+    ("bargain hunters", r"bonplan|bon plan|pas ?cher|petit prix|deal|promo"),
+    ("vintage lovers", r"vintage|friperie|fripe|retro|y2k|brocante"),
+    ("live-shopping viewers", r"\blive\b|whatnot|videdressing live|vente live|liveshopping|auction"),
+    ("sneakerheads", r"sneaker|deadstock|streetwear"),
+    ("luxury-resale shoppers", r"luxury|louis vuitton|saint laurent|designer|authenticated|luxe"),
+    ("eco-conscious shoppers", r"seconde ?main|secondhand|second-hand|upcycl|durable|sustainable"),
+    ("fashion-inspo seekers", r"outfit|ootd|\blook\b|style|try-on|haul|dressing"),
+]
+AUDIENCE_RES = [(tag, re.compile(pat, re.I)) for tag, pat in AUDIENCE_RULES]
+
+CHANNEL_PATTERNS = [
+    ("TikTok", r"(?:https?://)?(?:www\.)?tiktok\.com/@([\w.\-]+)", "https://www.tiktok.com/@{}"),
+    ("Instagram", r"(?:https?://)?(?:www\.)?instagram\.com/([\w.\-]+)", "https://www.instagram.com/{}"),
+    ("Instagram", r"insta(?:gram)?\s*[:\s]\s*@?([\w.]{3,30})", "https://www.instagram.com/{}"),
+    ("YouTube", r"(?:https?://)?(?:www\.)?youtube\.com/(@[\w.\-]+)", "https://www.youtube.com/{}"),
+    ("Vinted", r"(?:https?://)?(?:www\.)?vinted\.\w+/member/([\w.\-]+)", "https://www.vinted.fr/member/{}"),
+    ("Depop", r"(?:https?://)?(?:www\.)?depop\.com/([\w.\-]+)", "https://www.depop.com/{}"),
+    ("Whatnot", r"(?:https?://)?(?:www\.)?whatnot\.com/user/([\w.\-]+)", "https://www.whatnot.com/user/{}"),
+]
+CHANNEL_RES = [(name, re.compile(pat, re.I), tmpl) for name, pat, tmpl in CHANNEL_PATTERNS]
+
+
+def enrich(data):
+    for r in data["records"]:
+        f = r["fields"]
+        signal = " ".join(str(f.get(k) or "") for k in
+                          ("Content Keywords", "Audience", "Strength", "Segment"))
+        f["_audience_tags"] = [tag for tag, rx in AUDIENCE_RES if rx.search(signal)][:3] \
+            or ["general fashion audience"]
+
+        channels = {}
+        if f.get("Platform") and f.get("Profile URL"):
+            channels[f["Platform"]] = f["Profile URL"]
+        # auto-detect from bio + notes; manual additions via an Airtable "Channels" field
+        # (one per line, "Platform: url" — wins over auto-detection)
+        scan = " ".join(str(f.get(k) or "") for k in ("Audience", "Notes"))
+        for name, rx, tmpl in CHANNEL_RES:
+            m = rx.search(scan)
+            if m and name not in channels:
+                channels[name] = tmpl.format(m.group(1).rstrip("."))
+        for line in str(f.get("Channels") or "").splitlines():
+            if ":" in line:
+                name, url = line.split(":", 1)
+                if url.strip():
+                    channels[name.strip().title()] = url.strip() if "//" in url \
+                        else "https://" + url.strip()
+        f["_channels"] = channels
+    return data
+
+
+# ---- inspiration: top-performing posts from the roster ----
+
+FORMAT_RULES = [
+    ("Live selling", r"\blive\b|whatnot|vente live|liveshopping|auction"),
+    ("Bale unboxing", r"unboxing|balle?\b|ballot|d[ée]ballage"),
+    ("Haul / try-on", r"haul|try.?on|essayage"),
+    ("Tutorial / tips", r"astuce|tuto|guide|conseil|comment |tips|formation"),
+    ("Sourcing vlog", r"sourcing|fournisseur|vlog|48h|visite"),
+]
+FORMAT_RES = [(name, re.compile(pat, re.I)) for name, pat in FORMAT_RULES]
+
+
+def compute_inspiration(creators):
+    handles = {}
+    for r in creators["records"]:
+        h = (r["fields"].get("Handle") or "").lower()
+        if h:
+            handles[h] = r["fields"]
+    posts = load_posts()
+    top = []
+    for p in sorted(posts, key=lambda p: -p["views"]):
+        c = handles.get((p["author"] or "").lower())
+        text = p["text"] or ""
+        fmt_label = next((n for n, rx in FORMAT_RES if rx.search(text)), "Post")
+        url = None
+        if p["platform"] == "TikTok" and p.get("id"):
+            url = f"https://www.tiktok.com/@{p['author']}/video/{p['id']}"
+        elif c and c.get("Profile URL"):
+            url = c["Profile URL"]
+        top.append({
+            "author": p["author"], "platform": p["platform"], "views": p["views"],
+            "likes": p["likes"], "date": (p["date"] or "")[:10], "text": text[:160],
+            "tags": p["tags"][:5], "format": fmt_label, "url": url,
+            "on_roster": bool(c), "segment": c.get("Segment") if c else None,
+        })
+        if len(top) >= 24:
+            break
+    return {"posts": top, "total_pool": len(posts)}
 
 
 def now_iso():
@@ -132,7 +228,7 @@ def load_posts():
                 tags = [t for t in tags if len(t) >= 3 and t not in STOP]
                 posts.append({"platform": platform, "date": date, "views": views,
                               "likes": likes, "author": author, "tags": tags,
-                              "text": text.strip()[:180]})
+                              "text": text.strip()[:180], "id": r.get("id")})
     return posts
 
 
@@ -260,6 +356,8 @@ class Handler(SimpleHTTPRequestHandler):
                 return self.send_json(compute_trends())
             if path == "/api/funnel":
                 return self.send_json(compute_funnel(get_creators()))
+            if path == "/api/inspiration":
+                return self.send_json(compute_inspiration(get_creators()))
             if path.startswith("/avatar/"):
                 handle = urllib.parse.unquote(path.split("/avatar/", 1)[1])
                 platform = "youtube" if "platform=YouTube" in self.path else "tiktok"
