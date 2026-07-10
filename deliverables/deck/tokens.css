@@ -1,9 +1,21 @@
 /* Design tokens — the only place a raw colour, size or duration is written down.
-   deck.css references these and never hardcodes. See spec/deck.md. */
+   deck.css references these and never hardcodes. See spec/deck.md.
+
+   Palette is Fleek's own, measured off joinfleek.com on 2026-07-10:
+   yellow #F8C642 (their Sign Up button), solid black #0E0E0E (their buttons),
+   surface grey #F2F4F7, Montserrat 700 for emphasis, 4px radii. */
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("fonts/montserrat-var-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   /* ---- Type ------------------------------------------------------------ */
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-sans: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
   /* Sizes are em, relative to the stage font-size, so the deck scales with the
@@ -22,7 +34,7 @@
 
   --weight-normal: 400;
   --weight-medium: 500;
-  --weight-bold: 650;
+  --weight-bold: 700;
 
   /* ---- Space ----------------------------------------------------------- */
   --space-1: 0.25em;
@@ -43,60 +55,69 @@
 
   /* ---- Lines & radii --------------------------------------------------- */
   --rule: 1px;
-  --radius: 3px;
+  --radius: 4px;
   --border-accent: 2px;
 
+  /* ---- Brand constants (same in both themes) ---------------------------- */
+  /* Fleek yellow: graphic accents only — progress bar, quote rules, dots,
+     badge chips. As TEXT it fails contrast on white, so the machine-voice
+     text colour derives from it per theme instead of using it raw. */
+  --c-brand: #f8c642;
+  --c-on-brand: #0e0e0e;
+
   /* ---- Colour: dark (default — presented live) ------------------------- */
-  --c-bg: #0c0d0d;
-  --c-surface: #15181a;
-  --c-surface-2: #1d2124;
-  --c-rule: #2b3033;
+  --c-bg: #0e0e0e;
+  --c-surface: #181712;
+  --c-surface-2: #211f18;
+  --c-rule: #33301f;
 
-  --c-text: #e8e6e1;
-  --c-text-dim: #9aa0a2;
-  --c-text-faint: #6a7073;
+  --c-text: #f0ede6;
+  --c-text-dim: #a09c8f;
+  --c-text-faint: #6f6c60;
 
-  /* Amber: anything the machine said, did, or timestamped. */
-  --c-machine: #e0a02e;
-  /* Near-white: Doug's own words. Louder than the machine, deliberately. */
-  --c-human: #f4f2ee;
-  /* Red: a claim that was false. */
+  /* Machine voice: on dark, brand yellow is contrast-safe as text. */
+  --c-machine: #f8c642;
+  /* Doug's own words. Louder than the machine, deliberately. */
+  --c-human: #ffffff;
+  /* A claim that was false / one that survived. */
   --c-false: #e0655b;
-  /* Green: a claim that survived. */
   --c-true: #6fae7f;
 }
 
-/* ---- Colour: light (print, PDF, and the `t` toggle) -------------------- */
+/* ---- Colour: light (print, PDF, and the `t` toggle) --------------------- */
+/* This is the brand-native surface: Fleek's own white + #F2F4F7 ground. */
 :root[data-theme="light"] {
-  --c-bg: #fbfaf8;
-  --c-surface: #f2f0ec;
-  --c-surface-2: #e8e5df;
-  --c-rule: #d3cfc7;
+  --c-bg: #ffffff;
+  --c-surface: #f2f4f7;
+  --c-surface-2: #e7eaef;
+  --c-rule: #d5d9e0;
 
-  --c-text: #16181a;
-  --c-text-dim: #55595c;
-  --c-text-faint: #83888b;
+  --c-text: #0e0e0e;
+  --c-text-dim: #4c4f54;
+  --c-text-faint: #7d8085;
 
-  --c-machine: #8a5b06;
+  /* Yellow text on white fails contrast; use its dark-gold shadow for text,
+     keep --c-brand for graphics. */
+  --c-machine: #8a6206;
   --c-human: #000000;
   --c-false: #a8322a;
   --c-true: #2f6b41;
 }
 
-/* Print and PDF always use the light theme, whatever the screen was set to.
-   Declared here rather than in deck.css so no colour value lives outside this file. */
+/* Print and PDF always use the light (brand-native) theme, whatever the screen
+   was set to. Declared here so no colour value lives outside this file. */
 @media print {
   :root, :root[data-theme="dark"] {
     --c-bg: #ffffff;
-    --c-surface: #f4f2ee;
-    --c-surface-2: #e8e5df;
-    --c-rule: #c9c5bd;
+    --c-surface: #f2f4f7;
+    --c-surface-2: #e7eaef;
+    --c-rule: #c9cdd4;
 
-    --c-text: #101214;
-    --c-text-dim: #4a4e51;
-    --c-text-faint: #74797c;
+    --c-text: #0e0e0e;
+    --c-text-dim: #45484d;
+    --c-text-faint: #75787d;
 
-    --c-machine: #7a4f05;
+    --c-machine: #7a5605;
     --c-human: #000000;
     --c-false: #982c24;
     --c-true: #285c38;

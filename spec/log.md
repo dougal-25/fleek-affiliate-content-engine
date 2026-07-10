@@ -5,6 +5,28 @@ Dated record of design intent changing. Newest first. Decisions with reasoning g
 
 ---
 
+## 2026-07-10 — The deck now wears Fleek's own branding
+
+Doug reviewed the first draft ("good first draft") and called the aesthetic: follow joinfleek.com. Brand
+values **measured off the live site with Playwright**, not guessed — yellow `#F8C642` (their Sign Up button),
+button black `#0E0E0E`, surface grey `#F2F4F7`, Montserrat 700, 4px radii, halftone-dot motif. Details in
+[`deck.md`](deck.md).
+
+Because every colour lived in `tokens.css`, the rebrand was a token swap plus four accent edits — the
+no-hardcoded-hex rule paying for itself. Montserrat is self-hosted (35KB variable woff2, OFL) so the deck
+still opens from `file://` with no CDN. Yellow is graphics-only where contrast demands (text uses a dark-gold
+derivative on light ground). The dot motif is title + hero only.
+
+**Bug found by rendering the PDF, again:** in print, `.slide` was `position: static`, so the dot
+pseudo-elements re-anchored to `.stage` — whose print height is the full 14-slide stack — and `height: 45%`
+became a six-page dot band that blanked page 1 and tripled the file size. Fixed with `position: relative`;
+the reviewer PDF re-verified page by page.
+
+Content untouched — Doug is still building out sections; slide 6's Airtable link and the ~18-min timing cut
+remain open.
+
+---
+
 ## 2026-07-10 — The proof of how it was built is now part of the deliverable
 
 The brief tests AI-nativeness and asks for *"the actual prompts including the failures."* The engine existed;

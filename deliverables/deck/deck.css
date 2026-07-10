@@ -76,6 +76,12 @@ body {
   margin: 0 0 var(--space-4);
 }
 
+/* Fleek's spark, borrowed from their wordmark. Graphic, so pure brand yellow. */
+.eyebrow::before {
+  content: "✦ ";
+  color: var(--c-brand);
+}
+
 h1 {
   font-size: var(--t-2xl);
   line-height: var(--leading-tight);
@@ -193,7 +199,7 @@ em { font-style: italic; color: var(--c-text-dim); }
   font-size: var(--t-base);
   line-height: var(--leading-snug);
   color: var(--c-human);
-  border-left: var(--border-accent) solid var(--c-machine);
+  border-left: var(--border-accent) solid var(--c-brand);
   padding-left: var(--space-4);
 }
 
@@ -218,7 +224,7 @@ em { font-style: italic; color: var(--c-text-dim); }
 .exchange blockquote {
   margin: 0;
   padding: var(--space-4) var(--space-5);
-  border-left: var(--border-accent) solid var(--c-machine);
+  border-left: var(--border-accent) solid var(--c-brand);
   background: var(--c-surface);
   border-radius: var(--radius);
 }
@@ -271,7 +277,7 @@ table {
 
 th, td {
   text-align: left;
-  padding: var(--space-2) var(--space-4) var(--space-2) 0;
+  padding: 0.35em var(--space-4) 0.35em 0;
   border-bottom: var(--rule) solid var(--c-rule);
 }
 
@@ -332,7 +338,7 @@ td code { font-family: var(--font-mono); color: var(--c-machine); }
 }
 
 .pipeline .step--gate {
-  border-color: var(--c-machine);
+  border-color: var(--c-brand);
   border-style: dashed;
 }
 
@@ -362,6 +368,25 @@ li { margin-bottom: var(--space-2); }
 .cites a { color: var(--c-text-faint); }
 a { color: var(--c-machine); text-underline-offset: 0.2em; }
 
+/* ---- Fleek's halftone-dot motif. Title and hero only — one flourish, not a theme. ---- */
+
+#title::after,
+.slide--hero::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 22%;
+  height: 45%;
+  background-image: radial-gradient(var(--c-brand) 0.09em, transparent 0.09em);
+  background-size: 0.85em 0.85em;
+  /* fades toward the content so it never competes with the words */
+  -webkit-mask-image: radial-gradient(ellipse at top right, black 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse at top right, black 30%, transparent 75%);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
 /* ---- Chrome: progress, counter, notes ---- */
 
 .chrome {
@@ -381,7 +406,7 @@ a { color: var(--c-machine); text-underline-offset: 0.2em; }
   position: absolute;
   inset: 0 auto auto 0;
   height: var(--border-accent);
-  background: var(--c-machine);
+  background: var(--c-brand);
   transition: width var(--dur-base) var(--ease-out);
 }
 
@@ -414,7 +439,12 @@ body[data-notes] .slide[data-active] .notes { display: block; }
   }
 
   .slide {
-    position: static;
+    /* relative, not static: each slide must stay the positioning context for its
+       own ::after (the dot motif). Static would re-anchor those pseudo-elements to
+       .stage — whose height in print is the whole 14-slide stack, so `height: 45%`
+       becomes a six-page dot band bleeding down every right edge. Seen, not theorised. */
+    position: relative;
+    inset: auto;
     display: flex !important;
     animation: none;
     page-break-after: always;

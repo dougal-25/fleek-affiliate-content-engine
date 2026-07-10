@@ -8,10 +8,18 @@ hours ahead as required, so it must also read unattended.
 
 **References:** none supplied — direction proposed and agreed via the framing questions below.
 
-**Mood/feel:** an engineer's terminal. Dark ground, monospace for anything the machine said or did —
-timestamps, prompts, commands, log lines — and a clean sans for argument and narration. The deck should look
-like the thing it describes. Restraint is the whole trick: this is a *system* presented plainly, not a system
-dressed up. No gradients, no glow, no ornament that isn't carrying information.
+**Mood/feel:** an engineer's terminal wearing Fleek's colours. Dark ground to present, monospace for anything
+the machine said or did — timestamps, prompts, commands, log lines — and Montserrat for argument and
+narration. Restraint is still the trick: no gradients, no glow, no ornament that isn't carrying information —
+the one permitted flourish is Fleek's halftone-dot motif, on the title and hero only.
+
+> **Aesthetic pivot, 2026-07-10 (Doug):** first draft shipped as pure engineer's-terminal; Doug reviewed it
+> and called for Fleek's own branding, per joinfleek.com. Brand values were **measured off the live site**,
+> not guessed: yellow `#F8C642` (their Sign Up button), solid black `#0E0E0E` buttons with white text and
+> 4px radius, Montserrat 700 for emphasis, white / `#F2F4F7` ground, yellow halftone-dot pattern as the
+> signature motif. The structure (receipts, pushback strips, terminal blocks) is unchanged — the palette and
+> type are theirs. The risk named when "Fleek-native" was first offered — reading as a pitch deck rather than
+> an engineering artefact — is mitigated by keeping the mono/receipt spine.
 
 **Hero moment:** slide 11, `2026-07-09T22:17`. Doug stops nine hours of work and asks whether the model has
 read the brief. It answers, in its own words, that it has not. Then the two claims it had built on inference,
