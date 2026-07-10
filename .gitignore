@@ -2,7 +2,19 @@
 __pycache__/
 *.pyc
 .env
-data/
+
+# Scrape artifacts. The raw payloads are ~14MB of platform JSON and stay out; the DERIVED files are
+# small and are exactly the "AI receipts" the task brief asks for (scrape input -> enrichment
+# output -> scored cards), so they are committed and the spec pages cite them by path.
+# Git does not descend into an ignored directory, hence the explicit directory re-includes.
+data/**
+!data/*/
+!data/*/*/
+!data/**/features.json
+!data/**/creators.json
+!data/**/audience*.json
+!data/**/comments_normalised.json
+!data/**/README.md
 
 # macOS
 .DS_Store
