@@ -158,6 +158,28 @@ coaching duo with 110 followers. The Airtable key **must** be `platform:handle`;
 would overwrite a top partner with a stranger. Cross-platform identity is a *hypothesis flagged for human
 review*, never an automatic merge.
 
+**5. A high pro-lexicon score means a clothing reseller.**
+Rejected. `revente`, `stock`, `marge`, `fournisseur` describe reselling *anything*. Seeding the graph walk with
+`@cashandrepair` and `@50.grass` — both scored high — dragged it into refurbished laptops, phone trade-in and
+BNPL fintech (`@smaaart.fr`, `@recommerce`, `@scalapayfr`). `@50.grass` turned out to sell **synthetic lawn**.
+The lexicon detects *reseller*, not *clothing reseller*, so `in_fashion_vertical()` now gates every candidate.
+`@alex_yeddertcg` survived even that — his Instagram passed, and only a cross-platform TikTok check exposed the
+bio *"TCG / Pokémon / En Live Lundi 20h sur eBay"*. **A creator's second platform is a cheap lie detector.**
+
+**6. Substring matching is good enough for a keyword lexicon.**
+Rejected, and it had silently inflated every score in the project. `"chine"` matched *ma-chine*; `"mode"`
+matched *mode d'emploi*; a refurbished-laptop shop read as a clothing reseller. `hits()` now matches on word
+boundaries — which *improved* the calibration separation, from 4.5/6.0 against 0.5 to **7.0/8.0 against 0.5**.
+The reverse case matters too: `@felix_brgd`'s link is `resellvinted.com`, where `vinted` is glued inside
+`resellvinted`. Handles and domains concatenate words by convention; prose does not. Prose is matched on
+boundaries, handles and URLs as substrings.
+
+**7. Suppliers can be identified from Instagram's business category.**
+Rejected on its own. `@laprovidencewholesale` — *"Grossiste vêtements de marque premium · Grade A"* — has no
+business category set and ranked **second** on the pro list. But the text test must read the **bio only**: run
+over captions it flagged `@juliacrcl`, a Fleek partner, because she talks about the grossistes she buys *from*.
+Category **or** bio; neither alone.
+
 ## 8. Sources and their roles
 
 Discovery is many thin sources emitting `{handle, platform}`; enrichment is one path. Scaling to 10,000 means

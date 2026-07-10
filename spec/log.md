@@ -5,6 +5,43 @@ Dated record of design intent changing. Newest first. Decisions with reasoning g
 
 ---
 
+## 2026-07-10 — Instagram graph walk, second generation: 165 creators, 10 survive
+
+Apify moved to Starter ($29/mo), the leaked token was rotated. The graph was re-walked from 20 seeds — the
+three known-good plus the pro creators the first walk surfaced from `@juliacrcl` — resolving **all 147**
+candidates rather than truncating. Total spend $0.38. Then three gates cut 165 to 10.
+
+**The find: `@saw2hands`.** Bio: *"Vêtements de seconde-main et sneakers sur @whatnot — +111.000 produits
+vendus."* 2,414 Instagram followers, **175** on TikTok, and 111,000 items sold on Whatnot. He is the pro
+segment Fleek says it cannot reach, he is invisible to any follower floor, and no hashtag found him — Julia's
+graph did, two hops out. Alongside him: `@felix_brgd` (23k, sells access to private suppliers — a competitor
+for Fleek's own value proposition) and `@zozrsl` (paid Discord).
+
+**Three gates, each added because the data demanded it:**
+
+1. *Vertical.* The pro lexicon is vertical-agnostic — `revente`, `stock`, `marge` describe reselling anything.
+   Seeding from `@cashandrepair` and `@50.grass` dragged the walk into refurbished laptops and BNPL fintech.
+   `@50.grass` sells **synthetic lawn**. Fleek sells clothes.
+2. *Substring matching.* `hits()` matched `"chine"` inside *ma-chine* and `"mode"` inside *mode d'emploi*, and
+   had been inflating every score in the project since the first commit. Word boundaries **improved**
+   calibration separation: the two known-good partners go from 4.5/6.0 to 7.0/8.0 against `@giu.cst`'s 0.5.
+   Handles and URLs still match as substrings — `@felix_brgd`'s link is `resellvinted.com`.
+3. *Suppliers.* Category alone missed `@laprovidencewholesale` (*"Grossiste vêtements premium"*, no category
+   set), which ranked second. Bio text alone flagged `@juliacrcl`, who merely talks about her suppliers.
+   Category **or** bio.
+
+**A creator's second platform is a cheap lie detector.** `@alex_yeddertcg` passed every Instagram gate; his
+TikTok bio reads *"TCG / Pokémon / En Live Lundi 20h sur eBay"*. Only 3 of 7 candidates exist on TikTok at all,
+so this cohort is Instagram-native and must be classified on Instagram comments despite them costing $2.60/1k
+against TikTok's $1.25/1k and carrying more spam.
+
+**452 comments staged** across 7 creators. The audience classification cannot run: Anthropic credit is
+exhausted. Apify stands at $6.20 of $29.
+
+**Open:** top up Anthropic, re-run `classify_audience.py` with the `signal_quality` schema, then strata
+selection. Four of the ten candidates have fewer than 40 comments — `@resellelitee_` has none — which is a real
+limit of the method on nano creators, not a bug. They will need TikTok presence or human review.
+
 ## 2026-07-10 — The scorer was calibrated against real partners, and most of its signals were wrong
 
 The task brief names three top-performing partners. The scorer had never seen them — it ran on guessed

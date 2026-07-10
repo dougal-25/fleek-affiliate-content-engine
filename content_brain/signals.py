@@ -15,6 +15,7 @@ deliberate non-fits (@giu.cst, @juliettekitsch). See data/calibration/ and spec/
 """
 from __future__ import annotations
 
+import functools
 import re
 
 # Kept per-language on purpose. The brief's named partners post in English; the discovery funnel is
@@ -50,9 +51,22 @@ RFD_RE = re.compile(r"\bRFD-[A-Z0-9_]+\b", re.I)
 FLEEK_RE = re.compile(r"(?:^|[\s#@])fleek\b", re.I)
 
 
+@functools.lru_cache(maxsize=1024)
+def _term_re(term: str) -> re.Pattern:
+    """Match a term on word boundaries, not as a substring.
+
+    Substring matching quietly inflated every score in this project: "chine" matched *ma-chine*,
+    "mode" matched *mode d'emploi*, and a refurbished-laptop shop scored as a clothing reseller.
+    Boundaries are only applied where the term actually starts/ends with a word character, so
+    "/kg" still matches.
+    """
+    left = r"(?<!\w)" if term[:1].isalnum() else ""
+    right = r"(?!\w)" if term[-1:].isalnum() else ""
+    return re.compile(left + re.escape(term) + right, re.IGNORECASE | re.UNICODE)
+
+
 def hits(text: str, terms: list[str]) -> list[str]:
-    t = text.lower()
-    return [w for w in terms if w in t]
+    return [w for w in terms if _term_re(w).search(text)]
 
 
 def lexicon_profile(corpus: str) -> dict:
@@ -80,3 +94,42 @@ def fleek_signals(corpus: str) -> dict:
 
 def bio_flags(corpus: str) -> dict[str, bool]:
     return {k: bool(hits(corpus, terms)) for k, terms in BIO_FLAGS.items()}
+
+
+# The pro lexicon is vertical-agnostic: "revente", "stock", "marge", "fournisseur" describe reselling
+# ANYTHING. Seeding an Instagram graph walk with @cashandrepair and @50.grass — second-hand
+# ELECTRONICS resellers who score high on it — dragged the walk into refurbished laptops, phone
+# trade-in and BNPL fintech (@smaaart.fr, @recommerce, @scalapayfr). Fleek sells clothes. Gate on it.
+FASHION_TERMS = [
+    "vêtement", "vetement", "friperie", "fripe", "seconde-main", "seconde main", "secondemain",
+    "vintage", "sneaker", "sneakers", "vinted", "textile", "clothing", "garment", "streetwear",
+    "chiner", "chiné", "chinée", "dressing", "fringues", "thrift", "apparel", "depop", "friperies",
+]
+
+# Suppliers are the competitor map, not partners. Two independent tests, because each misses what the
+# other catches: Instagram's business category is authoritative but often unset
+# (@laprovidencewholesale — "Grossiste vêtements de marque premium" — has none), while a text test
+# must read the BIO ONLY. Run over captions it flagged @juliacrcl, a Fleek partner, because she talks
+# about the grossistes she buys FROM.
+SUPPLIER_CATEGORIES = ["wholesale", "supply store", "b2b"]
+SUPPLIER_BIO_TERMS = ["grossiste", "wholesale", "vente en gros", "en gros", "fournisseur officiel",
+                      "dropshipping fournisseur", "bulk supplier"]
+
+
+def in_fashion_vertical(corpus: str, compact: str = "") -> bool:
+    """Prose is matched on word boundaries; handles and URLs are matched as substrings.
+
+    @felix_brgd — "Accéder à mes fournisseurs privés", link resellvinted.com — is a clothing
+    reseller, but `vinted` is glued inside `resellvinted` and a boundary match cannot see it.
+    Handles and domains concatenate words by convention; prose does not.
+    """
+    if hits(corpus, FASHION_TERMS):
+        return True
+    c = compact.lower()
+    return any(t in c for t in FASHION_TERMS if t.isalpha() and len(t) >= 5)
+
+
+def is_supplier(bio: str, business_category: str | None) -> bool:
+    cat = str(business_category or "").lower()
+    return (any(c in cat for c in SUPPLIER_CATEGORIES)
+            or bool(hits(bio, SUPPLIER_BIO_TERMS)))

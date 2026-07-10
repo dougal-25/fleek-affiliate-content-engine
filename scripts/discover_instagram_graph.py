@@ -28,11 +28,21 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from content_brain.engine_io import (  # noqa: E402
     load_env, apify_instagram_profiles, save_artifact, creator_key,
 )
-from content_brain.signals import lexicon_profile, fleek_signals, bio_flags  # noqa: E402
+from content_brain.signals import (  # noqa: E402
+    lexicon_profile, fleek_signals, bio_flags, is_supplier, in_fashion_vertical,
+)
 
 # Verified by the calibration run: @juliacrcl is a Fleek partner, @nathanvialle is the wiki's
 # template bulk-sourcing affiliate, @zozrsl surfaced from Julia's own graph.
 SEEDS_KNOWN_GOOD = ["juliacrcl", "nathanvialle", "zozrsl"]
+
+# Second generation: pro creators the first walk surfaced from @juliacrcl. Walking from these is the
+# actual payoff of a graph — each verified pro is a new vantage point on the same neighbourhood.
+# @whatnot_fr is not a creator but the French hub for live selling, which is where the pro segment
+# lives and where the one Fleek partner we could not find on any scraper (@theliveneedham) most
+# likely is. Its neighbours are the pro-audience creators hashtags cannot reach.
+SEEDS_DISCOVERED_PRO = ["tikvinted_", "resellelitee_", "matthias_achatrevente", "lebarbuluxe",
+                        "cashandrepair", "50.grass", "whatnot_fr"]
 
 # Press-sourced names from "Fleek Wiki/research/French Reseller Creator Shortlist.md". Instagram is
 # where they live — which is why press found them and Perplexity could not find their TikToks.
@@ -45,12 +55,11 @@ SEEDS_WIKI = ["bichettekids", "claravictorya", "juliettekitsch", "alichuree", "v
 # one from a lifestyle creator we merely found in the press. Without this weighting, a --max-candidates
 # cap fills with whichever seed the API happened to return first — in the 2026-07-10 run that silently
 # dropped all 30 of @juliacrcl's recommendations, the only ones that mattered.
-SEED_WEIGHT = {**{s: 3 for s in SEEDS_KNOWN_GOOD}, **{s: 1 for s in SEEDS_WIKI}}
+SEED_WEIGHT = {**{s: 3 for s in SEEDS_KNOWN_GOOD},
+               **{s: 3 for s in SEEDS_DISCOVERED_PRO},
+               **{s: 1 for s in SEEDS_WIKI}}
 
-# Wholesalers are a competitor map, not partners. Read this off Instagram's own business category,
-# never off the text: @juliacrcl's captions are full of "grossiste" and "fournisseur" because she
-# BUYS from them. A text heuristic flagged Fleek's own partner as a supplier.
-SUPPLIER_CATEGORIES = ["wholesale", "supply store", "b2b"]
+# Supplier detection and the clothing-vertical gate both live in content_brain/signals.py.
 
 
 def profile_features(p: dict) -> dict:
@@ -87,8 +96,8 @@ def profile_features(p: dict) -> dict:
         "post_urls": [q["url"] for q in posts if q.get("url")],
         "post_comment_counts": {q["url"]: q.get("commentsCount") or 0 for q in posts if q.get("url")},
         "top_hashtags": tags[:12], "sample_captions": captions[:3],
-        "likely_supplier": any(h in str(p.get("businessCategoryName") or "").lower()
-                               for h in SUPPLIER_CATEGORIES),
+        "likely_supplier": is_supplier(bio, p.get("businessCategoryName")),
+        "fashion_vertical": in_fashion_vertical(corpus, f"{p.get('username')} {links}"),
         **lexicon_profile(corpus), **fleek_signals(corpus), "bio_flags": bio_flags(corpus),
     }
 
@@ -115,7 +124,8 @@ def main():
     if not token:
         sys.exit("APIFY_API_TOKEN not found.")
 
-    seeds = SEEDS_KNOWN_GOOD if args.smoke else SEEDS_KNOWN_GOOD + SEEDS_WIKI
+    seeds = (SEEDS_KNOWN_GOOD if args.smoke
+             else SEEDS_KNOWN_GOOD + SEEDS_DISCOVERED_PRO + SEEDS_WIKI)
     stamp = dt.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
     run_dir = os.path.join(os.path.dirname(__file__), "..", "data", "discovery_ig", f"graph_{stamp}")
 
