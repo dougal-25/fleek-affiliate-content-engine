@@ -1,0 +1,291 @@
+#!/usr/bin/env python3
+"""
+Fleek Affiliate Dashboard — local server.
+
+Serves the dashboard and proxies its data so the Airtable key never reaches the browser:
+
+    /api/creators   live Airtable roster; falls back to the committed snapshot if offline
+    /api/trends     keyword/hashtag intelligence computed from the 588 ingested posts
+    /api/funnel     stage counts + compounding weekly history (snapshots itself on each run)
+    /avatar/<h>     profile image proxy (unavatar.io), disk-cached, 404 -> client draws initials
+
+Stdlib only. Run:  python3 dashboard/serve.py   then open http://localhost:8787
+"""
+import json
+import os
+import re
+import sys
+import urllib.request
+import urllib.error
+import urllib.parse
+from collections import Counter, defaultdict
+from datetime import datetime, timedelta, timezone
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+REPO = os.path.dirname(HERE)
+DATA_DIR = os.path.join(HERE, "data")
+AVATAR_DIR = os.path.join(DATA_DIR, "avatars")
+HISTORY_PATH = os.path.join(DATA_DIR, "funnel_history.json")
+SNAPSHOT = os.path.join(REPO, "Fleek Wiki", "_raw", "airtable_creators_2026-07-09.json")
+POSTS = [
+    os.path.join(REPO, "Fleek Wiki", "_raw", "apify_tiktok_posts_2026-07-09.jsonl"),
+    os.path.join(REPO, "Fleek Wiki", "_raw", "apify_youtube_posts_2026-07-09.jsonl"),
+]
+BASE_NAME = "Fleek Affiliate Ecosystem"
+PORT = int(os.environ.get("PORT", 8787))
+
+STAGES = ["Prospect", "Qualified", "Contacted", "Responded", "Call booked",
+          "Contract", "Onboarded", "First post", "First sale", "Repeat posting"]
+
+
+def load_key():
+    key = os.environ.get("AIRTABLE_API_KEY")
+    if key:
+        return key.strip()
+    d = HERE
+    for _ in range(8):  # walk up until the workspace .env (worktrees sit deeper than the main checkout)
+        d = os.path.dirname(d)
+        p = os.path.join(d, ".env")
+        if os.path.exists(p):
+            with open(p) as f:
+                for line in f:
+                    if line.startswith("AIRTABLE_API_KEY="):
+                        return line.split("=", 1)[1].strip().strip('"').strip("'")
+    return None
+
+
+def http_get(url, key=None, timeout=15):
+    req = urllib.request.Request(url)
+    req.add_header("User-Agent", "Mozilla/5.0 (Macintosh) FleekDashboard/1.0")  # unavatar 403s python-urllib
+    if key:
+        req.add_header("Authorization", f"Bearer {key}")
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read()
+
+
+_base_id = None
+
+
+def fetch_creators_live(key):
+    global _base_id
+    if not _base_id:
+        bases = json.loads(http_get("https://api.airtable.com/v0/meta/bases", key))["bases"]
+        base = next(b for b in bases if b["name"] == BASE_NAME)
+        _base_id = base["id"]
+    records, offset = [], None
+    while True:
+        url = f"https://api.airtable.com/v0/{_base_id}/Creators?pageSize=100"
+        if offset:
+            url += f"&offset={offset}"
+        page = json.loads(http_get(url, key))
+        records += page.get("records", [])
+        offset = page.get("offset")
+        if not offset:
+            return records
+
+
+def get_creators():
+    key = load_key()
+    if key:
+        try:
+            return {"source": "live", "fetched": now_iso(), "records": fetch_creators_live(key)}
+        except Exception as e:
+            print(f"  ! live fetch failed ({e}); serving snapshot")
+    with open(SNAPSHOT) as f:
+        return {"source": "snapshot", "fetched": "2026-07-09", "records": json.load(f)}
+
+
+def now_iso():
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+# ---- trends: computed from the ingested posts ----
+
+HASHTAG_RE = re.compile(r"#(\w{3,30})", re.UNICODE)
+STOP = {"fyp", "foryou", "pourtoi", "viral", "video", "youtube", "shorts", "tiktok"}
+
+
+def load_posts():
+    posts = []
+    for path in POSTS:
+        platform = "TikTok" if "tiktok" in path else "YouTube"
+        if not os.path.exists(path):
+            continue
+        with open(path) as f:
+            for line in f:
+                r = json.loads(line)
+                if platform == "TikTok":
+                    tags = [t.lower() for t in (r.get("hashtags") or [])]
+                    text = r.get("text") or ""
+                    date = r.get("createTimeISO")
+                    views = int(r.get("playCount") or 0)
+                    likes = int(r.get("diggCount") or 0)
+                    author = r.get("author") or ""
+                else:
+                    text = (r.get("title") or "") + " " + (r.get("description") or "")
+                    tags = [t.lower() for t in HASHTAG_RE.findall(text)]
+                    date = r.get("date")
+                    views = int(r.get("viewCount") or 0)
+                    likes = int(r.get("likes") or 0)
+                    author = r.get("channelUsername") or r.get("channelName") or ""
+                tags = [t for t in tags if len(t) >= 3 and t not in STOP]
+                posts.append({"platform": platform, "date": date, "views": views,
+                              "likes": likes, "author": author, "tags": tags,
+                              "text": text.strip()[:180]})
+    return posts
+
+
+def compute_trends():
+    posts = load_posts()
+    now = datetime.now(timezone.utc)
+    recent_cut = now - timedelta(days=90)
+    prior_cut = now - timedelta(days=180)
+
+    vol, eng, recent, prior = Counter(), Counter(), Counter(), Counter()
+    weekly = defaultdict(int)
+    for p in posts:
+        try:
+            d = datetime.fromisoformat(p["date"].replace("Z", "+00:00"))
+        except (TypeError, ValueError, AttributeError):
+            continue
+        for t in set(p["tags"]):
+            vol[t] += 1
+            eng[t] += p["views"]
+            if d >= recent_cut:
+                recent[t] += 1
+            elif d >= prior_cut:
+                prior[t] += 1
+        if d >= now - timedelta(weeks=12):
+            weekly[(d - timedelta(days=d.weekday())).strftime("%Y-%m-%d")] += 1
+
+    rising = []
+    for t, n in recent.most_common(60):
+        if n >= 3:
+            before = prior.get(t, 0)
+            delta = n - before
+            if delta > 0:
+                rising.append({"tag": t, "recent": n, "prior": before, "delta": delta})
+    rising.sort(key=lambda x: (-x["delta"], -x["recent"]))
+
+    top_posts = sorted(
+        (p for p in posts if p["views"] > 0), key=lambda p: -p["views"])[:12]
+
+    return {
+        "post_count": len(posts),
+        "top_by_volume": [{"tag": t, "count": n} for t, n in vol.most_common(14)],
+        "top_by_engagement": [{"tag": t, "views": v} for t, v in eng.most_common(14)],
+        "rising": rising[:10],
+        "weekly_posts": sorted(({"week": w, "count": c} for w, c in weekly.items()),
+                               key=lambda x: x["week"]),
+        "top_posts": top_posts,
+    }
+
+
+# ---- funnel: current stages + compounding history ----
+
+def compute_funnel(creators):
+    counts = Counter(r["fields"].get("Stage", "Prospect") for r in creators["records"])
+    stages = {s: counts.get(s, 0) for s in STAGES}
+    os.makedirs(DATA_DIR, exist_ok=True)
+    history = []
+    if os.path.exists(HISTORY_PATH):
+        with open(HISTORY_PATH) as f:
+            history = json.load(f)
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    if creators["source"] == "live" and not any(h["date"] == today for h in history):
+        history.append({"date": today, "stages": stages})
+        with open(HISTORY_PATH, "w") as f:
+            json.dump(history, f, indent=1)
+    return {"stages": stages, "history": history, "source": creators["source"]}
+
+
+# ---- avatars: proxy + disk cache ----
+
+def image_type(b):
+    if b[:3] == b"\xff\xd8\xff":
+        return "image/jpeg"
+    if b[:8] == b"\x89PNG\r\n\x1a\n":
+        return "image/png"
+    if b[:4] == b"RIFF" and b[8:12] == b"WEBP":
+        return "image/webp"
+    if b[:3] == b"GIF":
+        return "image/gif"
+    return None
+
+
+def get_avatar(handle, platform):
+    safe = re.sub(r"[^\w.-]", "", handle)[:60]
+    if not safe:
+        return None
+    cached = os.path.join(AVATAR_DIR, safe)
+    if os.path.exists(cached):
+        with open(cached, "rb") as f:
+            return f.read()
+    provider = "youtube" if platform.lower() == "youtube" else "tiktok"
+    try:
+        body = http_get(f"https://unavatar.io/{provider}/{safe}?fallback=false", timeout=8)
+        if image_type(body):
+            os.makedirs(AVATAR_DIR, exist_ok=True)
+            with open(cached, "wb") as f:
+                f.write(body)
+            return body
+    except Exception:
+        pass
+    return None
+
+
+class Handler(SimpleHTTPRequestHandler):
+    def __init__(self, *a, **kw):
+        super().__init__(*a, directory=HERE, **kw)
+
+    def log_message(self, fmt, *args):
+        if "/avatar/" not in (args[0] if args else ""):
+            super().log_message(fmt, *args)
+
+    def send_json(self, obj, status=200):
+        body = json.dumps(obj).encode()
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self):
+        path = self.path.split("?")[0]
+        try:
+            if path == "/api/creators":
+                return self.send_json(get_creators())
+            if path == "/api/trends":
+                return self.send_json(compute_trends())
+            if path == "/api/funnel":
+                return self.send_json(compute_funnel(get_creators()))
+            if path.startswith("/avatar/"):
+                handle = urllib.parse.unquote(path.split("/avatar/", 1)[1])
+                platform = "youtube" if "platform=YouTube" in self.path else "tiktok"
+                body = get_avatar(handle, platform)
+                if body:
+                    self.send_response(200)
+                    self.send_header("Content-Type", image_type(body) or "image/jpeg")
+                    self.send_header("Content-Length", str(len(body)))
+                    self.send_header("Cache-Control", "max-age=86400")
+                    self.end_headers()
+                    return self.wfile.write(body)
+                return self.send_json({"error": "no avatar"}, 404)
+        except BrokenPipeError:
+            return
+        except Exception as e:
+            return self.send_json({"error": str(e)}, 500)
+        return super().do_GET()
+
+
+def main():
+    key = load_key()
+    mode = "LIVE (Airtable key found)" if key else "SNAPSHOT (no AIRTABLE_API_KEY)"
+    print(f"Fleek Affiliate Dashboard — {mode}")
+    print(f"→ http://localhost:{PORT}")
+    ThreadingHTTPServer(("127.0.0.1", PORT), Handler).serve_forever()
+
+
+if __name__ == "__main__":
+    sys.exit(main())

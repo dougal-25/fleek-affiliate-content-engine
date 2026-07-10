@@ -66,3 +66,31 @@ breakage for zero functional gain. The code was never the mess.
 
 **Open:** `mission/job-description.md` and `mission/task-brief.md` are empty. Until Doug pastes the verbatim
 text, everything citing the mission is citing an inference.
+
+## 2026-07-10 — Creator affiliate dashboard shipped (`dashboard/`)
+
+**What:** a standalone live dashboard to present alongside the deck — the Airtable base made visible.
+Three views: **Creators** (the hero — 49 real scored FR creators as rich cards: avatar, segment, keyword
+tags, score ring, predicted CAC, confidence, funnel stage; filter chips + search; click → full-profile
+drawer), **Recruitment funnel** (10-stage pipeline with stage-to-stage conversion, plus a pipeline-over-time
+chart), **Trends & keywords** (computed live from the 588 ingested posts: top hashtags by volume and by
+views, 90-day risers, top-performing posts — the feed for outreach personalisation and brief ideas).
+
+- **Live, not a mock.** A stdlib Python proxy (`dashboard/serve.py`) fetches the Creators table from
+  Airtable on load — the key stays in the workspace `.env`, never reaching the browser. Offline it falls
+  back to the committed snapshot, and the header badge says LIVE or SNAPSHOT so the room is never lied to.
+  First live pull already diverged from the snapshot (39 Prospect / 10 Qualified vs 49 Prospect) — proof
+  the live wire works.
+- **Funnel history compounds.** Each launch snapshots stage counts to `dashboard/data/funnel_history.json`
+  (gitignored). Real weekly cadence accrues from 2026-07-10; the modelled projection is dashed, grey, and
+  labelled with its assumptions on-screen.
+- **Fleek's own brand.** Tokens extracted from joinfleek.com live CSS (Montserrat, coral/gold/plum/cream)
+  into `dashboard/tokens.css`. Chart colors are darkened brand steps that pass the dataviz six-checks
+  validator on the cream surface.
+- **Avatars** proxied through unavatar.io with a disk cache (unavatar 403s python-urllib — needed a real
+  User-Agent); fallback is branded initials, never a broken image.
+- Spec + sign-off: `spec/creator-dashboard.md` (Doug answered the four framing questions 2026-07-10).
+- Run: `python3 dashboard/serve.py` → http://localhost:8787 (respects `PORT`).
+
+**Follow-ups:** funnel-over-time gets interesting only as stages move in Airtable — the display is ready
+for it. Consider a fourth "Brief" view later (show a generated brief in situ) if the deck needs it.

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fleek — Affiliate Brain · France</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="wordmark">fleek</span>
+    <span class="brand-sub">Affiliate Brain <span class="brand-geo">🇫🇷 France</span></span>
+  </div>
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-view="creators" role="tab">Creators</button>
+    <button class="tab" data-view="funnel" role="tab">Recruitment funnel</button>
+    <button class="tab" data-view="trends" role="tab">Trends &amp; keywords</button>
+  </nav>
+  <div class="topbar-right">
+    <span id="source-badge" class="badge badge-loading">connecting…</span>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ CREATORS ============ -->
+<section id="view-creators" class="view active">
+  <div class="stat-strip" id="creator-stats"></div>
+  <div class="filter-row">
+    <input id="search" class="search" type="search" placeholder="Search handle, keyword, audience…" autocomplete="off">
+    <div class="chip-groups" id="filter-chips"></div>
+  </div>
+  <div class="card-grid" id="card-grid"></div>
+</section>
+
+<!-- ============ FUNNEL ============ -->
+<section id="view-funnel" class="view">
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Recruitment pipeline — today</h2>
+      <p class="panel-sub" id="funnel-sub"></p>
+    </div>
+    <div id="funnel-chart"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Pipeline over time</h2>
+      <p class="panel-sub">Solid = real snapshots (the server records one on every launch, compounding weekly).
+      Dashed = <strong>modelled projection</strong> from playbook assumptions — not data.</p>
+    </div>
+    <div id="history-chart"></div>
+    <p class="footnote" id="model-note"></p>
+  </div>
+</section>
+
+<!-- ============ TRENDS ============ -->
+<section id="view-trends" class="view">
+  <div class="stat-strip" id="trend-stats"></div>
+  <div class="panel-row">
+    <div class="panel">
+      <div class="panel-head"><h2>Top hashtags by posts</h2>
+        <p class="panel-sub">Across the ingested FR reseller posts</p></div>
+      <div id="volume-chart"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>Top hashtags by views</h2>
+        <p class="panel-sub">Where the audience actually is</p></div>
+      <div id="engagement-chart"></div>
+    </div>
+  </div>
+  <div class="panel-row">
+    <div class="panel">
+      <div class="panel-head"><h2>Rising now</h2>
+        <p class="panel-sub">Last 90 days vs the 90 before — feed these into outreach &amp; briefs</p></div>
+      <ul class="rising-list" id="rising-list"></ul>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>Top-performing posts</h2>
+        <p class="panel-sub">The formats worth briefing</p></div>
+      <table class="posts-table" id="posts-table"></table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- creator detail drawer -->
+<div id="drawer-scrim" class="scrim"></div>
+<aside id="drawer" class="drawer" aria-hidden="true"></aside>
+
+<div id="tooltip" class="tooltip" hidden></div>
+
+<script src="charts.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
