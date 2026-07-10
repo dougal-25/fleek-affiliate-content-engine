@@ -5,7 +5,16 @@ Part of [[index]] · siblings: [[Affiliate Program Playbooks]], [[Creator Affili
 
 ### Key facts — the strategic finding
 
-**Bale/wholesale suppliers almost never run public referral or affiliate programs.** Traditional grossistes optimise on margin + volume, not commission incentives. Where programs exist, they're on *branded* adaptive/sustainable clothing (5–15% commission, 14–30 day cookies), not mixed-stock bale suppliers — [backlinko](https://backlinko.com/fashion-affiliate-programs), [adaptivecomfortclothing](https://www.adaptivecomfortclothing.com/pages/affiliate-and-wholesale). **This is the whitespace**: a wholesale marketplace running a real creator/referral program is close to unprecedented.
+> ### ⚠️ CORRECTED 2026-07-09 by post-level data — read this first
+> The claim below ("suppliers almost never run referral programs") came from **English-language blog/aggregator sources** and is **false for the live French creator market.** Scraping the top FR creators' actual video descriptions ([[Creator Post-Level Signals]]) found competing wholesalers running creator deals *right now*:
+> - **bestvintagewholesale.com** → Julia Courcelle, personal code `JULIA10` (10% off), across 25 videos
+> - **supply-lab.com** → Enzo Napiot, application funnel, 21 links
+> - **boxwholesalefrance.com** → TRFQNT · **wholesaler20.com** → Felix Beauregard
+>
+> **The real whitespace is narrower — and better.** Suppliers run **ad-hoc personal discount codes**. Nobody runs an actual *programme*: activation, tiers, briefs, payouts, support, measurement. That is still unclaimed, and it is exactly what Fleek can build.
+> Related: Fleek **already has an unmanaged affiliate in the field** (`RFD-JULIA`) — see [[Creator Post-Level Signals]].
+
+**Original claim (superseded, kept for provenance):** Bale/wholesale suppliers almost never run public referral or affiliate programs. Traditional grossistes optimise on margin + volume, not commission incentives. Where programs exist, they're on *branded* adaptive/sustainable clothing (5–15% commission, 14–30 day cookies), not mixed-stock bale suppliers — [backlinko](https://backlinko.com/fashion-affiliate-programs), [adaptivecomfortclothing](https://www.adaptivecomfortclothing.com/pages/affiliate-and-wholesale).
 
 ### B2B marketplace referral structures (Faire, Ankorstore, Alibaba)
 The pattern across all three — **incentivise supply-side growth, not buyer-to-buyer**:

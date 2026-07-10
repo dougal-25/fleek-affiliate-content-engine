@@ -4,9 +4,18 @@
 > ⚠️ Fields are the engine's *analysis* of each creator (bio, keywords, score rationale) — **not raw post transcripts**. Deeper post-level ingest needs Apify (quota-blocked).
 Part of [[index]] · siblings: [[French Reseller Creator Shortlist]], [[FR Reseller Vocabulary and Hashtags]], [[Supplier and B2B Referral Mechanics]]
 
+### 🚨 Scoring bug found 2026-07-09 — an active Fleek affiliate is scored as a cold prospect
+
+**`juliacourcelle`** sits here as `Score 62 · Stage: Prospect · Outreach Status: Not started`. The post-level scrape ([[Creator Post-Level Signals]]) shows she has promoted **Fleek in 25 of 25 recent videos** (`joinfleek.app.link`, code `RFD-JULIA`), ongoing. She is not a prospect — she is an **active, unmanaged affiliate**.
+
+**Fixes this implies for the engine:**
+1. **Existing-affiliate check** in discovery — scan bio/description links for `joinfleek` / `RFD-` and auto-set `Stage = Active affiliate`.
+2. **Recency-weighted reach** in scoring — `JosephTorregrossa` scores **78** on a channel whose recent videos median **514 views**. Follower count and lifetime views both mislead.
+3. **Sponsored-post signal** — 26/300 TikTok posts were sponsored (concentrated in `lina_momo_`, `jbaptistebc`), proving brand-deal willingness. The grossiste accounts take zero — they *are* the brand.
+
 ### ⚠️ The strategic tension this roster exposes
 
-**Fleek's highest-intent creators are largely incumbent sourcing-monetizers.** The top scorers already sell supplier access to the exact audience Fleek wants:
+**Fleek's highest-intent creators are largely incumbent sourcing-monetizers.** *(Now confirmed with their actual funnel links — see the incumbent-funnel map on [[Creator Post-Level Signals]]: Bartorico → resellpro.net + 198 Amazon affiliate links; Joseph Torregrossa → profimy-academie.com; Felix Beauregard → resellvinted.com; Enzo → supply-lab.)* The top scorers already sell supplier access to the exact audience Fleek wants:
 - `felixbeauregard` (82) — *"already funnels his audience to his own 'private suppliers'"*
 - `JosephTorregrossa` (78) — monetizes courses + affiliate links to wholesale sourcing
 - `Bartorico` (72) — runs a paid reselling course ("Resell Pro") with its own supplier funnel

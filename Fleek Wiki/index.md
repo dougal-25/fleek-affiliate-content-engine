@@ -46,6 +46,11 @@ Ingested from the live Airtable roster the discovery engine built. This is where
 - [[FR Creator Roster and Segments]] — **49 scored FR reseller-creators**, segment taxonomy + economics (sourcing vloggers score highest at 70; wholesale buyers lowest of the serious segments at 55), the top targets, and DM-first outreach reality (only 6/49 have email).
 - **⚠️ The tension it exposes**: Fleek's highest-intent creators (`felixbeauregard`, `JosephTorregrossa`, `Bartorico`, `jf_vintagewholesalefr`) are **incumbent sourcing-monetizers** — educators with their own supplier funnels, or competing grossistes. The *program* space is greenfield; the *audience* space is already monetized. → pitch partnership/rev-share, not "promote us instead."
 - ✅ [[FR Reseller Vocabulary and Hashtags]] now carries the **validated hashtag table** (real per-term qualified-creator counts) — the deck receipt the founding sweep owed.
+- [[Creator Post-Level Signals]] — **588 real posts** (300 TikTok + 288 YouTube) from the top 24 creators, $1.20 of Apify. The ground-truth layer. It **corrected four vault claims**:
+  1. 🚨 **Julia Courcelle is a live, unmanaged Fleek affiliate** (`RFD-JULIA` in 25/25 videos) — *and promotes a competing wholesaler in the same description.* Field evidence for the JD's "roster, not activation" thesis. She sits in Airtable as a cold prospect → **scoring bug**.
+  2. **Competing wholesalers DO run creator deals** (bestvintagewholesale, supply-lab, boxwholesalefrance) — falsifies the "suppliers never run referral programmes" whitespace claim in [[Supplier and B2B Referral Mechanics]]. The real whitespace: nobody runs a *structured* programme.
+  3. **Whatnot's FR partner programme is active and dominant** — 72 links; `#whatnotpartner` median **786k plays**, the top tag in the sample.
+  4. **Creator language ≠ supplier jargon**: they say `kilo` (96), `premier choix` (60), `en gros` (33); they never say `ballot`/`crème` (1 each). Also: **geo-tags are empirically real in France** (`#friperiemontpellier` 45) — closing an "unverified/US-extrapolated" gap.
 
 ## 🎯 The strategic thesis (why this case study wins)
 

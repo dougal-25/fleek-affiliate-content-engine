@@ -68,9 +68,32 @@ The loop closed: **the engine fed the Brain back.** These are the seed terms tha
 - `whatnotfrance` + `ventelive` are the live-selling doorway — **`#whatnotfr` now validated** in its `whatnotfrance` form.
 - Full roster + segment economics: [[FR Creator Roster and Segments]].
 
+### ✅ v3 — measured from 588 real posts (2026-07-09 post-level scrape)
+
+**Top TikTok hashtags actually used** (n=300 posts, 10 creators): `#friperiemontpellier` 45 · `#friperie` 44 · `#vinted` 42 · `#friperieengros` 30 · `#friperiedequalité` 29 · `#friperieenfants` 29 · `#vintedtips` 29 · `#preparationcommande` 26 · `#vintage` 26 · `#achatrevente` 23 · `#liveshopping` 23 · `#friperieaukilo` 22 · `#vintagemontpellier` 21 · `#secondemainvintage` 19 · `#friperieenligne` 18 · `#achatreventevinted` 16 · `#fairedelargent` 14 · `#asmrvintage` 13 · `#friperieparis` 11 · `#bonneadresseparis` 11.
+
+**Highest-reach tag by a distance: `#whatnotpartner` — median 786,250 plays** (n=4). Geo-tags are real (Montpellier, Paris).
+
+### ⚠️ Correction — the trade vocabulary is SUPPLIER jargon, not creator language
+
+[[FR Bale Sourcing Playbook]] documents `ballot / balle / crème / Grade A` from grossiste blogs. **Creators barely say those words.** Measured:
+
+| Creators say (TikTok) | n | Blogs say | n |
+|---|---|---|---|
+| `kilo` | **96** | `ballot` | 1 |
+| `live` | 92 | `balle` | 1 |
+| `premier choix` / `1er choix` | **60** | `crème` | 1 |
+| `en gros` | 33 | `palette` | 1 |
+
+On YouTube: `fournisseur` **109** · `grossiste` 33 · `en gros` 24 — vs `ballot` 3, `kilo` 3.
+
+→ **Outreach + briefs must speak "au kilo / premier choix / en gros / fournisseur."** Keep `ballot`/`crème`/`Grade A` for supplier-facing pages only.
+
+**Platform vocabulary split:** TikTok = `friperie`, `kilo`, `premier choix`, `live`. YouTube = `vinted` (390), `revente` (189), `achat revente` (119), `fournisseur` (109), `formation` (87), `chine` (63). Different worlds → different seeds, different briefs.
+
 ### Open questions / gaps
-- Counts above are *qualified-creator* counts, not raw per-tag post volumes — the latter still unmeasured.
-- Caption/hook vocabulary (what they actually *say* on camera) still unmined — needs post-level Apify ingest (quota-blocked).
+- Per-tag *post volumes* (platform-wide) still unmeasured — we have per-creator usage, not tag reach across TikTok.
+- **Spoken** vocabulary (video transcripts) still unmined — `downloadSubtitles` on the YouTube actor would get it.
 - Keep appending validated terms after each discovery run (engine feeds Brain, not just Brain feeds engine).
 
 Feeds: **discovery** (Apify keyword seeds — now evidence-ranked), **outreach** (caption vocabulary), **briefs** (native phrasing).
