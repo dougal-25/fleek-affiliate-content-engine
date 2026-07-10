@@ -5,6 +5,90 @@ Dated record of design intent changing. Newest first. Decisions with reasoning g
 
 ---
 
+## 2026-07-10 — The scorer was calibrated against real partners, and most of its signals were wrong
+
+The task brief names three top-performing partners. The scorer had never seen them — it ran on guessed
+archetypes while the ground truth sat two directories away in `mission/`. We scraped them, plus five French
+creators from the wiki, for **$1.35 total**. Raw evidence in `data/calibration/2026-07-10T10-24-45/`.
+
+**What the data overturned:**
+
+- **`@juliacrcl` is French**, tags `#fleek`, and is a top-performing Fleek partner. The single most valuable
+  calibration point in the project, and we had been treating all three named partners as English anchors.
+- **Engagement rate does not predict fit — it inverts.** `@giu.cst`, the clearest wrong-fit in the set
+  (253k followers, decor content), has the *highest* engagement at 8.1%. Followers, views-per-follower and
+  posting cadence separate nothing either. Only vocabulary and audience do.
+- **Posting cadence belongs to activation, not fit.** `@juliacrcl` posts once every five weeks and is a top
+  partner. The old scorer's "posting consistency: 15 points" would have penalised her.
+- **`creator_type` ≠ `audience_mix`.** `@nathanviall3` is a pro creator with a 55%-hobbyist audience. Fleek's
+  hardest problem ("pro resellers think Fleek is for beginners") is an *audience* problem. One field hides it.
+- **CAC cannot select the shortlist.** Under pure revenue share it ranks the two worst creators best (it
+  reduces to `commission × AOV`). With a flat fee it ranks `@behindthesale` fourth, because CAC is
+  reach-weighted and his reach is 2,644 median views. Both results in `spec/cac-model.md` §4.
+
+**Four hypotheses tested and rejected**, all recorded in `spec/discovery-scoring.md` §7: a keyword pro:consumer
+ratio (scored `@giu.cst` 9.5× pro; the blind model said 0%); supply-side hashtags (`#grossiste` returns
+wholesalers, not creators); `#achatrevente` (generic French business jargon — returned real estate); and
+same-handle-means-same-person (`@behindthesale` on Instagram is a real-estate coach with 110 followers).
+
+**The blind test.** The audience classifier never saw which creators Fleek rates. It ranked both named partners
+first and second on pro-reseller audience, and independently flagged both as Fleek-aware from comments alone —
+spotting a viewer asking Julia *"vous avez des fournisseurs fiables sur Fleek ? ça me fait peur de commander."*
+Fleek's trust problem, unprompted, in the wild.
+
+**Written:** `spec/discovery-scoring.md`, `spec/cac-model.md`. **Code:** `content_brain/signals.py` (shared
+lexicon), `apify_run()` (reads real cost back), Instagram actors, `scripts/calibrate.py`,
+`scripts/scrape_comments.py`, `scripts/classify_audience.py`, `scripts/discover_instagram.py`. Fixed: `.env`
+resolution broke inside a git worktree; every stage now persists artifacts before anything consumes them.
+
+**Open, and blocking:** the Airtable key is still `Handle`, so no Instagram creator can be written without
+overwriting a TikTok namesake. Both spec pages await Doug's sign-off before they drive the base.
+
+### Same day, after sign-off — key migrated, Instagram wired, both budgets exhausted
+
+**Done.** `Creator Key` (`platform:handle`) added and backfilled across all 49 existing rows; 17 new fields
+created from `spec/cac-model.md` §8; `run_discovery.py` upserts on the key and no longer asks the model for
+`predicted_cac_gbp`. Instagram discovery by graph walk works: seeded from `@juliacrcl`, it surfaced
+`@zozrsl`, `@tikvinted_`, `@resellelitee_`, `@matthias_achatrevente`, `@whatnot_fr`, and correctly quarantined
+`@united.vintage`/`@pawpickvintage`/`@vinqa.grossiste` as suppliers via Instagram's own business category.
+
+**The Instagram finding that reshapes the plan: `audience_mix` is a property of `platform:handle`, not of a
+person.** `@juliacrcl` classifies **pro_reseller on TikTok** and **general_consumer on Instagram**, same week.
+Her business discourse lives on TikTok; her Instagram comments are compliments, Vinted complaints, and a
+coordinated bot campaign shilling a tool called *Lbcx* (which the classifier named and excluded). Instagram is
+excellent for **discovery, identity and reach** — it found the best nano pro creator we have — but TikTok
+comments are the better **audience evidence**, at half the price ($1.25/1k measured vs $2.60/1k measured).
+Where a creator exists on both, classify on TikTok.
+
+**A classifier flaw, found and fixed in the schema, not yet re-run.** `@zozrsl` — bio: *"Revendeur Vinted à
+plein temps (+100K€ générés)"* — came back 0% pro / general_consumer / **High** confidence. The model had read
+the channel correctly (*"single-word keyword replies… engagement-farming"* — a comment-to-DM lead magnet) but
+the schema forced a mix summing to 100 with no way to abstain. It now returns
+`signal_quality: usable | insufficient | polluted` and `dominant: "unknown"`. **An absent audience is not a
+consumer audience.** The pre-fix output is quarantined as `audience_SUPERSEDED_no_signal_quality.json`.
+
+**Three self-inflicted bugs, all fixed:** a `--max-candidates` cap that silently dropped all 30 of
+`@juliacrcl`'s graph recommendations (the only ones that mattered) because it filled on insertion order; a
+supplier heuristic reading captions rather than business category, which flagged Fleek's own partner as a
+wholesaler; and a comments scraper that saved only at the end, discarding four creators' paid data on a crash.
+Comments now persist after every paid call, and the lost runs were recovered from Apify's datasets at no cost.
+
+**Security.** The Apify token was passed as a `?token=` query parameter, so a 403 printed it verbatim in a
+`requests` traceback. Rotated. All Apify calls now use `Authorization: Bearer` headers, which exceptions do not
+echo. `content_brain/engine_io.py::_apify_headers` carries the reason.
+
+**Both budgets are now exhausted.** Apify free tier: `Monthly usage hard limit exceeded`, $5.27 against a $5.00
+cap. Anthropic: out of credit. **Correction to the entry above: the "$1.35 total" was read from each run's
+`usageTotalUsd`, which under-reports** — it excludes compute units and lags at read time. Real consumption was
+~4× that. Cost estimates in this repo should be treated as lower bounds until measured against
+`/v2/users/me/limits`.
+
+**Open:** re-run the audience classifier with `signal_quality` (Anthropic credit); classify the Instagram
+cohort; then strata selection. Also — `data/` is gitignored, so the calibration artifacts that
+`spec/discovery-scoring.md` and `spec/cac-model.md` cite as evidence are **not in the repo**. The derived
+files (`features.json`, `audience.json`, `comments_normalised.json`) are small and are exactly the "AI receipts"
+the brief asks for. Decision needed: commit the derived artifacts, keep the raw scrapes ignored.
+
 ## 2026-07-10 — The mission is real; two load-bearing claims were wrong
 
 Doug supplied the JD and the case-study brief. Both are now captured verbatim in `mission/`, and
