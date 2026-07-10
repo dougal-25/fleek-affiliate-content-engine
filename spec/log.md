@@ -105,3 +105,22 @@ reads "airtable data · <date>" so the data's freshness is stated, not implied. 
 build's data layer and the live dev mode; `app.js` prefers injected `window.__DATA__` and falls back to
 fetch. Rebuild = one command; note the built file embeds the full creator records (incl. bio-scraped
 emails) — fine to hand to Fleek, worth remembering if it ever goes anywhere public.
+
+## 2026-07-10 — Dashboard v2: real brand assets, pro/hobbyist split, funnel-grouped cards
+
+Doug's six-point review implemented:
+1. **Real Fleek branding** — the actual logo (gold starburst + hand-drawn FLEEK wordmark) pulled from
+   joinfleek.com and embedded; Montserrat and the extracted palette stay.
+2. **Pro reseller vs hobbyist** on every card — clear-but-subtle: plum/gold top border + small type label.
+   Derived from the engine's own sub-scores (wholesale content ≥ 6/10, or credibility ≥ 18/25 with
+   wholesale keywords) → 14 pro / 35 hobbyist. First keyword-only attempt gave a useless 47/2; the
+   scoring model is the honest signal. Niche/style = segment chip + keyword tags (open-ended, from data).
+3. **Channel links** — the platform logo (TikTok/YouTube/Instagram mark) sits as a badge on each avatar
+   and IS the link to the creator's channel; repeated in the drawer.
+4. **Filter toolbar** — search, All/Pro/Hobbyists segmented control, platform icon toggles, sort
+   (score/CAC/followers), live result count, Clear. Niche + confidence chips below.
+5. **Funnel-dynamic layout** — the card grid is grouped into funnel-stage sections (furthest along first),
+   each header showing count + "funnel stage N of 10". Filters recount sections live.
+6. **Audience detail** — each card quotes the creator's bio/audience line (emails/URLs stripped); the
+   drawer leads with a full "Audience & bio" section.
+Rebuilt single file: 6.7 MB (more avatars resolved on rebuild — 17 embedded photos).

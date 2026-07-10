@@ -19,12 +19,8 @@ button { font: inherit; cursor: pointer; }
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border);
 }
-.brand { display: flex; align-items: baseline; gap: var(--sp-3); }
-.wordmark {
-  font-size: var(--fs-lg); font-weight: 800; letter-spacing: -0.5px;
-  color: var(--fleek-plum);
-}
-.wordmark::after { content: "."; color: var(--fleek-coral); }
+.brand { display: flex; align-items: center; gap: var(--sp-3); }
+.logo { height: 30px; display: block; }
 .brand-sub { font-size: var(--fs-sm); font-weight: 600; color: var(--ink-2); }
 .brand-geo { margin-left: var(--sp-1); }
 .tabs { display: flex; gap: var(--sp-1); margin-left: auto; }
@@ -74,16 +70,51 @@ main { max-width: 1280px; margin: 0 auto; padding: var(--sp-5) var(--sp-6) var(-
 .stat .lbl { font-size: var(--fs-xs); font-weight: 600; color: var(--ink-3);
   text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
 
-/* ---------- filters ---------- */
-.filter-row { display: flex; flex-direction: column; gap: var(--sp-3); margin-bottom: var(--sp-5); }
+/* ---------- filter toolbar ---------- */
+.toolbar {
+  display: flex; align-items: center; flex-wrap: wrap; gap: var(--sp-3);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); box-shadow: var(--shadow);
+  padding: var(--sp-3) var(--sp-4); margin-bottom: var(--sp-3);
+}
 .search {
-  width: 340px; padding: var(--sp-2) var(--sp-4);
+  flex: 1; min-width: 220px; max-width: 340px; padding: var(--sp-2) var(--sp-4);
   font: inherit; color: var(--ink);
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-pill);
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-pill);
   outline: none; transition: border-color var(--t-fast);
 }
 .search:focus { border-color: var(--fleek-coral); }
-.chip-groups { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); }
+.seg-control {
+  display: flex; background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--r-pill); padding: 2px;
+}
+.seg {
+  border: 0; background: none; padding: 5px 14px; border-radius: var(--r-pill);
+  font-size: var(--fs-sm); font-weight: 600; color: var(--ink-3);
+  transition: all var(--t-fast);
+}
+.seg.on { background: var(--fleek-plum); color: var(--ink-inverse); }
+.platform-toggles { display: flex; gap: var(--sp-1); }
+.ptoggle {
+  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); border-radius: 50%; background: var(--bg);
+  color: var(--ink-3); transition: all var(--t-fast);
+}
+.ptoggle svg { width: 16px; height: 16px; }
+.ptoggle:hover { color: var(--ink); border-color: var(--fleek-coral); }
+.ptoggle.on { background: var(--fleek-coral); border-color: var(--fleek-coral); color: var(--ink-inverse); }
+.sort {
+  font: inherit; font-size: var(--fs-sm); font-weight: 600; color: var(--ink-2);
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-pill);
+  padding: 6px 12px; outline: none; cursor: pointer;
+}
+.result-count { margin-left: auto; font-size: var(--fs-sm); font-weight: 600; color: var(--ink-3); }
+.clear-btn {
+  border: 0; background: var(--surface-tint); color: var(--fleek-coral-deep);
+  font-size: var(--fs-sm); font-weight: 700; padding: 5px 12px; border-radius: var(--r-pill);
+}
+.toolbar-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4);
+  margin-bottom: var(--sp-5); padding: 0 var(--sp-2); }
 .chip-group { display: flex; align-items: center; flex-wrap: wrap; gap: var(--sp-1); }
 .chip-group .glbl { font-size: var(--fs-xs); font-weight: 700; color: var(--ink-3);
   text-transform: uppercase; letter-spacing: 0.5px; margin-right: var(--sp-1); }
@@ -96,6 +127,19 @@ main { max-width: 1280px; margin: 0 auto; padding: var(--sp-5) var(--sp-6) var(-
 .chip:hover { border-color: var(--fleek-coral); color: var(--ink); }
 .chip.on { background: var(--fleek-plum); border-color: var(--fleek-plum); color: var(--ink-inverse); }
 
+/* ---------- stage sections ---------- */
+.stage-section { margin-bottom: var(--sp-6); }
+.stage-head {
+  display: flex; align-items: baseline; gap: var(--sp-3);
+  padding: 0 var(--sp-1) var(--sp-3);
+  border-bottom: 2px solid var(--fleek-gold);
+  margin-bottom: var(--sp-4);
+}
+.stage-name { font-size: var(--fs-md); font-weight: 800; letter-spacing: -0.2px; }
+.stage-count { font-size: var(--fs-sm); font-weight: 600; color: var(--ink-2); }
+.stage-pos { margin-left: auto; font-size: var(--fs-xs); font-weight: 600; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: 0.5px; }
+
 /* ---------- creator cards ---------- */
 .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: var(--sp-4); }
 .card {
@@ -104,9 +148,29 @@ main { max-width: 1280px; margin: 0 auto; padding: var(--sp-5) var(--sp-6) var(-
   display: flex; flex-direction: column; gap: var(--sp-3);
   transition: transform var(--t-med), box-shadow var(--t-med);
   cursor: pointer;
+  border-top: 3px solid var(--border);
+}
+.card.type-pro { border-top-color: var(--fleek-plum); }
+.card.type-hobby { border-top-color: var(--fleek-gold); }
+.type-lbl { text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
+.type-lbl.pro { color: var(--fleek-plum); }
+.type-lbl.hobby { color: var(--warn); }
+.audience-line {
+  font-size: var(--fs-sm); font-style: italic; color: var(--ink-2); line-height: 1.45;
 }
 .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
 .card-top { display: flex; align-items: center; gap: var(--sp-3); }
+.avatar-wrap { position: relative; flex: none; }
+.platform-link {
+  position: absolute; right: -4px; bottom: -4px;
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--fleek-plum); color: var(--ink-inverse);
+  border: 2px solid var(--surface);
+  transition: transform var(--t-fast), background var(--t-fast);
+}
+.platform-link svg { width: 10px; height: 10px; }
+.platform-link:hover { transform: scale(1.25); background: var(--fleek-coral); }
 .avatar {
   width: 48px; height: 48px; border-radius: 50%; flex: none;
   object-fit: cover; background: var(--surface-tint);

@@ -53,6 +53,10 @@ def main():
     payload = json.dumps(data).replace("</", "<\\/")
 
     html = read("index.html")
+    logo_path = os.path.join(HERE, "assets", "fleek-logo.webp")
+    with open(logo_path, "rb") as f:
+        logo_uri = "data:image/webp;base64," + base64.b64encode(f.read()).decode()
+    html = html.replace('src="assets/fleek-logo.webp"', f'src="{logo_uri}"')
     html = html.replace('<link rel="stylesheet" href="tokens.css">',
                         "<style>\n" + read("tokens.css") + "\n</style>")
     html = html.replace('<link rel="stylesheet" href="style.css">',
