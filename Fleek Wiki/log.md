@@ -4,6 +4,26 @@ Dated record of what entered the vault and how. Newest first. Hub: [[index]].
 
 ---
 
+## 2026-07-09 (late) — Airtable creator-roster ingest: the engine feeds the Brain back
+
+**What**: Ingested the live creator database (Airtable base "Fleek Affiliate Ecosystem" → `Creators`) into the wiki. **49 creators** (up from the first run's 12), every record enriched with Segment, Content Keywords, Strength, Weakness, Score Breakdown, Predicted CAC.
+
+**Method**: read-only Airtable API pull (`AIRTABLE_API_KEY` from `.env`, never echoed); keyword-frequency + segment-economics analysis; raw snapshot preserved at `_raw/airtable_creators_2026-07-09.json` (expiring photo URLs stripped).
+
+**Page created**: [[FR Creator Roster and Segments]] — segment taxonomy + economics, wholesale-buyer cohort, top targets, content-keyword map, outreach reality.
+
+**Pages enriched**: [[FR Reseller Vocabulary and Hashtags]] (✅ **the validated hashtag table** — real per-term qualified-creator counts, closing a founding-sweep gap), [[French Reseller Creator Shortlist]] (cross-reference: press-sourced vs empirical rosters are near-disjoint sets).
+
+**Headline finding — a correction to the greenfield thesis**: the highest-scoring creators are **incumbent sourcing-monetizers**. `felixbeauregard` (82) funnels his audience to his own "private suppliers"; `Bartorico` (72) and `JosephTorregrossa` (78) sell reselling courses with supplier funnels; `jf_vintagewholesalefr` (74) *is a competing French wholesaler since 1982*. The creator-*program* space is empty, but the creator-*audience* space is already monetized. → pitch partnership/rev-share to educators & suppliers; lead clean conversion with **sourcing vloggers** (highest avg score, 70) and **live sellers** (best CAC, £58).
+
+**Second finding**: **"Wholesale buyer" scores lowest of the serious segments (55)** despite being warmest on paper — the cohort is contaminated with competing grossistes and off-category (parfum/accessories) sellers. Segment needs a sub-filter.
+
+**Cross-validation**: `Bartorico` surfaced *independently* in the Reddit sweep (as the FR "teach the resale business" voice) and in the engine's scoring (72). Two methods, one answer — the strongest signal in the vault.
+
+**Honest limits**: this is the engine's *analysis* of each creator, **not raw post transcripts**. Ingesting what creators actually say on camera needs Apify post-scraping — **quota-blocked**. Predicted CAC (£12–£350) is model-estimated, unvalidated by spend. `Audience` populated 33/49; `Contact Email` only 6/49 → **DM-first outreach** (answers "do we need Apollo?": mostly no).
+
+---
+
 ## 2026-07-09 (night, 3) — vault renamed and repaired; no content changed
 
 Structural only, **no research content touched**. The vault is now `Fleek Wiki/` — one vault, at the repo's

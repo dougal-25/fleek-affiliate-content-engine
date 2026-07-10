@@ -47,12 +47,33 @@ Part of [[index]] · siblings: [[FR Creator Content Formats]], [[FR Resale Platf
 
 **Correction logged**: v1 wrongly doubted `#friperie` — confirmed the core FR thrift tag.
 
-### Open questions / gaps
-- Real FR-native tag frequencies still unknown — **first scrape run reports back actual result counts per tag** (that table becomes a deck receipt).
-- Live-selling vocabulary (Whatnot FR streams) — partial; `#whatnotfr` + déballage/live terms to validate.
-- Add validated tags back to this page after each discovery run (engine feeds Brain, not just Brain feeds engine).
+### ✅ VALIDATED — the hashtag table, from the live discovery run (2026-07-09)
 
-Feeds: **discovery** (Apify keyword seeds), **outreach** (caption vocabulary), **briefs** (native phrasing).
+The loop closed: **the engine fed the Brain back.** These are the seed terms that actually returned *qualified* FR reseller-creators into Airtable (n=49). This is the deck receipt.
+
+| Seed term | Qualified creators found | Verdict |
+|---|---|---|
+| `secondemain` | 7 | ⭐ top producer |
+| `vendeur vinted astuces` (phrase) | 7 | ⭐ top producer — phrases beat tags |
+| `revente` | 5 | strong |
+| `friperieengros` | 4 | strong — highest sourcing-intent |
+| `friperie` | 3 | core term |
+| `friperieenligne` · `revendeur` · `ventelive` · `whatnotfrance` · `fripe` · `grossiste` · `vivre de la revente` | 2 each | productive |
+
+**Confirmed by content, not just search:** across the 49 creators' content keywords, **`friperie` is the single most common term (16 mentions)**, then `vinted` (9), `secondhand` (8), `achat revente` (6), `grossiste` (5). Sourcing vocabulary (grossiste, vente en gros, destockage, fournisseur, ballot) is pervasive.
+
+**Learnings for the next scrape:**
+- **Intent phrases outperform bare hashtags** — "vendeur vinted astuces" and "vivre de la revente" pulled as well as any tag, and pulled *higher-scoring* creators (educators, sourcing vloggers).
+- `friperieengros` is the highest-precision sourcing tag (finds wholesale-buyer intent, not shoppers).
+- `whatnotfrance` + `ventelive` are the live-selling doorway — **`#whatnotfr` now validated** in its `whatnotfrance` form.
+- Full roster + segment economics: [[FR Creator Roster and Segments]].
+
+### Open questions / gaps
+- Counts above are *qualified-creator* counts, not raw per-tag post volumes — the latter still unmeasured.
+- Caption/hook vocabulary (what they actually *say* on camera) still unmined — needs post-level Apify ingest (quota-blocked).
+- Keep appending validated terms after each discovery run (engine feeds Brain, not just Brain feeds engine).
+
+Feeds: **discovery** (Apify keyword seeds — now evidence-ranked), **outreach** (caption vocabulary), **briefs** (native phrasing).
 
 ### Sources
 - https://best-hashtags.com/hashtag/resale/ — EN aggregator, weak
