@@ -49,6 +49,16 @@ def main():
             avatars[handle] = f"data:{mime};base64," + base64.b64encode(body).decode()
     print(f"  {len(avatars)}/{len(creators['records'])} photos (rest get branded initials)")
 
+    # inline video thumbnails so the single file stays fully offline
+    for p in inspiration["posts"]:
+        if p.get("thumb"):
+            path = os.path.join(HERE, p["thumb"].lstrip("/"))
+            if os.path.exists(path):
+                with open(path, "rb") as f:
+                    p["thumb"] = "data:image/jpeg;base64," + base64.b64encode(f.read()).decode()
+            else:
+                p["thumb"] = None
+
     data = {"creators": creators, "funnel": funnel, "trends": trends,
             "inspiration": inspiration, "avatars": avatars}
     # </script> inside a JSON string would end the script block early

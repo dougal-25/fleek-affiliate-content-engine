@@ -111,6 +111,16 @@
     how far each video outperforms its creator's own median — repeatable techniques, not lucky accounts.
     This wall + Airtable feed the next stage: the brief &amp; activation generator.</p>
   </div>
+  <div class="toolbar insp-toolbar">
+    <div class="chip-group" id="insp-format-chips"></div>
+    <select id="insp-sort" class="sort" aria-label="Sort videos">
+      <option value="score">Sort · Best technique</option>
+      <option value="ratio">Sort · Overperformance</option>
+      <option value="views">Sort · Views</option>
+      <option value="date">Sort · Newest</option>
+    </select>
+    <span class="result-count" id="insp-count"></span>
+  </div>
   <div class="insp-grid" id="insp-grid"></div>
 </section>
 
@@ -122,9 +132,12 @@
 
 <div id="tooltip" class="tooltip" hidden></div>
 
-<!-- in-page video player -->
+<!-- in-page video player + per-video analysis -->
 <div id="video-modal" class="video-modal" hidden>
-  <div class="video-frame" id="video-frame"></div>
+  <div class="video-layout">
+    <div class="video-frame" id="video-frame"></div>
+    <aside class="video-analysis" id="video-analysis"></aside>
+  </div>
   <button class="video-close" id="video-close" aria-label="Close player">✕</button>
 </div>
 

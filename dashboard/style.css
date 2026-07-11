@@ -343,37 +343,93 @@ main { max-width: 1280px; margin: 0 auto; padding: var(--sp-5) var(--sp-6) var(-
 .insp-foot a { color: var(--ink); font-weight: 700; margin-left: auto; }
 .insp-date { color: var(--ink-3); font-size: var(--fs-xs); }
 .insp-card.playable { cursor: pointer; }
+.insp-toolbar { align-items: center; }
 .insp-ratio {
   background: var(--gold-tint); border: 1px solid var(--fleek-gold); color: var(--gold-deep);
   font-size: var(--fs-xs); font-weight: 700; padding: 3px 10px; border-radius: var(--r-pill);
 }
-.insp-play {
+
+/* thumbnail stage: image fills, pills overlaid, caption slides in on hover */
+.insp-thumb {
+  position: relative; border-radius: var(--r-md); overflow: hidden;
+  aspect-ratio: 4 / 5; background: var(--ink);
   display: flex; align-items: center; justify-content: center;
-  background: var(--surface-tint); border-radius: var(--r-md);
-  padding: var(--sp-4) 0;
 }
+.insp-thumb img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; transition: transform var(--t-med);
+}
+.insp-card:hover .insp-thumb img { transform: scale(1.04); }
+.thumb-top {
+  position: absolute; top: var(--sp-2); left: var(--sp-2); right: var(--sp-2);
+  display: flex; gap: var(--sp-1); z-index: 2;
+}
+.thumb-top .insp-ratio { background: var(--fleek-gold); color: var(--ink); border: 0; }
+.thumb-bottom {
+  position: absolute; bottom: var(--sp-2); right: var(--sp-2); z-index: 2;
+}
+.thumb-views {
+  background: rgba(17, 24, 39, 0.8); color: var(--ink-inverse);
+  font-size: var(--fs-xs); font-weight: 700; padding: 3px 10px; border-radius: var(--r-pill);
+}
+.thumb-caption {
+  position: absolute; inset: auto 0 0 0; z-index: 3;
+  background: linear-gradient(transparent, rgba(17, 24, 39, 0.92) 35%);
+  color: var(--ink-inverse); font-size: var(--fs-sm); line-height: 1.45;
+  padding: var(--sp-6) var(--sp-3) var(--sp-3);
+  opacity: 0; transform: translateY(8px);
+  transition: opacity var(--t-med), transform var(--t-med);
+}
+.insp-card:hover .thumb-caption { opacity: 1; transform: none; }
 .play-btn {
+  position: relative; z-index: 1;
   width: 44px; height: 44px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  background: var(--ink); color: var(--fleek-gold);
+  background: rgba(17, 24, 39, 0.75); color: var(--fleek-gold);
   font-size: var(--fs-md); padding-left: 4px;
   transition: transform var(--t-fast), background var(--t-fast);
 }
 .insp-card.playable:hover .play-btn { transform: scale(1.15); background: var(--fleek-coral); color: var(--ink-inverse); }
 
-/* ---------- video player modal ---------- */
+/* ---------- video player modal + analysis ---------- */
 .video-modal {
   position: fixed; inset: 0; z-index: 40;
   background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(4px);
   display: flex; align-items: center; justify-content: center;
 }
 .video-modal[hidden] { display: none; }
+.video-layout {
+  display: flex; gap: var(--sp-4); align-items: stretch;
+  max-width: 92vw; max-height: 88vh;
+}
 .video-frame {
-  width: min(360px, 92vw); height: min(660px, 88vh);
+  width: min(340px, 40vw); height: min(640px, 88vh); flex: none;
   background: var(--ink); border-radius: var(--r-lg); overflow: hidden;
   box-shadow: var(--shadow-lift);
 }
 .video-frame iframe { width: 100%; height: 100%; border: 0; }
+.video-analysis {
+  width: min(400px, 44vw); overflow-y: auto;
+  background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow-lift);
+  padding: var(--sp-5);
+}
+.va-head { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; margin-bottom: var(--sp-4); }
+.va-head .pauthor { font-weight: 800; }
+.va-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); margin-bottom: var(--sp-4); }
+.va-stat { background: var(--surface-tint); border-radius: var(--r-md); padding: var(--sp-3); }
+.va-stat .num { font-size: var(--fs-lg); font-weight: 800; }
+.va-stat .lbl { font-size: var(--fs-xs); font-weight: 600; color: var(--ink-3); }
+.va-sec { margin-bottom: var(--sp-4); }
+.va-sec h4 {
+  font-size: var(--fs-xs); font-weight: 700; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: var(--sp-2);
+}
+.va-sec p { font-size: var(--fs-sm); line-height: 1.55; color: var(--ink-2); }
+.va-link { display: inline-block; margin-top: var(--sp-2); color: var(--ink); font-weight: 700; }
+@media (max-width: 860px) {
+  .video-layout { flex-direction: column; overflow-y: auto; }
+  .video-analysis { width: min(340px, 92vw); }
+}
 .video-close {
   position: fixed; top: var(--sp-4); right: var(--sp-4);
   width: 40px; height: 40px; border-radius: 50%; border: 0;

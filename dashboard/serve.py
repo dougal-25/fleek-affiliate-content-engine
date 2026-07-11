@@ -175,6 +175,27 @@ RELEVANT_RE = re.compile(
 
 MAX_AGE_DAYS = 540      # "new": nothing older than ~18 months
 MAX_PER_AUTHOR = 3      # diversity: no single creator dominates the wall
+THUMBS_DIR = os.path.join(HERE, "thumbs")
+
+
+def get_thumb(author, post_id):
+    """Download + cache the video thumbnail via TikTok oEmbed (CDN URLs expire; files don't)."""
+    cached = os.path.join(THUMBS_DIR, f"{post_id}.jpg")
+    if os.path.exists(cached):
+        return f"/thumbs/{post_id}.jpg"
+    try:
+        meta = json.loads(http_get(
+            f"https://www.tiktok.com/oembed?url=https://www.tiktok.com/@{author}/video/{post_id}",
+            timeout=10))
+        body = http_get(meta["thumbnail_url"], timeout=10)
+        if image_type(body):
+            os.makedirs(THUMBS_DIR, exist_ok=True)
+            with open(cached, "wb") as f:
+                f.write(body)
+            return f"/thumbs/{post_id}.jpg"
+    except Exception:
+        pass
+    return None
 
 
 def compute_inspiration(creators):
@@ -210,13 +231,22 @@ def compute_inspiration(creators):
         if per_author[p["author"]] >= MAX_PER_AUTHOR:
             continue
         per_author[p["author"]] += 1
+        eng = (p["likes"] + p["comments"] + p["shares"]) / max(p["views"], 1)
+        try:
+            weekday = datetime.fromisoformat(p["date"].replace("Z", "+00:00")).strftime("%A")
+        except (TypeError, ValueError, AttributeError):
+            weekday = None
         top.append({
             "author": p["author"], "platform": "TikTok", "views": p["views"],
-            "likes": p["likes"], "date": (p["date"] or "")[:10], "text": (p["text"] or "")[:160],
+            "likes": p["likes"], "comments": p["comments"], "shares": p["shares"],
+            "engagement": round(eng * 100, 2), "author_median_views": med[p["author"]],
+            "weekday": weekday,
+            "date": (p["date"] or "")[:10], "text": (p["text"] or "")[:160],
             "tags": p["tags"][:5],
             "format": next((n for n, rx in FORMAT_RES if rx.search(p["text"] or "")), "Post"),
             "url": f"https://www.tiktok.com/@{p['author']}/video/{p['id']}",
             "embed": f"https://www.tiktok.com/embed/v2/{p['id']}",
+            "thumb": get_thumb(p["author"], p["id"]),
             "ratio": round(ratio, 1),
         })
         if len(top) >= 24:
@@ -249,6 +279,8 @@ def load_posts():
                     date = r.get("createTimeISO")
                     views = int(r.get("playCount") or 0)
                     likes = int(r.get("diggCount") or 0)
+                    comments = int(r.get("commentCount") or 0)
+                    shares = int(r.get("shareCount") or 0)
                     author = r.get("author") or ""
                 else:
                     text = (r.get("title") or "") + " " + (r.get("description") or "")
@@ -256,10 +288,13 @@ def load_posts():
                     date = r.get("date")
                     views = int(r.get("viewCount") or 0)
                     likes = int(r.get("likes") or 0)
+                    comments = int(r.get("commentsCount") or 0)
+                    shares = 0  # not captured by the YouTube scraper
                     author = r.get("channelUsername") or r.get("channelName") or ""
                 tags = [t for t in tags if len(t) >= 3 and t not in STOP]
                 posts.append({"platform": platform, "date": date, "views": views,
-                              "likes": likes, "author": author, "tags": tags,
+                              "likes": likes, "comments": comments, "shares": shares,
+                              "author": author, "tags": tags,
                               "text": text.strip()[:180], "id": r.get("id")})
     return posts
 

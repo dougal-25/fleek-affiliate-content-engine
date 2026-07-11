@@ -192,3 +192,25 @@ posts, sponsored phone content) onto the wall. Rebuilt `compute_inspiration` aro
 description links, not the post's own video — unusable). Click a card → in-page modal with the TikTok
 embed playing; Esc/scrim/✕ closes and stops playback. Verified locally (video played in the modal) and on
 production: 24/24 embeddable, 0 irrelevant, dates 2025-04 → 2026-07. Deployed.
+
+## 2026-07-11 — Inspiration v2: thumbnail wall, hover captions, filters, per-video analysis
+
+Doug's review round on the video wall, all landed and live:
+- **Real thumbnails** — fetched via TikTok oEmbed at build time and cached as files (`dashboard/thumbs/`,
+  CDN URLs expire so files are the durable form). 23/24 resolved; the gap falls back to the play tile.
+  Cards are now thumbnail-first (4:5 crop) with format + ×ratio pills and views overlaid; caption is
+  hidden and slides up over the image on hover. Baked file inlines thumbs as data URIs.
+- **Filter toolbar** on the page, same style as the Creators toolbar: format chips (Live selling / Bale
+  unboxing / Haul / Tutorial / Post), sort (best technique / overperformance / views / newest), live count.
+- **Per-video analysis panel** — clicking a card opens player + breakdown side by side: views, ×ratio vs
+  the creator's own median (median shown), likes, comments, shares, engagement rate, hook/caption,
+  hashtags cross-referenced with roster-wide usage from the trends data, and a plain-words "why it's on
+  the wall". This panel is the brief generator's citation surface.
+- **Honesty notes, stated on-screen and to Doug:** average watch time is not public data — it exists only
+  in the creator's own analytics (TikTok shares it via the Creator/Business API only for accounts that
+  authorize us; once creators onboard as partners, that unlocks). Comment *text* is scrapeable — add
+  comments to the next Apify ingest and the analysis panel can carry comment themes.
+- **YouTube on the wall:** blocked only by missing video IDs — the current ingest kept description links,
+  not the post's own URL. Two unlocks: re-run ingest keeping the url field, or add a free
+  YOUTUBE_API_KEY to .env and a build step recovers IDs by title match. Renderer is platform-agnostic
+  and ready either way.
