@@ -133,3 +133,14 @@ def is_supplier(bio: str, business_category: str | None) -> bool:
     cat = str(business_category or "").lower()
     return (any(c in cat for c in SUPPLIER_CATEGORIES)
             or bool(hits(bio, SUPPLIER_BIO_TERMS)))
+
+
+def passes_shortlist_bar(*, is_reseller: bool, fashion_vertical: bool,
+                         likely_supplier: bool) -> bool:
+    """The shortlist gate: a genuine reseller, in the clothing vertical, who is not a supplier.
+
+    Deterministic and comment-free by design. Comments enrich a creator's profile where they exist
+    and are ignored where thin; they never decide who reaches the shortlist. Everyone discovered stays
+    in the roster (Stage: Prospect); passing this bar promotes them (Stage: Qualified).
+    """
+    return bool(is_reseller and fashion_vertical and not likely_supplier)

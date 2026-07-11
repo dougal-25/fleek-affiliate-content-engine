@@ -31,35 +31,11 @@ from content_brain.engine_io import (  # noqa: E402
 from content_brain.signals import (  # noqa: E402
     lexicon_profile, fleek_signals, bio_flags, is_supplier, in_fashion_vertical,
 )
+from content_brain import markets  # noqa: E402
 
-# Verified by the calibration run: @juliacrcl is a Fleek partner, @nathanvialle is the wiki's
-# template bulk-sourcing affiliate, @zozrsl surfaced from Julia's own graph.
-SEEDS_KNOWN_GOOD = ["juliacrcl", "nathanvialle", "zozrsl"]
-
-# Second generation: pro creators the first walk surfaced from @juliacrcl. Walking from these is the
-# actual payoff of a graph — each verified pro is a new vantage point on the same neighbourhood.
-# @whatnot_fr is not a creator but the French hub for live selling, which is where the pro segment
-# lives and where the one Fleek partner we could not find on any scraper (@theliveneedham) most
-# likely is. Its neighbours are the pro-audience creators hashtags cannot reach.
-SEEDS_DISCOVERED_PRO = ["tikvinted_", "resellelitee_", "matthias_achatrevente", "lebarbuluxe",
-                        "cashandrepair", "50.grass", "whatnot_fr"]
-
-# Press-sourced names from "Fleek Wiki/research/French Reseller Creator Shortlist.md". Instagram is
-# where they live — which is why press found them and Perplexity could not find their TikToks.
-# Handles are flagged unverified in the wiki; misses here are data, not errors.
-SEEDS_WIKI = ["bichettekids", "claravictorya", "juliettekitsch", "alichuree", "veryfrip",
-              "nawalbonnefoy", "chamellow", "blackmaroccan", "mangoandsalt", "rubipigeon"]
-
-# The graph inherits the seed's audience: walking from a consumer-fashion account returns
-# consumer-fashion accounts. So a recommendation from a verified pro creator is worth far more than
-# one from a lifestyle creator we merely found in the press. Without this weighting, a --max-candidates
-# cap fills with whichever seed the API happened to return first — in the 2026-07-10 run that silently
-# dropped all 30 of @juliacrcl's recommendations, the only ones that mattered.
-SEED_WEIGHT = {**{s: 3 for s in SEEDS_KNOWN_GOOD},
-               **{s: 3 for s in SEEDS_DISCOVERED_PRO},
-               **{s: 1 for s in SEEDS_WIKI}}
-
-# Supplier detection and the clothing-vertical gate both live in content_brain/signals.py.
+# Seeds and their weights are market-specific and now live in the market profile
+# (content_brain/markets/france.py). Supplier detection and the clothing-vertical gate live in
+# content_brain/signals.py. This script is market-agnostic machinery.
 
 
 def profile_features(p: dict) -> dict:
@@ -113,26 +89,19 @@ def fetch(names: list[str], token: str, label: str) -> tuple[list[dict], float]:
     return ok, cost
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--max-candidates", type=int, default=40, help="cost breaker on stage 2")
-    ap.add_argument("--smoke", action="store_true", help="known-good seeds only")
-    args = ap.parse_args()
+def run_graph_walk(profile: dict, token: str, max_candidates: int, run_dir: str,
+                   smoke: bool = False) -> tuple[list[dict], float]:
+    """Seeds -> relatedProfiles -> candidate profiles -> enriched, ranked rows. Returns (rows, spend).
 
-    load_env()
-    token = os.environ.get("APIFY_API_TOKEN")
-    if not token:
-        sys.exit("APIFY_API_TOKEN not found.")
-
-    seeds = (SEEDS_KNOWN_GOOD if args.smoke
-             else SEEDS_KNOWN_GOOD + SEEDS_DISCOVERED_PRO + SEEDS_WIKI)
-    stamp = dt.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
-    run_dir = os.path.join(os.path.dirname(__file__), "..", "data", "discovery_ig", f"graph_{stamp}")
+    Importable by the orchestrator (scripts/run_discovery.py). Reads seeds/weights from the market
+    profile, so the same machinery serves any market.
+    """
+    seeds = profile["ig_seeds"][:3] if smoke else profile["ig_seeds"]
+    seed_weight = profile["ig_seed_weight"]
 
     seed_profiles, spend = fetch(seeds, token, "seeds")
     save_artifact(run_dir, "raw_seed_profiles", seed_profiles)
 
-    # harvest the graph
     seen = {s.lower() for s in seeds}
     candidates: dict[str, list[str]] = {}
     for p in seed_profiles:
@@ -148,9 +117,9 @@ def main():
               "Seeds still scored below.")
 
     def weight(u: str) -> tuple[int, int]:
-        return (sum(SEED_WEIGHT.get(s, 1) for s in candidates[u]), len(candidates[u]))
+        return (sum(seed_weight.get(s, 1) for s in candidates[u]), len(candidates[u]))
 
-    ranked = sorted(candidates, key=weight, reverse=True)[:args.max_candidates]
+    ranked = sorted(candidates, key=weight, reverse=True)[:max_candidates]
     dropped = len(candidates) - len(ranked)
     print(f"[graph] {len(candidates)} candidates -> resolving {len(ranked)}")
     if dropped:
@@ -176,6 +145,26 @@ def main():
     rows.sort(key=lambda r: (r["mentions_fleek"], not r["likely_supplier"], r["pro_ratio"],
                              r["followers"]), reverse=True)
     save_artifact(run_dir, "creators", rows)
+    return rows, spend
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--market", default="france")
+    ap.add_argument("--max-candidates", type=int, default=40, help="cost breaker on stage 2")
+    ap.add_argument("--smoke", action="store_true", help="known-good seeds only")
+    args = ap.parse_args()
+
+    load_env()
+    token = os.environ.get("APIFY_API_TOKEN")
+    if not token:
+        sys.exit("APIFY_API_TOKEN not found.")
+
+    profile = markets.get(args.market)
+    stamp = dt.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+    run_dir = os.path.join(os.path.dirname(__file__), "..", "data", "discovery_ig", f"graph_{stamp}")
+
+    rows, spend = run_graph_walk(profile, token, args.max_candidates, run_dir, smoke=args.smoke)
 
     print(f"\n{'handle':<24}{'followers':>10}{'eng%':>7}{'pro':>5}{'cons':>6}{'posts':>7}  signals")
     print("-" * 108)

@@ -5,6 +5,39 @@ Dated record of design intent changing. Newest first. Decisions with reasoning g
 
 ---
 
+## 2026-07-11 — The discovery engine went live: market-driven, both channels, into Airtable
+
+The engine is no longer a pile of scripts — it is one market-driven machine. `run_discovery.py` reads a
+**market profile** (`content_brain/markets/france.py`) for everything France-specific and runs both
+channels through one enrichment path: TikTok hashtag scrape + Instagram relatedProfiles graph-walk →
+free gates (lexicon · fashion-vertical · supplier · fleek-code) + a TikTok LLM read → the shortlist bar
+→ Airtable upsert on Creator Key. Adding a market is now writing `markets/germany.py`, not editing the
+engine. Documented in `spec/discovery-engine.md`.
+
+**Doug's channel decisions, encoded:** Instagram and TikTok co-primary, **no fixed weight** (a guess
+would bias the roster; the feedback loop learns the real split per market via `budget.py`). YouTube
+**dropped from active search** — the long-form / pro-credibility channel, roadmap for the pro segment;
+its 16 existing rows stay in the roster. Vinted/Depop/Whatnot are context signals, not search sources.
+
+**The shortlist bar is deliberately comment-free:** genuine reseller AND clothing vertical AND not a
+supplier. Comments enrich a profile where rich, are ignored where thin (Instagram lead-magnet comment
+sections carry no audience signal) — they never decide who reaches the shortlist. This corrects the
+prior session's drift, where comment-classification had become the de-facto gate.
+
+**First live run:** 120 creators upserted, **39 Qualified** across the roster (24 TikTok, 15 Instagram),
+nano→mid tier. Roster now 169. Apify ~$0.30, well within the $29 Starter cap. `@juliacrcl` correctly
+holds two records (TikTok + Instagram) under the platform:handle key.
+
+**Provenance note:** the engine code was authored by a background task that failed on network in its
+sandbox (wrote nothing to Airtable). Reviewed before trusting it, smoke-tested, then run live here.
+
+**Known gap:** the fashion-vertical gate passes on IG-only signal a cross-platform check would catch
+(`@alex_yeddertcg`, a Pokémon-TCG seller, qualified at a low score — well outside the top 10). Tighten
+with second-platform resolution before the final shortlist.
+
+**Open:** strata-pick the final 10 (deliberate pro/hobbyist mix across both channels) from the 39
+Qualified — the last step before the next case-study sections.
+
 ## 2026-07-10 — Instagram graph walk, second generation: 165 creators, 10 survive
 
 Apify moved to Starter ($29/mo), the leaked token was rotated. The graph was re-walked from 20 seeds — the
