@@ -12,6 +12,7 @@ Serves the dashboard and proxies its data so the Airtable key never reaches the 
 Stdlib only. Run:  python3 dashboard/serve.py   then open http://localhost:8787
 """
 import json
+import math
 import os
 import re
 import sys
@@ -164,32 +165,63 @@ FORMAT_RULES = [
 FORMAT_RES = [(name, re.compile(pat, re.I)) for name, pat in FORMAT_RULES]
 
 
+# Relevance gate: a video must speak reselling/secondhand-fashion or it does not enter
+# the inspiration wall, no matter how viral it went.
+RELEVANT_RE = re.compile(
+    r"friperie|fripe\b|vinted|seconde ?main|secondhand|second-hand|thrift|resell|revente"
+    r"|achat.?revente|grossiste|wholesale|en gros|fournisseur|sourcing|balle\b|ballot"
+    r"|d[ée]ballage|unboxing|whatnot|vide.?dressing|depop|vintage|streetwear|outfit|ootd"
+    r"|haul|brocante|destockage|dressing|pi[èe]ce|v[êe]tement|mode\b|frip", re.I)
+
+MAX_AGE_DAYS = 540      # "new": nothing older than ~18 months
+MAX_PER_AUTHOR = 3      # diversity: no single creator dominates the wall
+
+
 def compute_inspiration(creators):
-    handles = {}
-    for r in creators["records"]:
-        h = (r["fields"].get("Handle") or "").lower()
-        if h:
-            handles[h] = r["fields"]
-    posts = load_posts()
-    top = []
-    for p in sorted(posts, key=lambda p: -p["views"]):
-        c = handles.get((p["author"] or "").lower())
-        text = p["text"] or ""
-        fmt_label = next((n for n, rx in FORMAT_RES if rx.search(text)), "Post")
-        url = None
-        if p["platform"] == "TikTok" and p.get("id"):
-            url = f"https://www.tiktok.com/@{p['author']}/video/{p['id']}"
-        elif c and c.get("Profile URL"):
-            url = c["Profile URL"]
+    """TikTok-only (natively embeddable), relevance-gated, ranked by how far a video
+    outperforms its creator's own median — a repeatable technique, not a big account."""
+    posts = [p for p in load_posts() if p["platform"] == "TikTok" and p.get("id")]
+    now = datetime.now(timezone.utc)
+
+    med = {}
+    for p in posts:
+        med.setdefault(p["author"], []).append(p["views"])
+    med = {a: sorted(v)[len(v) // 2] or 1 for a, v in med.items()}
+
+    scored = []
+    for p in posts:
+        text_all = (p["text"] or "") + " " + " ".join(p["tags"])
+        if not RELEVANT_RE.search(text_all) or p["views"] < 1000:
+            continue
+        try:
+            age = (now - datetime.fromisoformat(p["date"].replace("Z", "+00:00"))).days
+        except (TypeError, ValueError, AttributeError):
+            continue
+        if age > MAX_AGE_DAYS:
+            continue
+        ratio = p["views"] / max(med[p["author"]], 1)
+        recency = 1.5 if age <= 90 else 1.2 if age <= 180 else 1.0
+        score = math.sqrt(max(ratio, 0.1)) * math.log10(p["views"] + 10) * recency
+        scored.append((score, ratio, age, p))
+
+    scored.sort(key=lambda t: -t[0])
+    top, per_author = [], Counter()
+    for score, ratio, age, p in scored:
+        if per_author[p["author"]] >= MAX_PER_AUTHOR:
+            continue
+        per_author[p["author"]] += 1
         top.append({
-            "author": p["author"], "platform": p["platform"], "views": p["views"],
-            "likes": p["likes"], "date": (p["date"] or "")[:10], "text": text[:160],
-            "tags": p["tags"][:5], "format": fmt_label, "url": url,
-            "on_roster": bool(c), "segment": c.get("Segment") if c else None,
+            "author": p["author"], "platform": "TikTok", "views": p["views"],
+            "likes": p["likes"], "date": (p["date"] or "")[:10], "text": (p["text"] or "")[:160],
+            "tags": p["tags"][:5],
+            "format": next((n for n, rx in FORMAT_RES if rx.search(p["text"] or "")), "Post"),
+            "url": f"https://www.tiktok.com/@{p['author']}/video/{p['id']}",
+            "embed": f"https://www.tiktok.com/embed/v2/{p['id']}",
+            "ratio": round(ratio, 1),
         })
         if len(top) >= 24:
             break
-    return {"posts": top, "total_pool": len(posts)}
+    return {"posts": top, "total_pool": len(posts), "gate": "relevance+recency, ranked by overperformance"}
 
 
 def now_iso():

@@ -342,3 +342,41 @@ main { max-width: 1280px; margin: 0 auto; padding: var(--sp-5) var(--sp-6) var(-
 .insp-foot .pauthor { font-weight: 700; }
 .insp-foot a { color: var(--ink); font-weight: 700; margin-left: auto; }
 .insp-date { color: var(--ink-3); font-size: var(--fs-xs); }
+.insp-card.playable { cursor: pointer; }
+.insp-ratio {
+  background: var(--gold-tint); border: 1px solid var(--fleek-gold); color: var(--gold-deep);
+  font-size: var(--fs-xs); font-weight: 700; padding: 3px 10px; border-radius: var(--r-pill);
+}
+.insp-play {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-tint); border-radius: var(--r-md);
+  padding: var(--sp-4) 0;
+}
+.play-btn {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--ink); color: var(--fleek-gold);
+  font-size: var(--fs-md); padding-left: 4px;
+  transition: transform var(--t-fast), background var(--t-fast);
+}
+.insp-card.playable:hover .play-btn { transform: scale(1.15); background: var(--fleek-coral); color: var(--ink-inverse); }
+
+/* ---------- video player modal ---------- */
+.video-modal {
+  position: fixed; inset: 0; z-index: 40;
+  background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+}
+.video-modal[hidden] { display: none; }
+.video-frame {
+  width: min(360px, 92vw); height: min(660px, 88vh);
+  background: var(--ink); border-radius: var(--r-lg); overflow: hidden;
+  box-shadow: var(--shadow-lift);
+}
+.video-frame iframe { width: 100%; height: 100%; border: 0; }
+.video-close {
+  position: fixed; top: var(--sp-4); right: var(--sp-4);
+  width: 40px; height: 40px; border-radius: 50%; border: 0;
+  background: var(--surface); color: var(--ink); font-size: var(--fs-md);
+  box-shadow: var(--shadow-lift);
+}

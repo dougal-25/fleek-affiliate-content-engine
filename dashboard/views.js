@@ -81,23 +81,43 @@ async function loadTrends() {
   }));
 }
 
-/* inspiration: top roster videos — the feed for the brief & activation generator */
+/* inspiration: relevance-gated roster videos, playable in an in-page TikTok embed */
+function openPlayer(p) {
+  const modal = $("#video-modal");
+  const frame = $("#video-frame");
+  frame.replaceChildren();
+  const iframe = document.createElement("iframe");
+  iframe.src = p.embed;
+  iframe.allow = "autoplay; encrypted-media; fullscreen";
+  iframe.setAttribute("allowfullscreen", "");
+  frame.append(iframe);
+  modal.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+function closePlayer() {
+  const modal = $("#video-modal");
+  if (modal.hidden) return;
+  modal.hidden = true;
+  $("#video-frame").replaceChildren();  // removing the iframe stops playback
+  document.body.style.overflow = "";
+}
+
 async function loadInspiration() {
   const data = await getData("inspiration");
   $("#insp-grid").replaceChildren(...data.posts.map(p => {
-    const card = div("insp-card");
+    const card = div("insp-card playable");
     const top = div("insp-top");
     top.append(span("insp-format", p.format));
-    if (PLATFORM_ICONS[p.platform]) {
-      const ic = span("ptoggle");
-      ic.style.pointerEvents = "none";
-      ic.innerHTML = PLATFORM_ICONS[p.platform];
-      top.append(ic);
-    }
+    if (p.ratio >= 2) top.append(span("insp-ratio", `×${p.ratio} their usual`));
     const views = span("insp-views", fmt(p.views));
     views.append(Object.assign(document.createElement("small"), { textContent: " views" }));
     top.append(views);
     card.append(top);
+
+    const stage = div("insp-play");
+    stage.append(span("play-btn", "▶"));
+    card.append(stage);
+
     card.append(div("insp-text", (p.text || "(no caption)")));
     const tags = div("tag-row");
     (p.tags || []).forEach(t => tags.append(span("tag", "#" + t)));
@@ -107,13 +127,19 @@ async function loadInspiration() {
     if (p.url) {
       const a = document.createElement("a");
       a.href = p.url; a.target = "_blank"; a.rel = "noopener";
-      a.textContent = "Watch ↗";
+      a.textContent = "TikTok ↗";
+      a.addEventListener("click", e => e.stopPropagation());
       foot.append(a);
     }
     card.append(foot);
+    if (p.embed) card.addEventListener("click", () => openPlayer(p));
     return card;
   }));
 }
+
+$("#video-close").addEventListener("click", closePlayer);
+$("#video-modal").addEventListener("click", e => { if (e.target.id === "video-modal") closePlayer(); });
+addEventListener("keydown", e => { if (e.key === "Escape") closePlayer(); });
 
 loadFunnel().catch(console.error);
 loadTrends().catch(console.error);

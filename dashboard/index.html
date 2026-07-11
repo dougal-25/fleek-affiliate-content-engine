@@ -106,9 +106,10 @@
 <!-- ============ INSPIRATION ============ -->
 <section id="view-inspiration" class="view">
   <div class="panel-head inspiration-head">
-    <h2>Top-performing videos from the roster</h2>
-    <p class="panel-sub">What already works — the raw feed for the next stage: the brief &amp; activation
-    generator studies these formats, hooks and hashtags before writing a creator's brief.</p>
+    <h2>Inspiration — proven reseller content, playable here</h2>
+    <p class="panel-sub">Relevance-gated (reselling &amp; secondhand fashion only), max 18 months old, ranked by
+    how far each video outperforms its creator's own median — repeatable techniques, not lucky accounts.
+    This wall + Airtable feed the next stage: the brief &amp; activation generator.</p>
   </div>
   <div class="insp-grid" id="insp-grid"></div>
 </section>
@@ -120,6 +121,12 @@
 <aside id="drawer" class="drawer" aria-hidden="true"></aside>
 
 <div id="tooltip" class="tooltip" hidden></div>
+
+<!-- in-page video player -->
+<div id="video-modal" class="video-modal" hidden>
+  <div class="video-frame" id="video-frame"></div>
+  <button class="video-close" id="video-close" aria-label="Close player">✕</button>
+</div>
 
 <script src="charts.js"></script>
 <script src="translations.js"></script>

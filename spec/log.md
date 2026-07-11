@@ -176,3 +176,19 @@ bundle path also 404s). Full contact data remains in the local and baked version
 / local dev `/api/<kind>`. Avatars unified behind an `AVATARS` manifest (data URIs when baked, static
 `/avatars/*.jpg` when hosted, proxy in local dev). Deploys via `cd dashboard && npx vercel deploy --prod`;
 re-run `make_static.py` after a new ingest.
+
+## 2026-07-10 — Inspiration becomes a playable, relevance-gated video wall
+
+Doug watched the first videos and caught the flaw: raw view-count ranking let off-topic virals (protein
+posts, sponsored phone content) onto the wall. Rebuilt `compute_inspiration` around three rules:
+1. **Relevance gate (hard):** caption+hashtags must match the reselling/secondhand-fashion vocabulary or
+   the video does not enter, regardless of views.
+2. **Recency:** nothing older than 18 months; ≤90-day-old videos get a ranking boost.
+3. **Ranked by overperformance:** score = √(views ÷ creator's own median views) × log(views) × recency —
+   surfaces repeatable techniques, not big accounts. Max 3 videos per creator for diversity. The ×N
+   multiple is shown on each card ("×286 their usual").
+
+**Playable in-platform:** TikTok-only wall (natively embeddable; the YouTube "links" field holds
+description links, not the post's own video — unusable). Click a card → in-page modal with the TikTok
+embed playing; Esc/scrim/✕ closes and stops playback. Verified locally (video played in the modal) and on
+production: 24/24 embeddable, 0 irrelevant, dates 2025-04 → 2026-07. Deployed.
