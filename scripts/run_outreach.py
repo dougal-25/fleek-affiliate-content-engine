@@ -43,7 +43,7 @@ from pathlib import Path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from content_brain import evidence  # noqa: E402
 from content_brain.engine_io import (  # noqa: E402
-    APIFY_STATS, CLAUDE_STATS, Airtable, claude_json, load_env,
+    APIFY_STATS, CLAUDE_STATS, Airtable, claude_json, creator_key, load_env,
 )
 
 RECEIPTS_DIR = Path(__file__).resolve().parents[1] / "data" / "outreach"
@@ -260,7 +260,7 @@ What their audience commented:
 
 {EXTRACT_SCHEMA}"""
     try:
-        return claude_json(prompt, EXTRACT_SYSTEM, max_tokens=2000)
+        return claude_json(prompt, EXTRACT_SYSTEM, max_tokens=2000, cache=True)
     except Exception as e:  # noqa: BLE001
         print(f"  ! extract failed @{row.get('Handle')}: {e}")
         return None
@@ -282,7 +282,7 @@ null, do not speculate about how they source.
 
 {DRAFT_SCHEMA}"""
     try:
-        return claude_json(prompt, DRAFT_SYSTEM, max_tokens=3000)
+        return claude_json(prompt, DRAFT_SYSTEM, max_tokens=3000, cache=True)
     except Exception as e:  # noqa: BLE001
         print(f"  ! draft failed @{row.get('Handle')}: {e}")
         return None
@@ -408,7 +408,15 @@ def main():
             "evidence": ev, "variables": variables, "drafts": drafts,
         }, ensure_ascii=False, indent=1, default=str))
 
-        airtable_rows.append({"Handle": handle, "Outreach Draft": body, "Outreach Status": "Draft"})
+        airtable_rows.append({
+            # Key on Creator Key (platform:handle), not Handle — the base was migrated because a
+            # French reseller and an IG real-estate coach shared a handle. Upserting on Handle would
+            # hit the wrong row. Matches how discovery writes (engine_io.creator_key).
+            "Creator Key": creator_key(r.get("Platform"), handle),
+            "Handle": handle,
+            "Outreach Draft": body,
+            "Outreach Status": "Draft",
+        })
         mark = " ⚠ FLAGGED" if handle in flags else ""
         print(f"  ✓ @{handle:<26} {len(ev['posts'])} posts, {len(ev['comments'])} comments "
               f"→ 3 touches ({drafts.get('channel')}, register={variables.get('register')}){mark}")
@@ -423,7 +431,7 @@ def main():
             print(airtable_rows[0]["Outreach Draft"])
             print("─" * 72)
     else:
-        n = at.upsert("Creators", airtable_rows, merge_on=["Handle"]) if airtable_rows else 0
+        n = at.upsert("Creators", airtable_rows, merge_on=["Creator Key"]) if airtable_rows else 0
         at.create("Runs", {
             "Run": f"outreach_drafts {started}", "Job": "outreach_drafts",
             "Started": started, "Finished": finished, "Status": "Success",

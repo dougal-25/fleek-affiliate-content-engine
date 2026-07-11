@@ -25,7 +25,20 @@ import datetime as dt
 import re
 from typing import Any
 
-from .engine_io import apify_run
+from .engine_io import APIFY_STATS, apify_run as _apify_run
+
+
+def _run(actor: str, payload: dict, token: str) -> list[dict]:
+    """Call an Apify actor, return just its dataset items, and tally the call.
+
+    engine_io.apify_run returns (items, run_metadata) — the run object carries cost, which the
+    outreach evidence path doesn't need per call; it only tallies calls/items for the scale
+    receipt. This wrapper is the one place that unpacks the tuple, so the adapters below stay clean.
+    """
+    items, _meta = _apify_run(actor, payload, token)
+    APIFY_STATS["calls"] += 1
+    APIFY_STATS["items"] += len(items)
+    return items
 
 TIKTOK_HANDLE_RE = re.compile(r"tiktok\.com/@([^/?#]+)")
 POST_TEXT_KEYS = ("text", "caption", "title", "desc")
@@ -116,7 +129,7 @@ def _blank(handles: list[str]) -> dict[str, dict]:
 
 def _tiktok(handles: list[str], cutoff: dt.date, per_profile: int, token: str) -> dict[str, dict]:
     out = _blank(handles)
-    videos = apify_run("clockworks~tiktok-scraper", {
+    videos = _run("clockworks~tiktok-scraper", {
         "profiles": handles,
         "resultsPerPage": per_profile,
         "profileSorting": "latest",
@@ -134,7 +147,7 @@ def _tiktok(handles: list[str], cutoff: dt.date, per_profile: int, token: str) -
             out[handle]["posts"].append(_norm_post(v))
             out[handle]["display_name"] = out[handle]["display_name"] or am.get("nickName")
 
-    comments = apify_run("clockworks~tiktok-comments-scraper", {
+    comments = _run("clockworks~tiktok-comments-scraper", {
         "profiles": handles,
         "resultsPerPage": 3,
         "topLevelCommentsPerPost": 12,
@@ -161,7 +174,7 @@ def _tiktok(handles: list[str], cutoff: dt.date, per_profile: int, token: str) -
 
 def _instagram(handles: list[str], cutoff: dt.date, per_profile: int, token: str) -> dict[str, dict]:
     out = _blank(handles)
-    posts = apify_run("apify~instagram-scraper", {
+    posts = _run("apify~instagram-scraper", {
         "directUrls": [f"https://www.instagram.com/{h}/" for h in handles],
         "resultsType": "posts",
         "resultsLimit": per_profile,
@@ -180,7 +193,7 @@ def _instagram(handles: list[str], cutoff: dt.date, per_profile: int, token: str
     post_urls = [p["url"] for e in out.values() for p in e["posts"][:3] if p["url"]]
     if not post_urls:
         return out
-    comments = apify_run("apify~instagram-comment-scraper", {
+    comments = _run("apify~instagram-comment-scraper", {
         "directUrls": post_urls,
         "resultsLimit": 12 * len(handles),
         "includeNestedComments": False,
@@ -195,7 +208,7 @@ def _instagram(handles: list[str], cutoff: dt.date, per_profile: int, token: str
 def _youtube(handles: list[str], cutoff: dt.date, per_profile: int, token: str,
              transcripts: bool = True) -> dict[str, dict]:
     out = _blank(handles)
-    videos = apify_run("streamers~youtube-scraper", {
+    videos = _run("streamers~youtube-scraper", {
         "startUrls": [{"url": f"https://www.youtube.com/@{h}/videos"} for h in handles],
         "maxResults": per_profile,
         "sortingOrder": "date",  # actor enum: relevance | rating | date | views
@@ -232,7 +245,7 @@ def _youtube(handles: list[str], cutoff: dt.date, per_profile: int, token: str,
     video_urls = [p["url"] for e in out.values() for p in e["posts"][:3] if p["url"]]
     if not video_urls:
         return out
-    comments = apify_run("streamers~youtube-comments-scraper", {
+    comments = _run("streamers~youtube-comments-scraper", {
         "startUrls": [{"url": u} for u in video_urls],
         "maxComments": 12,
         "sortCommentsBy": "TOP_COMMENTS",

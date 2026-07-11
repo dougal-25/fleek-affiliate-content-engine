@@ -33,6 +33,15 @@ Two more open flanks:
 
 Depop won't disclose ambassador pay, Whatnot's UGC selection odds are unstated, ThredUp's rate varies by network with no canonical number. **A program that publishes clear, fixed payout terms stands out purely by contrast.**
 
+## 🚨 2026-07-09 post-level evidence — Whatnot's FR creator programme is ACTIVE and dominant
+
+Not a hypothetical benchmark. Measured in the top creators' own posts ([[Creator Post-Level Signals]]):
+- **72 `whatnot.com` links** in their YouTube descriptions — **Julia Courcelle (50)**, **Alex Yedder (22)**. Whatnot is *paying/partnering* the exact creators Fleek wants.
+- On TikTok, **`#whatnotpartner` posts carry a median 786,250 plays** (n=4) — **the highest-performing hashtag in the entire 300-post sample** (next best: `#storytime`, 219k). Partner content doesn't just exist, it outperforms everything.
+- `whatnot` appears **123×** across YouTube titles/descriptions and **29×** on TikTok.
+
+→ **Whatnot is the live competitor for creator attention, not a paper comparison.** Any Fleek programme is competing for the same slots in the same descriptions. Note the flip side: Whatnot pays for *content/links*; it still cannot offer **wholesale sourcing margin** — the fusion wedge holds, but the attention fight is real and already underway.
+
 ## 2026-07-09 enrichment — Whatnot FR/EU economics + resale-affiliate landscape
 
 - **Whatnot operates in France/EU** at **6.67% + VAT** seller commission (vs 8% US/CA/AU); electronics 5%; **0% on the portion over €1,500** (limited-time); **tips 0% commission** (seller keeps 100%). Affiliate side: link-sharing commission with a **72-hour (3-day) cookie**. — [crosslist](https://crosslist.com/blog/whatnot-fees-for-sellers), [whatnotaffiliates](https://www.whatnotaffiliates.com)

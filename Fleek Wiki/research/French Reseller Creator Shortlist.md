@@ -1,7 +1,10 @@
 # French Reseller Creator Shortlist
 
 > The seed list — named French friperie/vintage/seconde-main reseller creators, weighted to rising/micro. Partially closes the founding-sweep "no verified handles" gap. Sourced 2026-07-09. Treat as **hypotheses to verify in the discovery scrape**, not confirmed metrics.
-Part of [[index]] · siblings: [[Vintage Reseller Creator Ecosystem]], [[FR Creator Content Formats]], [[French Reseller Community Sentiment]]
+Part of [[index]] · siblings: [[Vintage Reseller Creator Ecosystem]], [[FR Creator Content Formats]], [[French Reseller Community Sentiment]], [[FR Creator Roster and Segments]]
+
+> **⚠️ Read this page alongside [[FR Creator Roster and Segments]]** — that is the *empirical* roster (49 creators actually scraped + scored into Airtable). This page is the *press-sourced* complement. They are **different, mostly non-overlapping sets**: the press names IG-heavy styling/thrift creators; the scrape found YouTube/TikTok **sourcing vloggers, wholesale buyers and reseller educators** — a far better Fleek fit.
+> **Convergence worth noting:** `Bartorico` appears in both (independently surfaced in the Reddit sweep as the FR "teach the resale business" voice, *and* scored 72 by the engine). That's two independent methods agreeing — the strongest signal in the vault.
 
 ### Micro / nano creators worth watching (the up-and-comers)
 The richest lane — actual named French seconde-main creators, mostly <50k:

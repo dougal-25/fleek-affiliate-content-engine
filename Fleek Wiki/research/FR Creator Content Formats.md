@@ -43,7 +43,8 @@ Perplexity flagged a **hard evidence gap**: it found robust *US* TikTok resale d
 
 ### Open questions / gaps
 - FR-specific (vs global EN) format split is inferred, not measured — validate against scraped FR creator content in discovery runs.
-- **Virality drivers above are US-sourced** — the single biggest thing the discovery scrape should measure empirically for France (geo-tag lift, live-vs-haul conversion, "archive" framing).
+- ~~**Virality drivers above are US-sourced**~~ → ✅ **partially closed 2026-07-09** by the post-level scrape ([[Creator Post-Level Signals]]): **geo-tagging is empirically real in France** — `#friperiemontpellier` (45), `#vintagemontpellier` (21), `#friperieparis` (11), `#bonneadresseparis` (11). Also surfaced a native FR genre the vault had no record of: **`#preparationcommande` (26)** (order-prep/packing), plus `#liveshopping` (23), `#vintedtips` (29), `#asmrvintage` (13). Still unmeasured: live-vs-haul conversion, "archive" framing.
+- **Platform split matters more than format choice**: TikTok = friperie / au-kilo / live-selling; YouTube = Vinted-resale business, courses, suppliers, sneakers. They are different audiences — brief them differently. See [[Creator Post-Level Signals]].
 - Haul-engagement drivers are EN r/ThriftStoreHauls (via aggregator) — confirm the same hooks land on French TikTok.
 
 Feeds: **briefs** (format selection + hooks + the price-reveal/resale-reveal templates + audience question-topics), **scoring** (format-capability factor).

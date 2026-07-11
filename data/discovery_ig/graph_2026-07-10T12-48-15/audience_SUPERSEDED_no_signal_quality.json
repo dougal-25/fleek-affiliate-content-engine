@@ -1,0 +1,239 @@
+{
+ "juliacrcl": {
+  "audience_mix": {
+   "pro_reseller": 25,
+   "hobbyist_reseller": 30,
+   "general_consumer": 45
+  },
+  "dominant": "general_consumer",
+  "sourcing_intent_comments": 4,
+  "self_promo_comments": 7,
+  "spam_comments": 9,
+  "spam_campaigns": [
+   "Lbcx"
+  ],
+  "evidence": [
+   {
+    "handle": "@kill.blt",
+    "quote": "Hey, ou t’arrive a trouver tes sacs de luxe à petit prix j’essaye de chercher hier partout 🥲",
+    "label": "general_consumer",
+    "why": "Wants to find luxury bags cheap to buy for self, not sourcing wholesale stock."
+   },
+   {
+    "handle": "@morandguillaume",
+    "quote": "où est ce que tu te fournis pour les articles de luxe ?",
+    "label": "pro_reseller",
+    "why": "Asking where creator sources luxury stock = sourcing intent."
+   },
+   {
+    "handle": "@catherinecchenais",
+    "quote": "afin de pouvoir réussir, est-ce que tu proposes une formation sérieuse",
+    "label": "hobbyist_reseller",
+    "why": "Beginner wanting a course to start reselling."
+   },
+   {
+    "handle": "@_wass____i____m",
+    "quote": "Lot vêtements marques – 9 pièces (The North Face, Polo Ralph Lauren...) Je vends un lot",
+    "label": "hobbyist_reseller",
+    "why": "Self-promo of own lot for sale, casual offloader not a wholesale buyer."
+   },
+   {
+    "handle": "@lara_dnh",
+    "quote": "J’ai fait mes premiers 1k grâce à Lbcx",
+    "label": "pro_reseller",
+    "why": "Coordinated bot testimonial for Lbcx, excluded as spam."
+   }
+  ],
+  "fleek_awareness": false,
+  "confidence": "Medium",
+  "reasoning": "Creator does Vinted flipping/thrift-sourcing content. Audience is mixed: many general consumers commenting on Vinted's decline, arnaques, or wanting to buy items to wear; a hobbyist cluster asking beginner logistics (labels, statut auto-entrepreneur, formation, delays); and a smaller pro cluster genuinely asking sourcing questions ('où te fournis-tu pour le luxe'). Multiple accounts advertise their own Vinted handles or lots (self-promo, not sourcing). A clear coordinated spam campaign praises the tool 'Lbcx' in near-identical testimonial language across many accounts (lara_dnh, rechinah, myliahmaddy, laraa.evah, judi.te553, mimih4945) — excluded from all counts. Sourcing intent is present but minority, so general_consumer dominates."
+ },
+ "zozrsl": {
+  "audience_mix": {
+   "pro_reseller": 0,
+   "hobbyist_reseller": 0,
+   "general_consumer": 100
+  },
+  "dominant": "general_consumer",
+  "sourcing_intent_comments": 0,
+  "self_promo_comments": 1,
+  "spam_comments": 0,
+  "spam_campaigns": [],
+  "evidence": [
+   {
+    "handle": "@romain_bellat",
+    "quote": "C’est quoi le Saas que t’utilises en début de vidéo frro ?",
+    "label": "general_consumer",
+    "why": "Asking about a software tool the creator uses, not sourcing wholesale stock"
+   },
+   {
+    "handle": "@jawad.13k01",
+    "quote": "mon vinted : JAWADwsh",
+    "label": "general_consumer",
+    "why": "Self-promotion of own Vinted; casual seller offloading, not a wholesale buyer"
+   },
+   {
+    "handle": "@loris.palermo",
+    "quote": "ÉTÉ",
+    "label": "general_consumer",
+    "why": "One-word keyword drop responding to a prompt/giveaway, no reseller intent"
+   },
+   {
+    "handle": "@kiaraa.m57",
+    "quote": "Guide 🔥",
+    "label": "general_consumer",
+    "why": "Requesting a free guide from the creator, engagement-bait reply not sourcing"
+   },
+   {
+    "handle": "@dems_76",
+    "quote": "Guide stp",
+    "label": "general_consumer",
+    "why": "Asking for the guide, no evidence of buying stock to resell"
+   }
+  ],
+  "fleek_awareness": false,
+  "confidence": "High",
+  "reasoning": "Virtually all comments are single-word keyword replies ('Niche', 'Été', 'Guide') that appear to be responses to a creator prompt or giveaway/lead-magnet mechanic, not authentic audience signals of reselling. No comment asks about bales, suppliers, price per kilo, margins, sell-through, or inventory. The only substantive comments are a question about the creator's SaaS tool and a Vinted self-promo, neither of which indicates wholesale sourcing intent. No coordinated tool-praising testimonial spam detected, so spam_campaigns is empty. With zero sourcing signals and no wearing/styling depth either, the audience defaults to general_consumer engagement-farming behavior rather than actual Fleek buyers."
+ },
+ "rubipigeon": {
+  "audience_mix": {
+   "pro_reseller": 0,
+   "hobbyist_reseller": 0,
+   "general_consumer": 100
+  },
+  "dominant": "general_consumer",
+  "sourcing_intent_comments": 0,
+  "self_promo_comments": 0,
+  "spam_comments": 0,
+  "spam_campaigns": [],
+  "evidence": [
+   {
+    "handle": "@diane_rgd",
+    "quote": "ton débardeur est parfait ! il vient d'où?",
+    "label": "general_consumer",
+    "why": "Asking where to buy the item to wear, not sourcing stock"
+   },
+   {
+    "handle": "@akpe.es",
+    "quote": "Elle vient d ou la robe ? Svppp😍",
+    "label": "general_consumer",
+    "why": "Wants to buy the dress to wear"
+   },
+   {
+    "handle": "@claraxxvi",
+    "quote": "Ce look est insane 🔥 je ne trouve pas les bottes sur leur site 😢",
+    "label": "general_consumer",
+    "why": "Looking for a specific item to purchase and wear"
+   },
+   {
+    "handle": "@margauxfournier",
+    "quote": "Wooow! Il vient d’où le corset ?😻",
+    "label": "general_consumer",
+    "why": "Compliment plus where-to-buy question for personal wear"
+   },
+   {
+    "handle": "@maoui2saintdenis",
+    "quote": "Cette robe je m’en remettrai jamais",
+    "label": "general_consumer",
+    "why": "Pure admiration of the garment, styling/fashion appreciation"
+   }
+  ],
+  "fleek_awareness": false,
+  "confidence": "High",
+  "reasoning": "This is a fashion/design creator (likely a clothing brand or maker, with references to sewing techniques, pop-ups, and an online boutique). Comments are overwhelmingly compliments, styling reactions, and 'where can I buy this item to wear' requests directed at named products on 'their site' or a pop-up shop. No one asks about bales, wholesale, price per kilo, suppliers, margins, or how to start reselling. No self-promotion of resale shops and no coordinated tool/app spam. The audience is end consumers buying to wear, not resellers sourcing stock."
+ },
+ "the_reservery": {
+  "audience_mix": {
+   "pro_reseller": 0,
+   "hobbyist_reseller": 2,
+   "general_consumer": 98
+  },
+  "dominant": "general_consumer",
+  "sourcing_intent_comments": 1,
+  "self_promo_comments": 1,
+  "spam_comments": 0,
+  "spam_campaigns": [],
+  "evidence": [
+   {
+    "handle": "@2lafleurdelombre",
+    "quote": "Adresse du site stp merci😮😮❤️❤️",
+    "label": "hobbyist_reseller",
+    "why": "Asking for the site address to buy — possible sourcing curiosity but low-effort, beginner-level"
+   },
+   {
+    "handle": "@arthur.gllmt",
+    "quote": "C’est quelle taille la Doudoune Moncler à 1€ ?",
+    "label": "general_consumer",
+    "why": "Asking about size of a specific item — wants to acquire it to wear, not resell"
+   },
+   {
+    "handle": "@baptiste_a2l",
+    "quote": "Je veux bien la doudoune moncler 😇",
+    "label": "general_consumer",
+    "why": "Wants the item itself, giveaway/wear intent"
+   },
+   {
+    "handle": "@taqwaa_35",
+    "quote": "J’ai des vestes de luxe à vendre vous me les prenez ?",
+    "label": "general_consumer",
+    "why": "Offering own goods to sell — self-promo/offloader, not a wholesale buyer"
+   },
+   {
+    "handle": "@eliegnves",
+    "quote": "je peux avoir le snap de la mannequin svp",
+    "label": "general_consumer",
+    "why": "Interested in the model, not sourcing stock"
+   }
+  ],
+  "fleek_awareness": false,
+  "confidence": "High",
+  "reasoning": "The content appears to be luxury-item drops/giveaways aimed at consumers. The overwhelming majority of comments are emoji reactions, compliments, giveaway entries ('Je veux les 100e', 'Je veux bien la doudoune moncler'), and questions about specific items to acquire/wear. No comments discuss margin, sell-through, bales, price per kilo, volume, or bulk sourcing — the signals of reseller intent. One vague request for the site address (@2lafleurdelombre) is treated as low-level hobbyist curiosity. @taqwaa_35 is offering their own goods to sell (offloader/self-promo, not a wholesale buyer). No coordinated tool/app spam detected. Audience is dominated by general consumers who want to wear or win items."
+ },
+ "bichettekids": {
+  "audience_mix": {
+   "pro_reseller": 0,
+   "hobbyist_reseller": 0,
+   "general_consumer": 100
+  },
+  "dominant": "general_consumer",
+  "sourcing_intent_comments": 0,
+  "self_promo_comments": 0,
+  "spam_comments": 0,
+  "spam_campaigns": [],
+  "evidence": [
+   {
+    "handle": "@theverybigsheep",
+    "quote": "Disponibles où svp ?",
+    "label": "general_consumer",
+    "why": "Asking where to buy the item to wear, not sourcing wholesale stock."
+   },
+   {
+    "handle": "@aurore_choanier",
+    "quote": "Oh lala ❤️ c’est quelle taille la première tenue ?",
+    "label": "general_consumer",
+    "why": "Asking about size of an outfit — shopper intent to wear."
+   },
+   {
+    "handle": "@ninagos",
+    "quote": "Incroyable cette sélection !",
+    "label": "general_consumer",
+    "why": "Compliment on the selection, no resale or sourcing intent."
+   },
+   {
+    "handle": "@mercato.paris",
+    "quote": "👏👏👏 bravo pour vos looks incroyables et merci pour votre aide et votre implication !",
+    "label": "general_consumer",
+    "why": "Praise for looks/event, no wholesale sourcing signal."
+   },
+   {
+    "handle": "@charlottebaillydeco",
+    "quote": "Je suis contente que les dessins de mon père... plaisent encore aujourd'hui",
+    "label": "general_consumer",
+    "why": "Personal/nostalgic comment, no reseller intent."
+   }
+  ],
+  "fleek_awareness": false,
+  "confidence": "High",
+  "reasoning": "Nearly all comments are compliments, emojis, and event praise typical of a general consumer / friendly follower audience. The few questions ('Disponibles où svp ?', 'c'est quelle taille') are about buying/wearing items, not sourcing bales, kilos, suppliers, or volume. No margin, sell-through, or inventory language. Some handles include 'boutique' or 'shop' but they only leave emoji praise, not sourcing requests — not counted as pro. No coordinated tool spam detected. Audience is overwhelmingly general consumer."
+ }
+}

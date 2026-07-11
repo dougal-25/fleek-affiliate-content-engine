@@ -39,6 +39,19 @@ The richness upgrade. One Substack + a 4-agent fan-out over named French primary
 4. [[Enrichment Leads Backlog]] — the compounding to-do: leads every source spawned + the method itself.
 - Also deep-enriched: [[French Reseller Creator Shortlist]] (Nathan Vialle bulk→Whatnot, Bichette Kids bale-unboxing), [[French Secondhand Market Trends 2026]] (institutional numbers + anti-fast-fashion law dated 29 Jun 2026), [[French Reseller Community Sentiment]] (verbatim grade-scam quotes), [[FR Reseller Vocabulary and Hashtags]] (trade + retail vocab).
 
+## The empirical layer (2026-07-09 — the engine feeds the Brain back)
+
+Ingested from the live Airtable roster the discovery engine built. This is where the loop closes: research proposed → scrape verified.
+
+- [[FR Creator Roster and Segments]] — **49 scored FR reseller-creators**, segment taxonomy + economics (sourcing vloggers score highest at 70; wholesale buyers lowest of the serious segments at 55), the top targets, and DM-first outreach reality (only 6/49 have email).
+- **⚠️ The tension it exposes**: Fleek's highest-intent creators (`felixbeauregard`, `JosephTorregrossa`, `Bartorico`, `jf_vintagewholesalefr`) are **incumbent sourcing-monetizers** — educators with their own supplier funnels, or competing grossistes. The *program* space is greenfield; the *audience* space is already monetized. → pitch partnership/rev-share, not "promote us instead."
+- ✅ [[FR Reseller Vocabulary and Hashtags]] now carries the **validated hashtag table** (real per-term qualified-creator counts) — the deck receipt the founding sweep owed.
+- [[Creator Post-Level Signals]] — **588 real posts** (300 TikTok + 288 YouTube) from the top 24 creators, $1.20 of Apify. The ground-truth layer. It **corrected four vault claims**:
+  1. 🚨 **Julia Courcelle is a live, unmanaged Fleek affiliate** (`RFD-JULIA` in 25/25 videos) — *and promotes a competing wholesaler in the same description.* Field evidence for the JD's "roster, not activation" thesis. She sits in Airtable as a cold prospect → **scoring bug**.
+  2. **Competing wholesalers DO run creator deals** (bestvintagewholesale, supply-lab, boxwholesalefrance) — falsifies the "suppliers never run referral programmes" whitespace claim in [[Supplier and B2B Referral Mechanics]]. The real whitespace: nobody runs a *structured* programme.
+  3. **Whatnot's FR partner programme is active and dominant** — 72 links; `#whatnotpartner` median **786k plays**, the top tag in the sample.
+  4. **Creator language ≠ supplier jargon**: they say `kilo` (96), `premier choix` (60), `en gros` (33); they never say `ballot`/`crème` (1 each). Also: **geo-tags are empirically real in France** (`#friperiemontpellier` 45) — closing an "unverified/US-extrapolated" gap.
+
 ## 🎯 The strategic thesis (why this case study wins)
 
 > [!CAUTION] **Revised 2026-07-10.** The original first bullet read *"Fleek has no structured creator program —
@@ -78,7 +91,8 @@ the perception problem and the acquisition number at once. Nothing in this vault
 - ~~**TikTok Shop** resale/thrift affiliate mechanics~~ → ✅ fully swept 2026-07-09: [[TikTok Shop France]] now has creator-side commission %s (10–25%, up to 50%) **and** the By-Application resale-category gate.
 - **Named FR reseller creators** shortlist — 🟡 *partially closed 2026-07-09*: [[French Reseller Creator Shortlist]] has named FR micro creators (IG-heavy); **verified TikTok handles + live metrics still owed** — the Apify discovery run confirms/extends the list.
 - ~~**Wholesale-supplier referral programs**~~ → ✅ swept 2026-07-09: [[Supplier and B2B Referral Mechanics]] — the finding is they mostly *don't exist* (the whitespace). Remaining: direct-competitor (BankandVogue etc.) terms.
-- **Hashtag validation table** — after the first discovery run, write actual per-tag result counts back into [[FR Reseller Vocabulary and Hashtags]].
+- ~~**Hashtag validation table**~~ → ✅ **done 2026-07-09**: real per-term qualified-creator counts written back into [[FR Reseller Vocabulary and Hashtags]] from the 49-creator Airtable roster. Headline: intent *phrases* ("vendeur vinted astuces", "vivre de la revente") outperform bare hashtags; `friperieengros` is the highest-precision sourcing tag; `friperie` is the #1 content keyword (16/49).
+- **Post-level creator content** — the roster holds the engine's *analysis*, not raw captions/transcripts. Ingesting what creators actually *say* needs Apify post-scraping (quota-blocked). New gap, 2026-07-09.
 - **FR-specific virality/format metrics** — [[FR Creator Content Formats]] Q10 data is US-extrapolated; the scrape must measure FR empirically. (New gap surfaced 2026-07-09.)
 
 ## Meta

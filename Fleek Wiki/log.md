@@ -4,6 +4,50 @@ Dated record of what entered the vault and how. Newest first. Hub: [[index]].
 
 ---
 
+## 2026-07-09 (latest) — Post-level creator ingest: 588 real posts, four vault claims corrected
+
+**What**: Scraped what the top creators **actually post** — 300 TikTok posts (captions, hashtags, engagement) + 288 YouTube videos (titles, descriptions, links) from the 24 highest-scoring on-category creators in [[FR Creator Roster and Segments]].
+
+**Method**: new tool `~/.claude/skills/wiki-knowledge-base-builder/scripts/apify_creator_posts.py` (Apify `clockworks/tiktok-scraper` + `streamers/youtube-scraper`; async run + poll; `--max-cost` guard; mock-first). Apify quota topped up (free tier, $5 hard cap). **Actual spend $2.26** ($2.74 left) — note the actors' pay-per-result quotes ($0.51 + $0.69 = $1.20) **exclude Apify platform/proxy usage; budget ~2× the quoted rate.** Raw preserved (slimmed) in `_raw/apify_*_posts_2026-07-09.jsonl`.
+
+**Page created**: [[Creator Post-Level Signals]].
+
+**🚨 Headline — a named inherited partner, running unmanaged**: **Julia Courcelle** links Fleek in **25/25** recent videos (`joinfleek.app.link`, code `RFD-JULIA`, latest 2026-07-05) — **and promotes a competing wholesaler in the same description** (`bestvintagewholesale.com`, code `JULIA10`). Independent field evidence for the JD-corrected thesis (*Fleek has the roster; the gap is activation*). She sits in Airtable as `Prospect / Not started` → **scoring bug**: discovery must detect existing `joinfleek`/`RFD-` links. The rival's code is better-branded than Fleek's.
+
+**Claims corrected**:
+1. [[Supplier and B2B Referral Mechanics]] — "suppliers almost never run referral programmes" is **false for the FR creator market** (bestvintagewholesale, supply-lab, boxwholesalefrance, wholesaler20 all run creator deals). Real whitespace narrowed: nobody runs a *structured* programme.
+2. [[Competitor Creator Programs]] — **Whatnot's FR partner programme is active and dominant**: 72 description links; `#whatnotpartner` median **786,250 plays**, the top-performing tag in the whole sample.
+3. [[FR Reseller Vocabulary and Hashtags]] — the vault's trade vocab (`ballot`/`crème`/`Grade A`) is **supplier jargon creators don't use**. They say `kilo` (96), `premier choix` (60), `en gros` (33). Platform split: TikTok = friperie/kilo/live; YouTube = vinted/revente/fournisseur/formation.
+4. [[FR Creator Content Formats]] — **geo-tagging is empirically real in France** (`#friperiemontpellier` 45, `#friperieparis` 11), closing a gap previously flagged US-extrapolated. New FR genre found: `#preparationcommande` (26).
+
+**Incumbent-funnel map** (who owns these audiences): Bartorico → `resellpro.net` + **198 Amazon affiliate links**; Joseph Torregrossa → `profimy-academie.com`; Felix Beauregard → `resellvinted.com`; Enzo → `supply-lab`; Alex Yedder & Julia → Whatnot.
+
+**Scoring flaws exposed**: `JosephTorregrossa` scores 78 on a channel whose recent videos median **514 views** → add recency-weighted reach. 26/300 TikTok posts sponsored (`lina_momo_` 12) → brand-deal willingness is a usable signal; grossiste accounts take zero (they *are* the brand).
+
+**Honest limits**: transcripts not pulled (cost/volume) — what creators *say* about suppliers is still unmined. 2 Instagram creators unscraped. Sneaker/streetwear contamination in the YouTube cohort (SunLight, Enzo, Math Uzumaki) needs a segment filter.
+
+---
+
+## 2026-07-09 (late) — Airtable creator-roster ingest: the engine feeds the Brain back
+
+**What**: Ingested the live creator database (Airtable base "Fleek Affiliate Ecosystem" → `Creators`) into the wiki. **49 creators** (up from the first run's 12), every record enriched with Segment, Content Keywords, Strength, Weakness, Score Breakdown, Predicted CAC.
+
+**Method**: read-only Airtable API pull (`AIRTABLE_API_KEY` from `.env`, never echoed); keyword-frequency + segment-economics analysis; raw snapshot preserved at `_raw/airtable_creators_2026-07-09.json` (expiring photo URLs stripped).
+
+**Page created**: [[FR Creator Roster and Segments]] — segment taxonomy + economics, wholesale-buyer cohort, top targets, content-keyword map, outreach reality.
+
+**Pages enriched**: [[FR Reseller Vocabulary and Hashtags]] (✅ **the validated hashtag table** — real per-term qualified-creator counts, closing a founding-sweep gap), [[French Reseller Creator Shortlist]] (cross-reference: press-sourced vs empirical rosters are near-disjoint sets).
+
+**Headline finding — a correction to the greenfield thesis**: the highest-scoring creators are **incumbent sourcing-monetizers**. `felixbeauregard` (82) funnels his audience to his own "private suppliers"; `Bartorico` (72) and `JosephTorregrossa` (78) sell reselling courses with supplier funnels; `jf_vintagewholesalefr` (74) *is a competing French wholesaler since 1982*. The creator-*program* space is empty, but the creator-*audience* space is already monetized. → pitch partnership/rev-share to educators & suppliers; lead clean conversion with **sourcing vloggers** (highest avg score, 70) and **live sellers** (best CAC, £58).
+
+**Second finding**: **"Wholesale buyer" scores lowest of the serious segments (55)** despite being warmest on paper — the cohort is contaminated with competing grossistes and off-category (parfum/accessories) sellers. Segment needs a sub-filter.
+
+**Cross-validation**: `Bartorico` surfaced *independently* in the Reddit sweep (as the FR "teach the resale business" voice) and in the engine's scoring (72). Two methods, one answer — the strongest signal in the vault.
+
+**Honest limits**: this is the engine's *analysis* of each creator, **not raw post transcripts**. Ingesting what creators actually say on camera needs Apify post-scraping — **quota-blocked**. Predicted CAC (£12–£350) is model-estimated, unvalidated by spend. `Audience` populated 33/49; `Contact Email` only 6/49 → **DM-first outreach** (answers "do we need Apollo?": mostly no).
+
+---
+
 ## 2026-07-09 (night, 3) — vault renamed and repaired; no content changed
 
 Structural only, **no research content touched**. The vault is now `Fleek Wiki/` — one vault, at the repo's
