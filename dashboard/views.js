@@ -83,7 +83,7 @@ async function loadTrends() {
 
 /* inspiration: relevance-gated roster videos — thumbnail wall, in-page player + analysis */
 let inspPosts = [], trendVolume = {};
-let inspFormat = "", inspSort = "score";
+let inspFormat = "", inspSort = "score", inspSource = "";
 
 function statTile(num, lbl) {
   const s = div("va-stat");
@@ -168,7 +168,8 @@ const INSP_SORTS = {
 };
 
 function renderInspiration() {
-  let rows = inspPosts.filter(p => !inspFormat || p.format === inspFormat);
+  let rows = inspPosts.filter(p =>
+    (!inspFormat || p.format === inspFormat) && (!inspSource || p.source === inspSource));
   if (inspSort !== "score") rows = [...rows].sort(INSP_SORTS[inspSort]);
   $("#insp-count").textContent = `${rows.length} of ${inspPosts.length} videos`;
   $("#insp-grid").replaceChildren(...rows.map(p => {
@@ -182,6 +183,7 @@ function renderInspiration() {
     }
     const overlayTop = div("thumb-top");
     overlayTop.append(span("insp-format", p.format));
+    if (p.source === "fleek") overlayTop.append(span("insp-fleek", "🌟 Fleek"));
     if (p.ratio >= 2) overlayTop.append(span("insp-ratio", `×${p.ratio}`));
     const overlayBottom = div("thumb-bottom");
     overlayBottom.append(span("thumb-views", fmt(p.views) + " views"));
@@ -223,6 +225,11 @@ async function loadInspiration() {
     chips.append(b);
   });
   $("#insp-sort").addEventListener("change", e => { inspSort = e.target.value; renderInspiration(); });
+  document.querySelectorAll("#insp-source .seg").forEach(b => b.addEventListener("click", () => {
+    inspSource = b.dataset.source;
+    document.querySelectorAll("#insp-source .seg").forEach(x => x.classList.toggle("on", x === b));
+    renderInspiration();
+  }));
   renderInspiration();
 }
 

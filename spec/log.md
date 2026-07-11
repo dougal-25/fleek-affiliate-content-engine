@@ -214,3 +214,19 @@ Doug's review round on the video wall, all landed and live:
   not the post's own URL. Two unlocks: re-run ingest keeping the url field, or add a free
   YOUTUBE_API_KEY to .env and a build step recovers IDs by title match. Renderer is platform-agnostic
   and ready either way.
+
+## 2026-07-11 — Inspiration v3: Fleek's own videos + Instagram, source filter
+
+One-time ingest (scripted, reproducible: `scripts/ingest_instagram_fleek.py`): Apify Instagram scrape of
+the 5 roster IG creators + 2 bio-detected IG handles + @joinfleek, and a TikTok scrape of @joinfleek —
+106 IG videos (thumbnails cached at ingest; IG CDN URLs expire in days) and 60 Fleek TikTok posts into
+`Fleek Wiki/_raw/` (immutable, dated 2026-07-11). `load_posts` now globs all apify_* post files, so
+future ingests join the pool automatically, and handles both TikTok scraper output generations.
+
+The wall is now 36 videos: **24 community + 12 of Fleek's own** (their accounts skip the vocabulary gate —
+their content is Fleek by definition — but keep recency + overperformance ranking). A segmented
+**All / 🌟 Fleek / Community** filter heads the toolbar; Fleek cards wear a gold badge. Fleek's own top
+performers turn out to be partner success stories and sourcing guides (×95–×99 their median) — exactly
+the affiliate-education formats briefs should reference. Instagram reels play in the same in-page modal
+(`/p/<shortcode>/embed/`) with the full analysis panel. Verified locally and live: 36/36 thumbnails,
+filter counts correct, IG embed loads. Baked file now 20.5 MB (thumbs inline) — heavy but functional.

@@ -29,10 +29,12 @@ DATA_DIR = os.path.join(HERE, "data")
 AVATAR_DIR = os.path.join(DATA_DIR, "avatars")
 HISTORY_PATH = os.path.join(DATA_DIR, "funnel_history.json")
 SNAPSHOT = os.path.join(REPO, "Fleek Wiki", "_raw", "airtable_creators_2026-07-09.json")
-POSTS = [
-    os.path.join(REPO, "Fleek Wiki", "_raw", "apify_tiktok_posts_2026-07-09.jsonl"),
-    os.path.join(REPO, "Fleek Wiki", "_raw", "apify_youtube_posts_2026-07-09.jsonl"),
-]
+RAW_DIR = os.path.join(REPO, "Fleek Wiki", "_raw")
+# every ingested post file joins the pool automatically (tiktok / youtube / instagram)
+POSTS = sorted(
+    os.path.join(RAW_DIR, n) for n in (os.listdir(RAW_DIR) if os.path.isdir(RAW_DIR) else [])
+    if n.startswith(("apify_tiktok", "apify_youtube", "apify_instagram")) and n.endswith(".jsonl"))
+FLEEK_HANDLES = {"joinfleek"}  # Fleek's own accounts — their posts get the "fleek" source tag
 BASE_NAME = "Fleek Affiliate Ecosystem"
 PORT = int(os.environ.get("PORT", 8787))
 
@@ -199,9 +201,11 @@ def get_thumb(author, post_id):
 
 
 def compute_inspiration(creators):
-    """TikTok-only (natively embeddable), relevance-gated, ranked by how far a video
-    outperforms its creator's own median — a repeatable technique, not a big account."""
-    posts = [p for p in load_posts() if p["platform"] == "TikTok" and p.get("id")]
+    """TikTok + Instagram (both natively embeddable), relevance-gated, ranked by how far a
+    video outperforms its creator's own median — a repeatable technique, not a big account.
+    Fleek's own accounts skip the vocabulary gate (their content is Fleek by definition) and
+    get their own quota so the Fleek filter always has substance."""
+    posts = [p for p in load_posts() if p["platform"] in ("TikTok", "Instagram") and p.get("id")]
     now = datetime.now(timezone.utc)
 
     med = {}
@@ -211,8 +215,11 @@ def compute_inspiration(creators):
 
     scored = []
     for p in posts:
+        source = "fleek" if (p["author"] or "").lower() in FLEEK_HANDLES else "roster"
         text_all = (p["text"] or "") + " " + " ".join(p["tags"])
-        if not RELEVANT_RE.search(text_all) or p["views"] < 1000:
+        if source == "roster" and not RELEVANT_RE.search(text_all):
+            continue
+        if p["views"] < (300 if source == "fleek" else 1000):
             continue
         try:
             age = (now - datetime.fromisoformat(p["date"].replace("Z", "+00:00"))).days
@@ -223,33 +230,46 @@ def compute_inspiration(creators):
         ratio = p["views"] / max(med[p["author"]], 1)
         recency = 1.5 if age <= 90 else 1.2 if age <= 180 else 1.0
         score = math.sqrt(max(ratio, 0.1)) * math.log10(p["views"] + 10) * recency
-        scored.append((score, ratio, age, p))
+        scored.append((score, ratio, age, source, p))
 
     scored.sort(key=lambda t: -t[0])
-    top, per_author = [], Counter()
-    for score, ratio, age, p in scored:
-        if per_author[p["author"]] >= MAX_PER_AUTHOR:
-            continue
-        per_author[p["author"]] += 1
+    top, per_author, n_fleek = [], Counter(), 0
+    for score, ratio, age, source, p in scored:
+        if source == "fleek":
+            if n_fleek >= 12:
+                continue
+            n_fleek += 1
+        else:
+            if per_author[p["author"]] >= MAX_PER_AUTHOR:
+                continue
+            per_author[p["author"]] += 1
         eng = (p["likes"] + p["comments"] + p["shares"]) / max(p["views"], 1)
         try:
             weekday = datetime.fromisoformat(p["date"].replace("Z", "+00:00")).strftime("%A")
         except (TypeError, ValueError, AttributeError):
             weekday = None
+        if p["platform"] == "TikTok":
+            url = f"https://www.tiktok.com/@{p['author']}/video/{p['id']}"
+            embed = f"https://www.tiktok.com/embed/v2/{p['id']}"
+            thumb = get_thumb(p["author"], p["id"])
+        else:  # Instagram — thumbnails were cached at ingest (CDN URLs expire fast)
+            url = f"https://www.instagram.com/p/{p['id']}/"
+            embed = f"https://www.instagram.com/p/{p['id']}/embed/"
+            ig_thumb = os.path.join(THUMBS_DIR, f"ig_{p['id']}.jpg")
+            thumb = f"/thumbs/ig_{p['id']}.jpg" if os.path.exists(ig_thumb) else None
         top.append({
-            "author": p["author"], "platform": "TikTok", "views": p["views"],
+            "author": p["author"], "platform": p["platform"], "source": source,
+            "views": p["views"],
             "likes": p["likes"], "comments": p["comments"], "shares": p["shares"],
             "engagement": round(eng * 100, 2), "author_median_views": med[p["author"]],
             "weekday": weekday,
             "date": (p["date"] or "")[:10], "text": (p["text"] or "")[:160],
             "tags": p["tags"][:5],
             "format": next((n for n, rx in FORMAT_RES if rx.search(p["text"] or "")), "Post"),
-            "url": f"https://www.tiktok.com/@{p['author']}/video/{p['id']}",
-            "embed": f"https://www.tiktok.com/embed/v2/{p['id']}",
-            "thumb": get_thumb(p["author"], p["id"]),
+            "url": url, "embed": embed, "thumb": thumb,
             "ratio": round(ratio, 1),
         })
-        if len(top) >= 24:
+        if len(top) >= 36:
             break
     return {"posts": top, "total_pool": len(posts), "gate": "relevance+recency, ranked by overperformance"}
 
@@ -267,21 +287,41 @@ STOP = {"fyp", "foryou", "pourtoi", "viral", "video", "youtube", "shorts", "tikt
 def load_posts():
     posts = []
     for path in POSTS:
-        platform = "TikTok" if "tiktok" in path else "YouTube"
+        name = os.path.basename(path)
+        platform = "TikTok" if "tiktok" in name else "Instagram" if "instagram" in name else "YouTube"
         if not os.path.exists(path):
             continue
         with open(path) as f:
             for line in f:
                 r = json.loads(line)
+                if platform == "Instagram":
+                    caption = r.get("caption") or ""
+                    tags = [t.lower() for t in (r.get("hashtags") or [])] \
+                        or [t.lower() for t in HASHTAG_RE.findall(caption)]
+                    date = r.get("timestamp")
+                    views = int(r.get("videoPlayCount") or r.get("videoViewCount") or 0)
+                    likes = int(r.get("likesCount") or 0)
+                    comments = int(r.get("commentsCount") or 0)
+                    shares = 0
+                    author = r.get("ownerUsername") or ""
+                    tags = [t for t in tags if len(t) >= 3 and t not in STOP]
+                    posts.append({"platform": platform, "date": date, "views": views,
+                                  "likes": likes, "comments": comments, "shares": shares,
+                                  "author": author, "tags": tags,
+                                  "text": caption.strip()[:180], "id": r.get("shortCode")})
+                    continue
                 if platform == "TikTok":
-                    tags = [t.lower() for t in (r.get("hashtags") or [])]
+                    # hashtags: plain strings (2026-07-09 ingest) or {name:...} dicts (newer runs)
+                    tags = [(t.get("name") if isinstance(t, dict) else t or "").lower()
+                            for t in (r.get("hashtags") or [])]
+                    tags = [t for t in tags if t]
                     text = r.get("text") or ""
                     date = r.get("createTimeISO")
                     views = int(r.get("playCount") or 0)
                     likes = int(r.get("diggCount") or 0)
                     comments = int(r.get("commentCount") or 0)
                     shares = int(r.get("shareCount") or 0)
-                    author = r.get("author") or ""
+                    author = r.get("author") or (r.get("authorMeta") or {}).get("name") or ""
                 else:
                     text = (r.get("title") or "") + " " + (r.get("description") or "")
                     tags = [t.lower() for t in HASHTAG_RE.findall(text)]

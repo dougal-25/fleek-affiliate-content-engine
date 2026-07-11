@@ -365,6 +365,10 @@ main { max-width: 1280px; margin: 0 auto; padding: var(--sp-5) var(--sp-6) var(-
   display: flex; gap: var(--sp-1); z-index: 2;
 }
 .thumb-top .insp-ratio { background: var(--fleek-gold); color: var(--ink); border: 0; }
+.insp-fleek {
+  background: var(--ink-inverse); color: var(--ink); border: 1px solid var(--fleek-gold);
+  font-size: var(--fs-xs); font-weight: 800; padding: 3px 10px; border-radius: var(--r-pill);
+}
 .thumb-bottom {
   position: absolute; bottom: var(--sp-2); right: var(--sp-2); z-index: 2;
 }
