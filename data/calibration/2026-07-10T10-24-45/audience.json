@@ -1,0 +1,227 @@
+{
+ "nathanviall3": {
+  "audience_mix": {
+   "pro_reseller": 20,
+   "hobbyist_reseller": 55,
+   "general_consumer": 25
+  },
+  "dominant": "hobbyist_reseller",
+  "sourcing_intent_comments": 12,
+  "self_promo_comments": 3,
+  "evidence": [
+   {
+    "handle": "@james.w13k09",
+    "quote": "C’est quoi ton fournisseur ??",
+    "label": "hobbyist_reseller",
+    "why": "Asking for supplier source = sourcing intent, beginner framing"
+   },
+   {
+    "handle": "@graphistepc",
+    "quote": "mais je n'arrive pas a trouver un fournisseur et j'ai pas envie de payer pour en avoir un comment faire stp 🥺",
+    "label": "hobbyist_reseller",
+    "why": "Struggling beginner seeking sourcing help, price-sensitive"
+   },
+   {
+    "handle": "@resellerie_sapelu",
+    "quote": "Tu fais encore des lives ?",
+    "label": "pro_reseller",
+    "why": "Reseller-handle referencing live-selling business practice"
+   },
+   {
+    "handle": "@vcnt.maxime",
+    "quote": "La même en noir à vendre pour ceux qui veulent",
+    "label": "hobbyist_reseller",
+    "why": "Self-promo offloading item, casual seller not wholesale buyer"
+   },
+   {
+    "handle": "@olivax68",
+    "quote": "c'est du vrai ?",
+    "label": "general_consumer",
+    "why": "Authenticity curiosity, no sourcing intent, viewer interest"
+   }
+  ],
+  "fleek_awareness": false,
+  "confidence": "Medium",
+  "reasoning": "Heavy volume of supplier/sourcing questions ('c'est quoi ton fournisseur', 'Combien /piece?', 'T acheté ou tous ça') indicates reseller intent, but the framing is overwhelmingly beginner: single asks for 'le fournisseur stp', one user unable to find a supplier and unwilling to pay. This skews hobbyist. A few show pro traits (references to lives, renta, reseller handle). A meaningful minority are pure spectators questioning authenticity/price of luxury items or complimenting, treated as general_consumer. No mention of Fleek."
+ },
+ "giu.cst": {
+  "audience_mix": {
+   "pro_reseller": 0,
+   "hobbyist_reseller": 20,
+   "general_consumer": 80
+  },
+  "dominant": "general_consumer",
+  "sourcing_intent_comments": 0,
+  "self_promo_comments": 18,
+  "evidence": [
+   {
+    "handle": "@a.inn5",
+    "quote": "mon vinted: nina.hnx, je vends des vêtements femme/homme/enfant et accessoires",
+    "label": "hobbyist_reseller",
+    "why": "Self-promo of own Vinted, casual wardrobe offloading, not sourcing wholesale stock"
+   },
+   {
+    "handle": "@mxvriee",
+    "quote": "marietlns svp… j'arrive pas à vendre",
+    "label": "hobbyist_reseller",
+    "why": "Struggling casual seller asking for visibility, not a stock buyer"
+   },
+   {
+    "handle": "@breeef38",
+    "quote": "j'en peux plus j'ai des soucis financiers je pensais que ça m'aiderai énormément vu l'énorme nombre de fringues que j'ai mis en ligne mais aucune visibilité",
+    "label": "hobbyist_reseller",
+    "why": "Casual seller struggling to sell personal items, not sourcing to resell"
+   },
+   {
+    "handle": "@alexandcie28",
+    "quote": "Trop mignon le fait de sortir avec son papa 😁 c est bien le Kabana ?",
+    "label": "general_consumer",
+    "why": "Compliment and asking about a product to wear"
+   },
+   {
+    "handle": "@sinay_sd",
+    "quote": "Le 57 influence le Grand-Est, le Grand-Est influence le monde.",
+    "label": "general_consumer",
+    "why": "General entertainment/regional banter, no reselling intent"
+   }
+  ],
+  "fleek_awareness": false,
+  "confidence": "High",
+  "reasoning": "The audience is dominated by general consumers engaging with entertainment/lifestyle content (jokes, regional banter about Thionville, product compliments). A significant minority are casual Vinted sellers advertising their own shops ('mon vinted: xxx') to offload personal wardrobes — this is self-promotion, not sourcing intent. There are zero comments asking about bales, suppliers, price per kilo, or how to source wholesale stock. No pro_reseller behavior and no Fleek awareness. The casual sellers count as hobbyist-adjacent but none show wholesale buying intent, so this is not a strong Fleek customer audience."
+ },
+ "juliacrcl": {
+  "audience_mix": {
+   "pro_reseller": 45,
+   "hobbyist_reseller": 30,
+   "general_consumer": 25
+  },
+  "dominant": "pro_reseller",
+  "sourcing_intent_comments": 8,
+  "self_promo_comments": 5,
+  "evidence": [
+   {
+    "handle": "normanbeaulieu",
+    "quote": "qu'elle site tu me conseillerais pour commencer l'achat d'un lot de vêtements ?",
+    "label": "hobbyist_reseller",
+    "why": "Beginner asking where to start buying a lot/bundle for reselling"
+   },
+   {
+    "handle": "etoile_dame",
+    "quote": "vous avez des fournisseurs fiables sur Fleek ? ça me fait peur de commander chez eux ?",
+    "label": "pro_reseller",
+    "why": "Explicitly asks about Fleek suppliers and reliability, sourcing stock"
+   },
+   {
+    "handle": "ialab03",
+    "quote": "Moyenne de revente 30 35e mais tu a acheter tous ça pour combien ? Ça te reviens à combien la chemise à l'achat pour la revendre 30 35e ?",
+    "label": "pro_reseller",
+    "why": "Talks resale average and cost-per-unit margins"
+   },
+   {
+    "handle": "universelaaaa",
+    "quote": "N’hésitez pas à checker mon Vinted : universelaaaa 🥰 du neuf, des marques à petits prix",
+    "label": "hobbyist_reseller",
+    "why": "Self-promo of own Vinted shop, casual seller not a wholesale buyer"
+   },
+   {
+    "handle": "mimy.fidelyne78",
+    "quote": "j’🥰 ton tee shirt 😁",
+    "label": "general_consumer",
+    "why": "Compliments the item worn, wants to wear not resell"
+   }
+  ],
+  "fleek_awareness": true,
+  "confidence": "Medium",
+  "reasoning": "The creator appears to be a reseller (Julia) sharing operational content about Vinted pro accounts, thermal printers, bordereaux, resale prices, and sourcing. Many commenters engage with business mechanics: margins ('Ça se revend combien', 'moyenne de revente 30 35e'), suppliers ('Supplier pls', Fleek fournisseurs), pro account restrictions, and platform comparison (Whatnot vs Vinted) — indicating a pro_reseller lean. A meaningful group asks beginner sourcing questions ('quel site pour commencer l'achat d'un lot') = hobbyist. Self-promo comments advertising their own Vinted ('mon Vinted: gulsehriban', 'checker mon Vinted') are casual sellers, not sourcing intent. A smaller share are general consumers complimenting items to wear. Fleek is explicitly named, so awareness is true."
+ },
+ "behindthesale": {
+  "audience_mix": {
+   "pro_reseller": 70,
+   "hobbyist_reseller": 25,
+   "general_consumer": 5
+  },
+  "dominant": "pro_reseller",
+  "sourcing_intent_comments": 4,
+  "self_promo_comments": 1,
+  "evidence": [
+   {
+    "handle": "@suzeart76",
+    "quote": "What % of your daily lists would you say sell? Say if you upload 30 items, what’s your average daily sales rate?",
+    "label": "pro_reseller",
+    "why": "Talks sell-through rate and daily upload volume, core reselling metrics"
+   },
+   {
+    "handle": "@dansellsstuff",
+    "quote": "The amount of ‘comment supplier’ posts I see, I agree I think people assume that once they’ve found a wholesaler it’s buy, list rinse and repeat 😅",
+    "label": "pro_reseller",
+    "why": "Discusses wholesalers and sourcing strategy as a business operator"
+   },
+   {
+    "handle": "@shipleysports",
+    "quote": "I do 40-50 listings on Vinted a day 😂💪🏼",
+    "label": "pro_reseller",
+    "why": "High-volume listing indicates business-level reselling"
+   },
+   {
+    "handle": "@lilacarchive16",
+    "quote": "I have been researching this spreadsheet this week, I was just so overwhelmed of the information... it makes me more confused on how will I start mine",
+    "label": "hobbyist_reseller",
+    "why": "Beginner, overwhelmed, learning how to start, low volume"
+   },
+   {
+    "handle": "@chrliewrght",
+    "quote": "Where are the Quiksilver jorts for sale please matey?",
+    "label": "general_consumer",
+    "why": "Asking where to buy an item to wear, not sourcing stock"
+   }
+  ],
+  "fleek_awareness": true,
+  "confidence": "High",
+  "reasoning": "The audience is overwhelmingly resellers discussing listing volume, sell-through rates, death piles, SKU systems, stock rotation, and suppliers/wholesalers - all pro-reseller signals. Several beginners ask how to start, request spreadsheet templates, or express feeling overwhelmed, indicating hobbyist tier. Only a few comments (e.g. asking where an item is for sale) reflect general consumers wanting to wear items. One commenter (@online.store3780) explicitly mentions selling as a Fleek vendor, confirming Fleek awareness. Self-promo/DM comments were largely sourcing or help requests rather than shop advertising."
+ },
+ "juliettekitsch": {
+  "audience_mix": {
+   "pro_reseller": 0,
+   "hobbyist_reseller": 3,
+   "general_consumer": 97
+  },
+  "dominant": "general_consumer",
+  "sourcing_intent_comments": 0,
+  "self_promo_comments": 1,
+  "evidence": [
+   {
+    "handle": "@maylisdwee",
+    "quote": "coucou, d’où vient ta robe écru et pleine de couleur ?",
+    "label": "general_consumer",
+    "why": "Asking where the creator's dress to wear comes from — buying to wear, not to resell"
+   },
+   {
+    "handle": "@albert_reporter_",
+    "quote": "Coucou Juliette ! Je peux te demander d'où vient ton gilet ?",
+    "label": "general_consumer",
+    "why": "Asking source of a specific garment to wear, style curiosity"
+   },
+   {
+    "handle": "@amandinedidinedou",
+    "quote": "Tes bleues du début de vidéo c’est quelle marque",
+    "label": "general_consumer",
+    "why": "Wants brand of item to wear, not wholesale stock"
+   },
+   {
+    "handle": "@emilie.67",
+    "quote": "vinted 🥥🥥 seven6six7 🥥🥥 summer boho vibes 🥥 XS S M -50%",
+    "label": "hobbyist_reseller",
+    "why": "Self-promotion of own Vinted shop — casual wardrobe offloading, not a wholesale buyer"
+   },
+   {
+    "handle": "@vrotibo",
+    "quote": "La seconde main c est d abord l envie de faire une bonne affaire.",
+    "label": "general_consumer",
+    "why": "General discussion about secondhand as good deals for personal wear"
+   }
+  ],
+  "fleek_awareness": false,
+  "confidence": "High",
+  "reasoning": "The audience overwhelmingly discusses personal style, secondhand fashion philosophy, and asks where the creator's items to WEAR come from (dress, gilet, brand). No comments show wholesale sourcing intent, bales, price per kilo, or reselling as a business. One comment (@emilie.67) is self-promotion of a personal Vinted shop, counted as self-promo/hobbyist, not a Fleek buyer. This is a fashion/thrift-styling audience of general consumers, not resellers seeking stock."
+ }
+}
