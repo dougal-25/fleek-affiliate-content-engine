@@ -77,6 +77,12 @@ human approves        → Stage = Qualified                          ← manual,
 Qualified             → outreach-draft job generates a draft (never auto-sends — permanent gate)
 ```
 
+The approval is a first-class command, not just an Airtable click — `scripts/qualify.py`:
+`--list` prints the review queue; `qualify.py @handle …` approves by handle (`--platform` to
+disambiguate a cross-platform handle, `--key platform:handle` for an exact record); `--unqualify`
+reverses; `--dry-run` previews. Approving a creator the engine did *not* recommend is allowed and
+flagged — the human gate exists for judgment the deterministic bar can't encode.
+
 Airtable surfaces this as views (filters, not new tables):
 
 | View | Filter | Who reads it |
