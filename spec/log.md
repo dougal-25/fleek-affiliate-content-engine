@@ -5,6 +5,32 @@ Dated record of design intent changing. Newest first. Decisions with reasoning g
 
 ---
 
+## 2026-07-10 (later still) — Outreach goes live-shaped: qualification is the trigger, messages use first names
+
+Doug's spec for taking the outreach job operational (addendum 2 on
+`spec/decisions/2026-07-10-outreach-drafts.md`):
+
+- **Trigger = human qualification.** New `--qualified` mode drafts for every
+  `Stage = Qualified AND Outreach Status = Not started` creator — the exact call a scheduler makes
+  once the agent is active. Scoring surfaces candidates; a human qualifies; qualification releases
+  the draft. The percentile `--auto` mode is demoted to a candidate-finder.
+- **Still drafts, never sends** — confirmed explicitly. Auto-send offered and declined; the permanent
+  gate holds.
+- **First name, never the handle, never invented.** The evidence gatherer captures the profile
+  display name; the extract step derives a real given name or `null` (a shop name is not a name).
+  Verified live: `Alicia 🌙 → Salut Alicia`; `CODE DES GRANDS ✦ Friperies → null`, opened on content.
+
+Run manually this week; the autonomy layer only changes who presses enter.
+
+**Message content refined (same day):** the draft was over-indexing on the grading-pain wound. It now
+works from a **value palette** — direct global supply (2,000+ suppliers/100+ countries), de-risked
+buying (Make an Offer / ~10-piece MOQ / 30-day BNPL), grading trust (Fleek Sort + Buyer Protection),
+the human relationship, and buy-and-earn — picking what fits each creator's niche, led by the
+observation. Every figure is wiki-sourced (`Fleek Company Profile.md`); "competitive pricing" was
+deliberately not written as a superiority claim. Factual discipline is a hard prompt rule: palette
+facts only, everything else → `human_check`. It immediately caught a perfume-wholesaler qualified for
+a clothing marketplace and flagged the mismatch. (Addendum 3 on the decision record.)
+
 ## 2026-07-10 (later) — Doug's review: the bar becomes a percentile; known partners flagged, not excluded
 
 Doug reviewed the outreach build and overturned two calls (addendum on

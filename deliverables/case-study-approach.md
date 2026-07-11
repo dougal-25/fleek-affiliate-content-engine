@@ -102,8 +102,12 @@ A research agent (Claude Code + Perplexity) produces a small wiki on French/EU r
 
 ## 6. Section 2 — Outreach
 
+**The trigger is qualification, and it stays human.** Discovery *scores* creators; a human *qualifies* the ones worth pursuing (`Stage = Qualified` in Airtable — always a human act, always overridable). Qualification is what releases the agent: `run_outreach.py --qualified` drafts for everyone newly qualified and not yet contacted. That's the whole "engine proposes, humans approve" story told through the data model — the score surfaces candidates, a person decides, the agent drafts. Run by hand this week; a scheduler makes the identical call once the agent is live.
+
 **Per-creator personalisation pipeline** (built: `scripts/run_outreach.py`):
 Creator record → recent posts (last 45d) + audience comments + transcript *(YouTube only — TikTok and IG have none)* → Claude extracts personalisation variables, each carrying a verbatim quote → Claude drafts 3 French touches → human edit → native-speaker QA → sent by a human.
+
+**Personalised the way a person would be:** real **first name**, not the @handle (`"Alicia 🌙"` → *Salut Alicia*; a shop name like `"CODE DES GRANDS ✦ Friperies"` → no name, opened on their content — never a fabricated one). Plus their recent posts, their audience's actual comments, and the live FR trend their content sits on. A wrong name is worse than no name; a `[name]` placeholder is the tell of a mail-merge.
 
 **Recency is a gate.** A creator with no posts inside the window is skipped, not drafted. A stale personalisation is worse than a generic one: it proves you looked and didn't care.
 

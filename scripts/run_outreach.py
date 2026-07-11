@@ -9,20 +9,28 @@ NOTHING IS SENT. There is no send code path in this file, and there will not be 
 reads the draft in Airtable, edits it, sends it themselves, and flips Status = Sent. That gate
 is the audit trail. Crossing a score threshold triggers a *draft*, never a message.
 
-Two selection modes:
-    --handles a b c         hand-picked creators (the case study)
-    --auto                  every un-contacted creator above the percentile bar (the scale story)
+The pipeline: discovery scores creators -> a HUMAN qualifies the ones worth pursuing
+(Stage = Qualified, always a human act, always overridable) -> qualification triggers this job,
+which DRAFTS the outreach. Qualification is the gate; scoring only surfaces candidates.
 
-The bar is a percentile of the roster's live score distribution (--top-pct, default 50), not a
-fixed number: calibrating against Fleek's named top partners showed one of them scoring 62 against
-a guessed absolute bar of 70. The bar sits where proven-good creators sit; raising it is
-activation's job — better briefs raise scores, and the same percentile then selects a stronger
-cohort. Known partners in the roster are FLAGGED on the draft, never silently dropped.
+Three selection modes:
+    --qualified             THE AGENT TRIGGER: every human-qualified creator not yet contacted.
+                            This is the call a scheduler makes once the agent is active.
+    --handles a b c         hand-pick specific creators (manual runs, the case study).
+    --auto                  candidate-finder: everyone above the percentile bar (--top-pct,
+                            default 50) — use it to decide who to qualify, NOT to send outreach.
+
+The --auto bar is a percentile of the roster's live score distribution, not a fixed number:
+calibrating against Fleek's named top partners showed one scoring 62 against a guessed bar of 70.
+Known partners in the roster are FLAGGED on the draft, never silently dropped.
+
+Every message is personalised: the creator's real FIRST NAME (never the @handle, never invented),
+their recent posts, their audience's comments, and the live trends their content sits on.
 
 Usage:
-    .venv/bin/python scripts/run_outreach.py --handles gdefou i.resselll --dry-run
-    .venv/bin/python scripts/run_outreach.py --auto --limit 3 --dry-run
-    .venv/bin/python scripts/run_outreach.py --handles gdefou            # writes to Airtable
+    .venv/bin/python scripts/run_outreach.py --qualified --dry-run       # the agent trigger
+    .venv/bin/python scripts/run_outreach.py --handles gdefou --dry-run  # manual pick
+    .venv/bin/python scripts/run_outreach.py --qualified                 # writes drafts to Airtable
 """
 import argparse
 import datetime as dt
@@ -58,11 +66,17 @@ Hard rules:
 - Only cite posts from the evidence provided. It has already been filtered to a recency window;
   citing anything else is a factual error.
 - The audience_question must be a real recurring theme in the comments, not a plausible one.
+- first_name: give the creator's real first name ONLY if it is clearly present in the display name,
+  bio or captions (e.g. display name "Julia Courcelle" -> "Julia"; a caption "moi c'est Léa"
+  -> "Léa"). A brand/shop name is NOT a first name (e.g. "Code des Grands Friperie" -> null). If you
+  are not sure it is a person's given name, return null. Never guess, never invent — a wrong name is
+  worse than no name.
 
 Reply with JSON only, no prose."""
 
 EXTRACT_SCHEMA = """Return a JSON object:
 {
+  "first_name": "the creator's real given name if clearly present in the display name/bio/captions, else null",
   "sells": "one sentence: what they actually sell and to whom",
   "sourcing_signal": "how/where they source, or null if never mentioned",
   "audience_question": "the question their commenters keep asking, or null",
@@ -79,12 +93,38 @@ EXTRACT_SCHEMA = """Return a JSON object:
 DRAFT_SYSTEM = """You write first-touch recruitment outreach to French secondhand-fashion resellers
 on behalf of Fleek, a B2B marketplace selling graded secondhand clothing wholesale to resellers.
 
-WHAT FLEEK OFFERS a creator: wholesale sourcing (they buy stock) AND affiliate commission on
-reseller signups from their referral code (they earn). One relationship, both sides. Competitors
-offer one or the other.
+THE GOAL: make this creator want to (a) SOURCE their stock through Fleek and/or (b) bring the
+resellers who follow them to Fleek and earn from it. One relationship, both sides — the creator is
+the buyer, so sourcing margin funds the incentive; they aren't competing for a separate commission
+budget. Competitors offer one or the other. You are opening a conversation, not closing it: ask for
+a reply, then a short call. This person is not a partner yet — no referral codes, links or discounts
+in a first touch.
 
-WHAT YOU ARE ASKING FOR: a reply, then a short call. You are NOT handing over a referral code — this
-person is not a partner yet. Do not include codes, links, or discounts in a first touch.
+FLEEK'S VALUE PALETTE — pick the ONE or TWO that fit THIS creator's niche and what the profile
+flagged. Never list them all (a feature dump reads as a mail-merge); never invent a number or a
+claim not stated here:
+- DIRECT GLOBAL SUPPLY: a marketplace of 2,000+ verified suppliers across 100+ countries — they
+  source direct, not off one middleman's shelf. Breadth of brand, era, style and price point one
+  local grossiste can't match.
+- DE-RISKED BUYING: "Make an Offer" to negotiate the price on a bundle or a single piece; low
+  minimums (from ~10 pieces — test a supplier without committing to a blind bale); Buy-Now-Pay-Later
+  up to 30 days after the goods arrive. (This is the honest version of "good pricing" — concrete
+  mechanics, not a "we're cheaper" claim.)
+- GRADING THEY CAN TRUST: every piece QC'd and graded at Fleek's hubs, now with Fleek Sort — AI
+  grading trained on 4 years of data — so "grade A ordered" is "grade A received", backed by a Buyer
+  Protection Policy. This is the direct answer to the trade's grading wound.
+- THE RELATIONSHIP: they aren't left alone after they pay — Fleek handles customs and shipping, the
+  in-app assistant (Fleeky) matches them to suppliers, and there is a real person managing the
+  partnership. In FR specifically, poor communication/support is the #1 reason creators quit
+  programs, so this is a genuine differentiator — not a throwaway line.
+- EARN AS WELL AS BUY: they can bring their reseller audience to Fleek and earn on it — the
+  affiliate/referral side of the same relationship.
+
+FACTUAL DISCIPLINE: the only hard figures you may state are the ones above (2,000+ suppliers, 100+
+countries, ~10-piece minimum, 30-day BNPL, 4 years of Fleek Sort data). Never invent commission
+rates, discount amounts, percentages, or "cheaper/better than X" claims. If you assert any Fleek
+benefit that is not spelled out in the palette above, add it to `human_check` so a human confirms it
+before anything is sent.
 
 THE FRENCH RESELLER'S WORLD (from the research wiki — use it, don't explain it):
 - Trade vocabulary they use daily: balle / ballot (a compressed bale), au kilo, a la piece,
@@ -103,14 +143,28 @@ THE FRENCH RESELLER'S WORLD (from the research wiki — use it, don't explain it
 REGISTER: use the `register` variable. "vous" to a professional or an older/established seller;
 "tu" only where their own content is informal and youth-facing. When in doubt, "vous".
 
+NAME: if `first_name` is present, address them by it, naturally, the way a peer would (a bare
+"Salut Julia," or worked into the first line) — NOT every touch, once is warmer than three times.
+If `first_name` is null, open directly on their content and use no name at all. NEVER address them
+by their @handle, and NEVER use a placeholder like [name] or "hey there" — a handle-as-name or an
+empty bracket is the tell of a mail-merge and worse than no name.
+
 VOICE: short. A DM, not a press release. No brand adjectives, no "I hope this finds you well",
 no "I came across your profile and was blown away". Open on something only someone who watched
 their content could say. Earn the second sentence.
 
-THE THREE TOUCHES each take a DIFFERENT angle — never "just bumping this up":
-  1. day 0  — the specific observation + the one-line reason to talk
-  2. day 4  — a different, concrete value proof (a number, a sourcing fact, an answer to their
-              audience's recurring question). Assume touch 1 went unread, not refused.
+LEAD WITH THEM, NOT WITH FLEEK: open every sequence on the creator's own niche and a specific
+flagged observation — their standout post, what they actually sell, the question their audience
+keeps asking — then bridge into the ONE value-palette item that fits it. The observation earns the
+pitch; the pitch never leads.
+
+THE THREE TOUCHES each take a DIFFERENT angle, drawing on DIFFERENT palette items — never "just
+bumping this up":
+  1. day 0  — their niche / a specific recent post → the single most relevant Fleek value for THEM
+              + the one-line reason to talk.
+  2. day 4  — a different, concrete value proof (the 2,000-supplier breadth, the grading answer,
+              the de-risked buying, or an answer to their audience's recurring question). Assume
+              touch 1 went unread, not refused.
   3. day 10 — the graceful close. Leave the door open, ask nothing, give one useful thing.
 
 Write `fr` in natural French — idiomatic, not translated English. Then write `en_gloss` as a close
@@ -127,7 +181,7 @@ DRAFT_SCHEMA = """Return a JSON object:
     {"n": 3, "send_day": 10, "angle": "...", "fr": "...", "en_gloss": "..."}
   ],
   "localisation_notes": ["choices made for FR that a UK message would not need"],
-  "human_check": ["what a native French speaker must verify before this is sent"]
+  "human_check": ["what a human must verify before sending: native-speaker language/register checks, AND any Fleek benefit claimed that is not a hard palette fact (e.g. exact support offer, pricing) — flag it for commercial confirmation"]
 }"""
 
 
@@ -166,6 +220,11 @@ def select(at: Airtable, args) -> tuple[list[dict], str]:
         clauses = ",".join(f'{{Handle}}="{h}"' for h in args.handles)
         formula = f"OR({clauses})"
         bar_note = "hand-picked"
+    elif args.qualified:
+        # The canonical agent trigger: a human qualified them, so draft the outreach. Qualification
+        # IS the human gate — scoring only surfaces candidates; a person decides who to pursue.
+        formula = 'AND({Outreach Status}="Not started",{Stage}="Qualified")'
+        bar_note = "Stage=Qualified (human-qualified — the agent trigger)"
     else:
         cutoff, basis = score_bar(at, args)
         print(f"[outreach] score bar: {cutoff} ({basis})")
@@ -187,6 +246,7 @@ def extract_variables(row: dict, ev: dict, days: int) -> dict | None:
     comments = "\n".join(f"- ({c['likes']} likes) {c['text']}" for c in ev["comments"][:20]) or "(none)"
     transcript = f"\nTranscript excerpt of a recent video:\n{ev['transcript'][:1500]}" if ev.get("transcript") else ""
     prompt = f"""Creator: @{row.get('Handle')} on {row.get('Platform')}
+Profile display name: {ev.get('display_name') or '(none captured)'}
 Followers: {row.get('Followers')} | Engine segment: {row.get('Segment')}
 Bio: {(row.get('Audience') or '')[:300]}
 What the scoring pass said — strength: {row.get('Strength')} | weakness: {row.get('Weakness')}
@@ -246,6 +306,8 @@ def format_for_airtable(drafts: dict, variables: dict) -> str:
     lines.append("NATIVE-SPEAKER QA — verify before sending:")
     lines += [f"  · {n}" for n in drafts.get("human_check", [])]
     lines.append("")
+    name = variables.get("first_name")
+    lines.append(f"Addressed as: {name}" if name else "Addressed as: (no first name found — opened on content)")
     lines.append(f"Grounded in: {variables.get('standout_post', {}).get('url')}")
     lines.append(f"Generated {dt.date.today().isoformat()} · engine draft, not sent")
     return "\n".join(lines)
@@ -255,8 +317,12 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     mode = ap.add_mutually_exclusive_group(required=True)
     mode.add_argument("--handles", nargs="+", help="hand-pick creators by Airtable Handle")
+    mode.add_argument("--qualified", action="store_true",
+                      help="THE AGENT TRIGGER: every human-qualified creator (Stage=Qualified) not "
+                           "yet contacted. This is what a scheduler calls once the agent is active")
     mode.add_argument("--auto", action="store_true",
-                      help="every un-contacted creator above the percentile bar (--top-pct)")
+                      help="candidate-finder: every un-contacted creator above the percentile bar "
+                           "(--top-pct) — use it to decide who to qualify, not to trigger outreach")
     ap.add_argument("--top-pct", type=float, default=50,
                     help="percentile bar for --auto: top N%% of the roster's live score "
                          "distribution. Default 50 — calibrated to where a known top partner "

@@ -140,3 +140,61 @@ an explicit absolute override.
 "what about Instagram?" → multi-platform, saving 21 of 49 creators) are now a named slide beat in
 `deliverables/case-study-approach.md` §6 — the human-in-the-loop story is design-time + review-time +
 send-time, with receipts.
+
+---
+
+## Addendum 2 — the trigger is qualification, and messages use first names
+
+Doug's design for going live, 2026-07-10:
+
+**Qualification is the trigger, and it stays human.** The pipeline is: discovery scores → a human
+*qualifies* the creators worth pursuing (`Stage = Qualified`, always a human act, always overridable)
+→ qualification releases the drafting agent. The new `--qualified` mode selects
+`Stage = Qualified AND Outreach Status = Not started` — this is the exact call a scheduler makes once
+"the agent is active." It resolves the disjoint-set problem cleanly: scoring only *surfaces*
+candidates; a person decides who to pursue; the score bar (`--auto`) demotes to a candidate-finder
+("who should I consider qualifying"), no longer an outreach trigger.
+
+**Still drafts, never sends.** Doug confirmed the gate explicitly when asked: qualification triggers
+a *draft* to `Outreach Status = Draft`, a human reviews/edits/sends and flips to `Sent`. Auto-send
+was offered and declined — it would break the permanent gate and is exactly what
+`spec/autonomy-layer.md` §7 names as the thing that backfires in the room. If a send job is ever
+built, it is a separate job behind its own approval flag, not folded into this one.
+
+**First name, never the handle, never invented.** The most personal messages open on a real first
+name. The evidence gatherer now captures each creator's profile display name (TikTok `nickName`, IG
+`ownerFullName`, YouTube `channelName`); the extract step pulls a real given name from it — but only
+if clearly a person's name. A brand/shop name returns `null`, and the draft then opens on content
+with no name at all. Verified live: `"Alicia 🌙"` → *Salut Alicia*; `"CODE DES GRANDS ✦ Friperies"`
+→ null → opened on their Lacoste content, no fabricated name. A wrong name is worse than no name — a
+handle-as-name or a `[name]` placeholder is the tell of a mail-merge.
+
+**What "run through manually" means today.** `--qualified` is run by hand this week (the case study);
+the only thing the autonomy layer changes is who presses enter (a GitHub Actions poll on
+`Stage = Qualified`, per `spec/autonomy-layer.md`). The code is identical.
+
+---
+
+## Addendum 3 — the message sells the marketplace, on wiki-grounded facts only
+
+Doug's steer: the draft was leaning too hard on the grading-pain wound. The objective is a narrative
+that makes the creator want to **buy from and/or promote** Fleek — so the draft now works from a
+**value palette** and picks the one or two items that fit the creator's niche and flagged
+observations, led by the observation, never by the pitch.
+
+The palette, every figure traced to `Fleek Wiki/research/Fleek Company Profile.md` (which cites its
+own sources): direct global supply (**2,000+ verified suppliers, 100+ countries**); de-risked buying
+(**Make an Offer**, **~10-piece MOQ**, **30-day BNPL**); grading trust (QC + **Fleek Sort** + Buyer
+Protection); the relationship (customs/shipping handled, Fleeky, a human partner contact); and
+earn-as-well-as-buy. "Competitive pricing" was deliberately **not** written as a superiority claim —
+nothing substantiates it, and a false claim to a real reseller burns trust. The concrete mechanics
+(negotiate, low MOQ, pay-after-arrival) are the honest, stronger version.
+
+**Factual discipline is now a hard rule in the prompt.** The only numbers the model may state are the
+palette facts; it may not invent rates, discounts or "cheaper than X" claims; and any benefit it
+asserts beyond the palette must land in `human_check` for commercial confirmation. This fired on its
+first run: drafting for `@sososolyspam` (a **perfume** wholesaler), the model dropped the
+clothing-grading vocabulary as inapplicable and flagged the niche mismatch for a human — surfacing a
+probable mis-qualification rather than papering over it. The palette lives in the prompt, not the
+wiki, but is sourced *from* the wiki — if Fleek's numbers change, update `Fleek Company Profile.md`
+and the `DRAFT_SYSTEM` palette together.

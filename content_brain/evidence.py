@@ -108,7 +108,8 @@ def _in_window(posts: list[dict], cutoff: dt.date) -> list[dict]:
 
 
 def _blank(handles: list[str]) -> dict[str, dict]:
-    return {h: {"posts": [], "comments": [], "transcript": None} for h in handles}
+    return {h: {"posts": [], "comments": [], "transcript": None, "display_name": None}
+            for h in handles}
 
 
 # ---------------- TikTok: one call for posts, one for comments ----------------
@@ -127,9 +128,11 @@ def _tiktok(handles: list[str], cutoff: dt.date, per_profile: int, token: str) -
         "shouldDownloadSlideshowImages": False,
     }, token)
     for v in videos:
-        handle = ((v.get("authorMeta") or {}).get("name") or "").lstrip("@")
+        am = v.get("authorMeta") or {}
+        handle = (am.get("name") or "").lstrip("@")
         if handle in out:
             out[handle]["posts"].append(_norm_post(v))
+            out[handle]["display_name"] = out[handle]["display_name"] or am.get("nickName")
 
     comments = apify_run("clockworks~tiktok-comments-scraper", {
         "profiles": handles,
@@ -169,6 +172,7 @@ def _instagram(handles: list[str], cutoff: dt.date, per_profile: int, token: str
         handle = (p.get("ownerUsername") or "").lstrip("@")
         if handle in out:
             out[handle]["posts"].append(_norm_post(p))
+            out[handle]["display_name"] = out[handle]["display_name"] or p.get("ownerFullName")
 
     for h in out:
         out[h]["posts"] = _in_window(out[h]["posts"], cutoff)
@@ -212,6 +216,7 @@ def _youtube(handles: list[str], cutoff: dt.date, per_profile: int, token: str,
         # a YouTube video's "text" is its description; the title carries more signal
         post["text"] = f"{v.get('title') or ''}\n{(v.get('text') or '')[:400]}".strip()
         out[match]["posts"].append(post)
+        out[match]["display_name"] = out[match]["display_name"] or v.get("channelName")
         subs = v.get("subtitles")
         if transcripts and subs and not out[match]["transcript"]:
             first = subs[0] if isinstance(subs, list) and subs else None
