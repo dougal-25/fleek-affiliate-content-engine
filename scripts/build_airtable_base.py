@@ -92,6 +92,9 @@ CREATORS_FIELDS = [
     {"name": "Audience Evidence", "type": "multilineText"},
     {"name": "Audience Confidence", "type": "singleSelect", "options": CONF},
     {"name": "Sourcing Intent per 100", "type": "number", "options": {"precision": 1}},
+    # The engine's recommendation. Passing the shortlist bar sets this; a human then approves by
+    # moving Stage -> Qualified. Auto-qualification is off by design (spec/discovery-engine.md §4).
+    {"name": "Recommended", "type": "checkbox", "options": {"icon": "star", "color": "yellowBright"}},
     {"name": "Fleek Aware", "type": "checkbox", "options": {"icon": "check", "color": "greenBright"}},
     {"name": "Fit Score", "type": "number", "options": {"precision": 0}},
     {"name": "Fit Breakdown", "type": "multilineText"},

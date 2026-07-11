@@ -99,7 +99,10 @@ def tiktok_fields(c: dict, e: dict) -> dict:
         "Strength": e.get("strength"), "Weakness": e.get("weakness"),
         "Score": e.get("score"), "Score Breakdown": e.get("score_breakdown"),
         "Confidence": e.get("confidence"), "Fleek Aware": fk["mentions_fleek"],
-        "Stage": "Qualified" if qualified else "Prospect",
+        # The engine RECOMMENDS; a human approves. Passing the bar sets Recommended, not Qualified —
+        # Stage stays Prospect until someone approves. Auto-qualification is off by design until the
+        # system is proven consistent (spec/discovery-engine.md §4).
+        "Recommended": qualified, "Stage": "Prospect",
         "Outreach Status": "Not started",
         "Source": "discovery/tiktok: " + ",".join(c.get("found_via") or []),
         "Audience": (c.get("bio") or "")[:500],
@@ -144,7 +147,7 @@ def ig_fields(r: dict) -> tuple[dict, bool]:
         "Strength": f"pro vocab x{r['pro_terms']}"
                     + (f", {'+'.join(flags)}" if flags else "")
                     + (", already mentions Fleek" if r["mentions_fleek"] else ""),
-        "Stage": "Qualified" if qualified else "Prospect", "Outreach Status": "Not started",
+        "Recommended": qualified, "Stage": "Prospect", "Outreach Status": "Not started",
         "Source": "discovery/instagram: " + ",".join(r.get("found_via") or []),
         "Audience": (r.get("bio") or "")[:500],
         "Notes": f"pro_terms={r['pro_terms']} cons_terms={r['consumer_terms']} "
@@ -179,9 +182,9 @@ def run_tiktok(profile, token, per, fmin, fmax, limit_enrich, run_dir):
         fields, q = tiktok_fields(c, e)
         rows.append(fields)
         qualified += q
-        print(f"  {i}/{len(kept)} @{c['handle']:<20} {'QUALIFIED' if q else 'roster':<9} "
+        print(f"  {i}/{len(kept)} @{c['handle']:<20} {'RECOMMEND' if q else 'roster':<9} "
               f"score={e.get('score')} {fields.get('Segment')} ({c.get('followers')} f)")
-    print(f"[tiktok] {len(rows)} creators, {qualified} qualified")
+    print(f"[tiktok] {len(rows)} creators, {qualified} recommended")
     return rows, len(videos)
 
 
@@ -195,7 +198,7 @@ def run_instagram(profile, token, max_candidates, run_dir, smoke):
         fields, q = ig_fields(r)
         rows.append(fields)
         qualified += q
-    print(f"[instagram] {len(rows_raw)} walked -> {len(rows)} written, {qualified} qualified "
+    print(f"[instagram] {len(rows_raw)} walked -> {len(rows)} written, {qualified} recommended "
           f"(${spend:.2f} apify)")
     return rows, len(rows_raw)
 
@@ -238,12 +241,12 @@ def main():
         items_in += ig_in
         notes.append(f"instagram {len(ig_rows)}")
 
-    qualified = sum(1 for r in rows if r.get("Stage") == "Qualified")
+    recommended = sum(1 for r in rows if r.get("Recommended"))
     save_artifact(run_dir, "airtable_rows", rows)
     finished = dt.datetime.now().isoformat(timespec="seconds")
 
     if args.dry_run:
-        print(f"\n[dry-run] {len(rows)} creators ({qualified} qualified), Airtable write skipped")
+        print(f"\n[dry-run] {len(rows)} creators ({recommended} recommended), Airtable write skipped")
         print(json.dumps(rows[:2], indent=2, ensure_ascii=False))
         return
 
@@ -254,9 +257,9 @@ def main():
         "Started": started, "Finished": finished, "Status": "Success",
         "Items In": items_in, "Items Out": n,
         "Notes": f"market={profile['name']} " + " · ".join(notes)
-                 + f" · {qualified} qualified for shortlist",
+                 + f" · {recommended} recommended for review",
     })
-    print(f"\n[discovery] upserted {n} creators ({qualified} qualified) + logged Run row")
+    print(f"\n[discovery] upserted {n} creators ({recommended} recommended, pending approval) + logged Run row")
     print(f"[discovery] base: https://airtable.com/{at.base_id}")
 
 
