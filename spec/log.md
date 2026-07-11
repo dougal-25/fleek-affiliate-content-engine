@@ -90,6 +90,16 @@ YouTube comments were being dropped wholesale because they key their parent on `
 **Open:** confirm `@juliacourcelle` is `@juliacrcl`, then re-weight the scoring model against all
 three named partners.
 
+## 2026-07-11 — Manual qualification is now a command (`scripts/qualify.py`)
+
+The human approval gate becomes a first-class engine action instead of an Airtable click. `qualify.py
+--list` prints the review queue; `qualify.py @handle …` approves (Prospect → Qualified) by handle,
+with `--platform` to disambiguate a cross-platform handle, `--key` for an exact record, `--unqualify`
+to reverse, `--dry-run` to preview. It refuses to guess an ambiguous handle, skips misses, and flags
+approvals of creators the engine did *not* recommend (human override — the point of a human gate).
+Scriptable, batch-capable, auditable — and the same Qualified state the outreach job consumes.
+Documented in `spec/discovery-engine.md` §4.
+
 ## 2026-07-11 — Auto-qualification off: the engine recommends, a human approves
 
 Doug's call: qualifying a creator stays a **manual approval** until the system is consistent and
