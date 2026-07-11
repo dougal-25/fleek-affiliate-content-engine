@@ -5,6 +5,21 @@ Dated record of design intent changing. Newest first. Decisions with reasoning g
 
 ---
 
+## 2026-07-11 — Auto-qualification off: the engine recommends, a human approves
+
+Doug's call: qualifying a creator stays a **manual approval** until the system is consistent and
+predictable — *"we want to work with them,"* so approval is deliberate, not automatic. The engine now
+sets a **`Recommended`** flag when a creator passes the bar; `Stage` stays `Prospect` until a human
+moves it to `Qualified`, and that approval is what triggers the outreach-draft job (which still never
+auto-sends — the permanent gate). Same discipline as the `CLAUDE.md` standing rule, made literal.
+
+Changed: both `run_discovery.py` mappers write `Recommended` not `Stage=Qualified`; `Recommended`
+checkbox added to the Creators schema; the 39 auto-qualified from the first run were migrated back to
+`Prospect` + `Recommended` (pending approval). Airtable review surfaces are views, documented in
+`spec/discovery-engine.md` §4: Review Queue (Recommended + Prospect), Qualified Roster (Stage=Qualified),
+Shortlist Gallery. The engine is now explicitly a targeted Kalodata for the reseller space — it
+suggests with reasons; the human curates.
+
 ## 2026-07-11 — The discovery engine went live: market-driven, both channels, into Airtable
 
 The engine is no longer a pile of scripts — it is one market-driven machine. `run_discovery.py` reads a

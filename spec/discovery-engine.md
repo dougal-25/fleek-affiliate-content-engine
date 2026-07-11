@@ -56,16 +56,42 @@ load profile
 
 `--channels tiktok` runs one channel; `--dry-run` skips the Airtable write; `--smoke` runs tiny.
 
-## 4. The shortlist bar
+## 4. The shortlist bar — the engine recommends, a human approves
 
 `signals.passes_shortlist_bar(is_reseller, fashion_vertical, likely_supplier)` — deterministic, and
 **comment-free by design**. A genuine reseller, in the clothing vertical, who is not themselves a
-wholesaler. Nothing else gates entry to the shortlist.
+wholesaler. Nothing else gates the recommendation.
 
-**Comments are not part of discovery.** They enrich a creator's profile where they are rich and are
-ignored where thin (an Instagram lead-magnet comment section carries no audience signal — see
-`spec/discovery-scoring.md` §4). Discovery decides who is *in the roster* and who is *Qualified*;
-comments are a later synthesis into creator profiles and the wiki, never a filter.
+**Auto-qualification is off — on purpose, until the system is proven consistent.** Passing the bar
+sets **`Recommended`** (the engine's suggestion), *not* `Stage = Qualified`. Everyone discovered lands
+at `Stage = Prospect`; the engine is a targeted Kalodata for the reseller space — it surfaces
+candidates with a fit score, segment, strength/weakness and the reasons, and a human decides. This is
+the `CLAUDE.md` standing rule made literal: *the engine proposes, humans approve.*
+
+The state model:
+
+```
+discovered            → Stage = Prospect,  Recommended = false
+passes the bar        → Stage = Prospect,  Recommended = true     ← the engine's pick (a suggestion)
+human approves        → Stage = Qualified                          ← manual, deliberate
+Qualified             → outreach-draft job generates a draft (never auto-sends — permanent gate)
+```
+
+Airtable surfaces this as views (filters, not new tables):
+
+| View | Filter | Who reads it |
+|---|---|---|
+| **Review Queue** | `Recommended` is checked · `Stage` = Prospect | the approver — the engine's suggestions |
+| **Qualified Roster** | `Stage` = Qualified (or beyond) | the approved partners — the "separate page" |
+| **Shortlist (Gallery)** | `Recommended` is checked | the deck — photo cards |
+
+When auto-qualification is later switched on (bar → `Stage = Qualified` directly), only the two
+`to_airtable_fields` mappers in `run_discovery.py` change; nothing else.
+
+**Comments are not part of discovery.** They enrich a creator's profile where rich and are ignored
+where thin (an Instagram lead-magnet comment section carries no audience signal — `spec/discovery-scoring.md`
+§4). Discovery decides who is *recommended*; comments are a later synthesis into creator profiles and
+the wiki, never a filter.
 
 ## 5. Channel weighting — prior now, measured later
 
