@@ -47,9 +47,9 @@
   }
 
   try {
-    setTheme(localStorage.getItem(THEME_KEY) || "dark");
+    setTheme(localStorage.getItem(THEME_KEY) || "light");
   } catch {
-    setTheme("dark");
+    setTheme("light");
   }
 
   // ?notes turns speaker notes on at load, so the presenter PDF is reproducible:
