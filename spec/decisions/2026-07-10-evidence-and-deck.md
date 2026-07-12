@@ -23,6 +23,12 @@ Airtable and Firecrawl token shapes), pre-commit and pre-push hooks via `core.ho
 PR. Both hooks were tested against a planted token and a forced `_evidence_raw/` add; both rejected, HEAD
 unmoved.
 
+*Amended 2026-07-10:* pre-push originally scanned **full history** on every push. That took ~11 minutes here
+(a 20MB dashboard export lives on a sibling branch, and re-walking the whole ancestry is pathological), which
+read as a hang. Pre-push now scans only `origin/main..HEAD` — the commits actually being pushed (~0.2s) — and
+**full-history scanning is CI's job**, where it has a time budget on GitHub's machines. The range scan was
+re-verified to still reject a planted token.
+
 The archive was then audited before a byte was processed. **Zero real secrets.** Every hit was a *command*
 reading `.env` (`grep '^APIFY_API_TOKEN' … | cut -d= -f2`), never a value. The one high-entropy token in the
 corpus turned out to be a broken wikilink slug.

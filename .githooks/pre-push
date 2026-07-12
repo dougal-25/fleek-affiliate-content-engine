@@ -1,11 +1,24 @@
 #!/usr/bin/env bash
-# Last gate before anything leaves the machine. Scans full history, not just the diff.
+# Last gate before anything leaves the machine. Scans the commits being pushed —
+# not all of history, every time. Re-walking the full ancestry back to the initial
+# import took ~11 minutes here (large blobs on old commits) and read as a hang.
+# Full-history scanning is CI's job (see .github/workflows/gitleaks.yml); it runs
+# on GitHub's machines with a time budget. This hook catches what THIS push adds.
 set -euo pipefail
 
 if ! command -v gitleaks >/dev/null 2>&1; then
   echo "pre-push: gitleaks not installed — refusing to push blind." >&2
+  echo "          brew install gitleaks" >&2
   exit 1
 fi
 
-echo "pre-push: scanning full history with gitleaks…"
-gitleaks detect --redact --config .gitleaks.toml
+# Scan only commits not yet on the upstream default branch. On a fresh repo with
+# no origin/main, fall back to full history (there's no range to scope to).
+if git rev-parse --verify -q origin/main >/dev/null; then
+  range="origin/main..HEAD"
+  echo "pre-push: scanning $range with gitleaks…"
+  gitleaks detect --redact --config .gitleaks.toml --log-opts="$range"
+else
+  echo "pre-push: no origin/main — scanning full history with gitleaks…"
+  gitleaks detect --redact --config .gitleaks.toml
+fi
