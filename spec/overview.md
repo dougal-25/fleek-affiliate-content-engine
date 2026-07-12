@@ -56,6 +56,7 @@ Never let a model allocate budget. Never ask a human to write 300 briefs. Say th
 | How is it operated? Segments, calendar, budget rules. | `spec/campaign-playbook.md` |
 | How does it run unattended? Hosting, triggers, breakers, recovery. | `spec/autonomy-layer.md` |
 | Why is it built this way? | `spec/decisions/` |
+| What does the room see? The live dashboard next to the deck. | `spec/creator-dashboard.md` → `dashboard/` |
 | What do we actually know about FR reselling? | `Fleek Wiki/index.md` |
 | What are we presenting? | `deliverables/` |
 
