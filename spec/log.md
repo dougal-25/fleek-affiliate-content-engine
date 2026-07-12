@@ -5,6 +5,7 @@ Dated record of design intent changing. Newest first. Decisions with reasoning g
 
 ---
 
+
 ## 2026-07-10 (later still) — Outreach goes live-shaped: qualification is the trigger, messages use first names
 
 Doug's spec for taking the outreach job operational (addendum 2 on
@@ -268,6 +269,63 @@ cohort; then strata selection. Also — `data/` is gitignored, so the calibratio
 `spec/discovery-scoring.md` and `spec/cac-model.md` cite as evidence are **not in the repo**. The derived
 files (`features.json`, `audience.json`, `comments_normalised.json`) are small and are exactly the "AI receipts"
 the brief asks for. Decision needed: commit the derived artifacts, keep the raw scrapes ignored.
+
+## 2026-07-10 — The deck now wears Fleek's own branding
+
+Doug reviewed the first draft ("good first draft") and called the aesthetic: follow joinfleek.com. Brand
+values **measured off the live site with Playwright**, not guessed — yellow `#F8C642` (their Sign Up button),
+button black `#0E0E0E`, surface grey `#F2F4F7`, Montserrat 700, 4px radii, halftone-dot motif. Details in
+[`deck.md`](deck.md).
+
+Because every colour lived in `tokens.css`, the rebrand was a token swap plus four accent edits — the
+no-hardcoded-hex rule paying for itself. Montserrat is self-hosted (35KB variable woff2, OFL) so the deck
+still opens from `file://` with no CDN. Yellow is graphics-only where contrast demands (text uses a dark-gold
+derivative on light ground). The dot motif is title + hero only.
+
+**Bug found by rendering the PDF, again:** in print, `.slide` was `position: static`, so the dot
+pseudo-elements re-anchored to `.stage` — whose print height is the full 14-slide stack — and `height: 45%`
+became a six-page dot band that blanked page 1 and tripled the file size. Fixed with `position: relative`;
+the reviewer PDF re-verified page by page.
+
+Content untouched — Doug is still building out sections; slide 6's Airtable link and the ~18-min timing cut
+remain open.
+
+---
+
+## 2026-07-10 — The proof of how it was built is now part of the deliverable
+
+The brief tests AI-nativeness and asks for *"the actual prompts including the failures."* The engine existed;
+the evidence did not — `deliverables/evidence/` was named in the approach doc and empty. Three things landed,
+in this order, because the order matters. Full reasoning:
+[`decisions/2026-07-10-evidence-and-deck.md`](decisions/2026-07-10-evidence-and-deck.md).
+
+**Preserve.** Nine sessions, 13.7 MB, 59 real prompts, in one place, outside git, and 30 days from automatic
+deletion. Archived outside the working tree at `~/claude-transcript-archive/`; `cleanupPeriodDays: 365`.
+Deliberately *not* `_evidence_raw/` in the repo behind a `.gitignore` line — this repo is public, and an ignore
+rule prevents an accident, not a mistake.
+
+**Secure.** `gitleaks` wired as pre-commit, pre-push and CI *before* the extractor was written. Both hooks
+proved to block by planting a token. The archive audited: **zero real secrets** — every hit was a command
+reading `.env`, never a value.
+
+**Extract.** `scripts/extract_receipts.py` renders 17 curated exchanges verbatim from the raw transcripts,
+redacting on the way out. Deterministic, so the pages regenerate rather than drift.
+
+**Then the deck.** Vanilla HTML, 14 slides, dark to present and light to send —
+[`deck.md`](deck.md). This **reverses the Canva decision** of 2026-07-09, per Doug the same day. The reversal
+is logged on the original record, not backdated.
+
+**Two bugs found by driving the deck rather than reading it:** `1.3cqw` sat on its own container-query
+container and silently resolved against the viewport (26px type in a 1067px stage on a short, wide projector);
+and the speaker notes were printing into the PDF that goes to Fleek — page 11 was instructing *them* to pause
+for two seconds before speaking.
+
+**And a stale claim, still live.** `Fleek Wiki/index.md`'s first pillar bullet still asserted *"no structured
+creator program yet"* while the retraction sat fifty lines below in a `[!CAUTION]` block. Fixed.
+**A correction that lives only in the footnotes is not a correction.**
+
+---
+
 
 ## 2026-07-10 — The mission is real; two load-bearing claims were wrong
 

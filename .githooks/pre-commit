@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Block a commit that stages a secret. Public repo — this gate is not optional.
+set -euo pipefail
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-commit: gitleaks not installed — refusing to commit blind." >&2
+  echo "            brew install gitleaks" >&2
+  exit 1
+fi
+
+# Raw transcripts must never be committed, ignored or not.
+if git diff --cached --name-only | grep -qE '^_evidence_raw/'; then
+  echo "pre-commit: _evidence_raw/ is unscrubbed transcript source. Never commit it." >&2
+  exit 1
+fi
+
+echo "pre-commit: scanning staged changes with gitleaks…"
+gitleaks protect --staged --redact --config .gitleaks.toml

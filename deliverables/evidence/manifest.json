@@ -1,0 +1,238 @@
+{
+  "_comment": [
+    "The curation layer. scripts/extract_receipts.py reads this, pulls the named exchange",
+    "verbatim out of the raw transcript, redacts it, and renders it into evidence/<slug>.md.",
+    "",
+    "'at' is a timestamp prefix — it must uniquely identify one exchange in that session.",
+    "'so_what' is the only prose written after the fact. Everything else is quoted."
+  ],
+
+  "sections": [
+    {
+      "slug": "how-i-worked",
+      "title": "How I worked with the AI",
+      "shows": "The working relationship: steering, killing scope, catching stale context.",
+      "intro": "The brief says *\"Do not hide the AI. Show it to us!\"* — so here it is, unflattering parts included. These are the moments where the model proposed and I disposed."
+    },
+    {
+      "slug": "phase-0-knowledge",
+      "title": "Phase 0 — building the knowledge base",
+      "shows": "Rejecting the research agent's first output; injecting the domain knowledge it lacked.",
+      "intro": "Before finding a single creator, the engine needed to know what \"good\" looks like in French reselling. The first attempt was not good enough, and I said so."
+    },
+    {
+      "slug": "discovery",
+      "title": "Part 1 — Discovery, ICP and scoring",
+      "shows": "Refusing a dead end, proposing the fix, and correcting a conceptual error in the model.",
+      "intro": "Discovery is the brief's core AI-nativeness test. It also produced the two exchanges I'd most want a hiring manager to read."
+    },
+    {
+      "slug": "outreach",
+      "title": "Part 2 — Outreach",
+      "shows": "Catching that discovery was discarding the exact data personalisation needs.",
+      "intro": "Personalisation is only as good as what the pipeline kept. It turned out the pipeline was throwing it away."
+    },
+    {
+      "slug": "budget",
+      "title": "Part 5 — Budget, cost and CAC",
+      "shows": "Cost discipline from the first prompt, and knowing when to stop spending.",
+      "intro": "The brief judges commercial judgement. That starts with the budget for building the thing, not just the budget for running it."
+    },
+    {
+      "slug": "hero-overruled",
+      "title": "The moment I overruled the machine",
+      "shows": "Stopping the work to ask whether the model had read the brief. It hadn't.",
+      "intro": "Nine hours into the build, I stopped and asked a question I should have asked first. The answer invalidated two claims the whole repo was resting on. This is the single most important thing in this submission."
+    }
+  ],
+
+  "receipts": [
+    {
+      "id": "perplexity-from-the-start",
+      "kind": "decision",
+      "session": "89990030",
+      "at": "2026-07-09T12:58",
+      "section": "phase-0-knowledge",
+      "label": "Choosing the research substrate before writing the agent",
+      "answer_chars": 420,
+      "so_what": "Plain WebFetch was being blocked by Reddit, so the wiki was coming back thin. Committing to Perplexity as the search substrate up front — rather than discovering the block later — is why the wiki has cited sources instead of hallucinated ones."
+    },
+    {
+      "id": "delete-two-agents",
+      "kind": "prompt",
+      "session": "89990030",
+      "at": "2026-07-09T13:22",
+      "section": "phase-0-knowledge",
+      "label": "Killing two agents in favour of one reusable skill",
+      "so_what": "I had asked for a research agent; the model built two, each welded to Fleek. I deleted both. What replaced them — the `wiki-knowledge-base-builder` skill — is project-agnostic and has since been pointed at other domains. The brief asks for something that \"would still work if France was 500 creators instead of 10.\" This is that, one level up: it works if the project isn't Fleek."
+    },
+    {
+      "id": "friperie",
+      "kind": "prompt",
+      "session": "7dc7ed35",
+      "at": "2026-07-09T14:04",
+      "section": "phase-0-knowledge",
+      "label": "Injecting the word the model didn't know it needed",
+      "so_what": "\"Friperie\" is what French resellers actually call thrift. No amount of English-language reasoning surfaces it. It became a core search keyword, a scoring signal, and the tonal anchor for the French outreach drafts. Domain knowledge the human supplies is still the scarce input."
+    },
+    {
+      "id": "lean-french",
+      "kind": "prompt",
+      "session": "7dc7ed35",
+      "at": "2026-07-09T14:07",
+      "section": "phase-0-knowledge",
+      "label": "Re-scoping the research after seeing the question list",
+      "response_chars": 400,
+      "so_what": "The model had drafted 25 research questions with a generic EU lens. I read them before a single API call was spent and forced the geography down to France, with EU only as context. Reviewing the plan is cheaper than reviewing the output."
+    },
+    {
+      "id": "not-rich-enough",
+      "kind": "prompt",
+      "session": "7dc7ed35",
+      "at": "2026-07-09T16:03",
+      "section": "phase-0-knowledge",
+      "label": "Rejecting the research agent's entire first output",
+      "response_chars": 500,
+      "so_what": "The agent reported success. The vault was thin. I rejected the whole run rather than build on it, and supplied a primary source to work from instead. That triggered the deep-read enrichment method — reading sources directly rather than synthesising summaries of them — which is where the vault's best pages came from."
+    },
+
+    {
+      "id": "reddit-dismissed",
+      "kind": "decision",
+      "session": "7dc7ed35",
+      "at": "2026-07-09T17:06",
+      "section": "discovery",
+      "label": "Refusing every option I was offered",
+      "answer_chars": 200,
+      "so_what": "The model hit a wall on Reddit and Quora, then offered me a menu of workarounds. I dismissed all of them. A tool being blocked is a fact to explain, not a constraint to route around silently — and I wanted the root cause before I picked a mitigation."
+    },
+    {
+      "id": "why-unfetchable",
+      "kind": "prompt",
+      "session": "7dc7ed35",
+      "at": "2026-07-09T21:11",
+      "section": "discovery",
+      "label": "Demanding the root cause",
+      "response_chars": 500,
+      "so_what": "Four hours later I came back and made it explain itself. The answer — Reddit and Quora block unauthenticated scraping — is the kind of thing that quietly degrades a data pipeline for months if nobody asks."
+    },
+    {
+      "id": "propose-apify-actor",
+      "kind": "prompt",
+      "session": "7dc7ed35",
+      "at": "2026-07-09T21:38",
+      "section": "discovery",
+      "label": "Proposing the architecture fix myself",
+      "so_what": "Once I understood the block, the fix was obvious and I specified it: an Apify Reddit actor, wired into the research skill permanently so every future wiki build inherits it. Note the second question in that prompt — I was also checking whether it removed a step, not just added one."
+    },
+    {
+      "id": "cap-at-300",
+      "kind": "prompt",
+      "session": "7dc7ed35",
+      "at": "2026-07-09T21:47",
+      "section": "discovery",
+      "label": "Approving the spend, then asking what it runs on",
+      "so_what": "\"Cap at 300 — but what's the actor going to run on?\" Approving a budget without knowing the execution surface is how prototypes fail to become systems. The answer determined whether this could ever be scheduled."
+    },
+    {
+      "id": "affiliates-not-audience",
+      "kind": "prompt",
+      "session": "112ae0f1",
+      "at": "2026-07-10T00:43",
+      "section": "discovery",
+      "label": "Correcting a conceptual error in the data model",
+      "response_chars": 500,
+      "so_what": "The model had conflated *who the creator is* with *who watches them* — filing \"pro reseller / hobbyist / general fashion\" under audience when they are affiliate types. Left alone, that error propagates into the scoring weights and the segment names on every downstream slide. I also challenged the scoring system in the same breath. Schema errors are the expensive kind: they look like working code."
+    },
+
+    {
+      "id": "captions-thrown-away",
+      "kind": "decision",
+      "session": "cc29f4e9",
+      "at": "2026-07-10T00:19",
+      "section": "outreach",
+      "label": "Discovery was discarding what personalisation needs",
+      "answer_chars": 320,
+      "so_what": "The spec said outreach personalises on captions and comments. Discovery kept only bio, segment and keywords — it was writing the captions to /dev/null. Two documents, both internally consistent, jointly wrong. Caught by reading them against each other rather than in sequence."
+    },
+
+    {
+      "id": "no-eight-million-tokens",
+      "kind": "prompt",
+      "session": "89990030",
+      "at": "2026-07-09T11:45",
+      "section": "budget",
+      "label": "A cost ceiling in the very first prompt",
+      "so_what": "The first thing I said about the research agent, before what it should do, was what it must not cost. Every later decision — the 35-call Perplexity cap, `sonar` over the expensive model, the 300-item Apify limit — descends from this line."
+    },
+    {
+      "id": "synthesize-what-weve-got",
+      "kind": "prompt",
+      "session": "7dc7ed35",
+      "at": "2026-07-09T21:49",
+      "section": "budget",
+      "label": "Knowing when to stop spending",
+      "so_what": "Offered a bigger scrape or synthesis of what already existed, I took the cheap option. The marginal source was not going to change a conclusion. Commercial judgement is mostly recognising that moment."
+    },
+
+    {
+      "id": "do-you-know-the-task",
+      "kind": "prompt",
+      "session": "ba66928b",
+      "at": "2026-07-09T22:17",
+      "section": "hero-overruled",
+      "label": "\"Do you know what the task was?\"",
+      "response_chars": 600,
+      "so_what": "Nine hours of building on a paraphrase. I stopped everything and asked whether the model had ever actually read the job description and the case-study brief. It had not — nobody had put them in the repo. Everything downstream of this question changed."
+    },
+    {
+      "id": "no-source-of-truth",
+      "kind": "decision",
+      "session": "02aedcaf",
+      "at": "2026-07-09T22:26",
+      "section": "hero-overruled",
+      "label": "The constants had no source of truth",
+      "answer_chars": 360,
+      "so_what": "Confirmed: the JD and task brief existed nowhere as files. They had been paraphrased into two docs, and the paraphrase had drifted. We scaffolded `mission/` for the real documents and made it read-only to agents."
+    },
+    {
+      "id": "here-are-the-real-docs",
+      "kind": "prompt",
+      "session": "02aedcaf",
+      "at": "2026-07-09T23:03",
+      "section": "hero-overruled",
+      "label": "Supplying the source documents",
+      "response_chars": 600,
+      "so_what": "Reading the real JD against the repo immediately falsified two load-bearing claims. **First:** the wiki asserted \"Fleek has no structured creator program — greenfield, not a fix-up.\" The JD describes a 1,000+ creator roster built over two years with recruitment largely automated. The wiki had inferred absence from Fleek's *public* surface and treated it as absence in fact. Saying \"you have no creator program\" in the first two minutes of the interview would have been unrecoverable. **Second:** the strategy anchored on activation with recruitment as a footnote; the brief weights both. Both corrections are recorded, dated, at the bottom of `mission/mission.md` — not quietly patched."
+    },
+
+    {
+      "id": "ditch-canva",
+      "kind": "prompt",
+      "session": "251a74aa",
+      "at": "2026-07-09T16:32",
+      "section": "how-i-worked",
+      "label": "Killing a tool choice after seeing it",
+      "so_what": "I had the model build competing Canva and Gamma drafts, looked at both, and dropped them. The deck you are reading this in is the result. Note that a signed-off decision record still said \"Canva\" — the reversal is logged rather than backdated."
+    },
+    {
+      "id": "vault-consumed",
+      "kind": "prompt",
+      "session": "02aedcaf",
+      "at": "2026-07-09T23:27",
+      "section": "how-i-worked",
+      "label": "Catching a real bug in the knowledge base",
+      "response_chars": 400,
+      "so_what": "The Fleek vault had been swallowed by the parent monorepo vault — two Obsidian vaults claiming the same files, each writing its own config. Noticed because the graph view looked wrong, not because anything errored."
+    },
+    {
+      "id": "stale-session",
+      "kind": "prompt",
+      "session": "ba66928b",
+      "at": "2026-07-09T23:59",
+      "section": "how-i-worked",
+      "label": "Warning the model that its own context was stale",
+      "so_what": "Six worktrees running in parallel means a session can be confidently working from an architecture that another session replaced an hour ago. Managing that staleness is a real skill of working this way, and nobody warns you about it."
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+Montserrat — designed by Julieta Ulanovsky et al.
+Licensed under the SIL Open Font License 1.1: https://openfontlicense.org
+Downloaded 2026-07-10 from Google Fonts (variable font, latin subset),
+self-hosted here so the deck opens from file:// with no CDN dependency.

@@ -1,0 +1,133 @@
+/* Design tokens — the only place a raw colour, size or duration is written down.
+   deck.css references these and never hardcodes. See spec/deck.md.
+
+   Palette is Fleek's own, measured off joinfleek.com on 2026-07-10:
+   yellow #F8C642 (their Sign Up button), solid black #0E0E0E (their buttons),
+   surface grey #F2F4F7, Montserrat 700 for emphasis, 4px radii. */
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("fonts/montserrat-var-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* ---- Type ------------------------------------------------------------ */
+  --font-sans: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Sizes are em, relative to the stage font-size, so the deck scales with the
+     viewport rather than with the browser's root font size. */
+  --t-xs: 0.62em;
+  --t-sm: 0.78em;
+  --t-base: 1em;
+  --t-md: 1.25em;
+  --t-lg: 1.7em;
+  --t-xl: 2.4em;
+  --t-2xl: 3.4em;
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.35;
+  --leading-normal: 1.6;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+
+  /* ---- Space ----------------------------------------------------------- */
+  --space-1: 0.25em;
+  --space-2: 0.5em;
+  --space-3: 0.75em;
+  --space-4: 1em;
+  --space-5: 1.5em;
+  --space-6: 2em;
+  --space-7: 3em;
+  --space-8: 4em;
+
+  /* ---- Motion ---------------------------------------------------------- */
+  --dur-fast: 90ms;
+  --dur-base: 180ms;
+  --dur-slow: 420ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* ---- Lines & radii --------------------------------------------------- */
+  --rule: 1px;
+  --radius: 4px;
+  --border-accent: 2px;
+
+  /* ---- Brand constants (same in both themes) ---------------------------- */
+  /* Fleek yellow: graphic accents only — progress bar, quote rules, dots,
+     badge chips. As TEXT it fails contrast on white, so the machine-voice
+     text colour derives from it per theme instead of using it raw. */
+  --c-brand: #f8c642;
+  --c-on-brand: #0e0e0e;
+
+  /* ---- Colour: dark (default — presented live) ------------------------- */
+  --c-bg: #0e0e0e;
+  --c-surface: #181712;
+  --c-surface-2: #211f18;
+  --c-rule: #33301f;
+
+  --c-text: #f0ede6;
+  --c-text-dim: #a09c8f;
+  --c-text-faint: #6f6c60;
+
+  /* Machine voice: on dark, brand yellow is contrast-safe as text. */
+  --c-machine: #f8c642;
+  /* Doug's own words. Louder than the machine, deliberately. */
+  --c-human: #ffffff;
+  /* A claim that was false / one that survived. */
+  --c-false: #e0655b;
+  --c-true: #6fae7f;
+}
+
+/* ---- Colour: light (print, PDF, and the `t` toggle) --------------------- */
+/* This is the brand-native surface: Fleek's own white + #F2F4F7 ground. */
+:root[data-theme="light"] {
+  --c-bg: #ffffff;
+  --c-surface: #f2f4f7;
+  --c-surface-2: #e7eaef;
+  --c-rule: #d5d9e0;
+
+  --c-text: #0e0e0e;
+  --c-text-dim: #4c4f54;
+  --c-text-faint: #7d8085;
+
+  /* Yellow text on white fails contrast; use its dark-gold shadow for text,
+     keep --c-brand for graphics. */
+  --c-machine: #8a6206;
+  --c-human: #000000;
+  --c-false: #a8322a;
+  --c-true: #2f6b41;
+}
+
+/* Print and PDF always use the light (brand-native) theme, whatever the screen
+   was set to. Declared here so no colour value lives outside this file. */
+@media print {
+  :root, :root[data-theme="dark"] {
+    --c-bg: #ffffff;
+    --c-surface: #f2f4f7;
+    --c-surface-2: #e7eaef;
+    --c-rule: #c9cdd4;
+
+    --c-text: #0e0e0e;
+    --c-text-dim: #45484d;
+    --c-text-faint: #75787d;
+
+    --c-machine: #7a5605;
+    --c-human: #000000;
+    --c-false: #982c24;
+    --c-true: #285c38;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur-base: 0ms;
+    --dur-slow: 0ms;
+  }
+}

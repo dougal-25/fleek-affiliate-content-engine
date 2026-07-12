@@ -29,4 +29,13 @@ Fleek Wiki/.obsidian/appearance.json
 # writes its own settings — Obsidian advises against it. Never commit one.
 # If one appears on disk, delete it and reopen Obsidian on "Fleek Wiki/" itself.
 Fleek Wiki/*/.obsidian/
+
+# Raw Claude Code transcripts are the source for deliverables/evidence/, but they
+# are UNSCRUBBED and must never enter this repo — it is public. They live outside
+# the working tree at ~/claude-transcript-archive/fleek-2026-07-10/ and are read
+# from there by scripts/extract_receipts.py. This line is a backstop, not the control.
+_evidence_raw/
+
+# Playwright MCP byproduct — screenshots of our own UI mid-iteration, never source.
+.playwright-mcp/
 .vercel/
