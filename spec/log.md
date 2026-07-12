@@ -5,6 +5,26 @@ Dated record of design intent changing. Newest first. Decisions with reasoning g
 
 ---
 
+## 2026-07-12 — Budget engine steers on two signals, not just CAC
+
+`content_brain/budget.py` now reads CAC **and** posting rate. Why: Fleek is judged on *% of partners
+posting each month*, and posts lead orders by weeks (post → signup → first order). A CAC-only rule would
+*pause the highest-CAC segments* — but reactivating dormant French partners is CAC-expensive early precisely
+because the orders haven't landed yet. Pausing them starves the motion the headline metric rewards ("the
+whole game").
+
+The rule: a segment with blown CAC (>2× channel avg, on ≥8 orders) is **killed only if posting isn't
+climbing**. If its activation % rose >2 points vs the prior period, it's **held a cycle** instead — give the
+lag time to convert. `plan_budget(prev_activation=…)` is optional: omit it and the engine steers on CAC alone
+(old behaviour, fully backwards-compatible); `run_campaign.py plan-budget` now passes the prior 30-day window
+so the trend signal is live.
+
+Chose **trend, not activation level**, deliberately: dormant FR reactivation segments start at *low* absolute
+activation but *rising* — a level-floor would fail to protect exactly the France case. Verified: with no trend
+data a >2× segment is killed; forcing a climbing prior flips the same segment kill→hold; and on real data the
+one over-threshold segment (flat posting) is correctly still killed, so the gate discriminates rather than
+always-holds. This closes the gap where `deliverables/case-study-approach.md` §5 described a two-signal engine
+the code didn't yet run.
 
 ## 2026-07-10 (later still) — Outreach goes live-shaped: qualification is the trigger, messages use first names
 

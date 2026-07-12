@@ -168,14 +168,35 @@ calibration partners, and its own weights. That's scoping item #1 for any new ge
 
 ## 9. Section 5 — Budget
 
-Framework, not guesses. Example on £10,000:
-- 40% existing partners (they already trust Fleek — lowest CAC)
-- 30% new recruitment
-- 20% experiments
-- 10% performance bonuses
+**The framework is the reallocation rule. The split is just its starting prior.** Four numbers on a slide aren't a framework — they're a guess with a percent sign. The framework is the control loop that corrects them. So lead with the loop, not the numbers.
 
-**Monthly reallocation:** lowest CAC → increase spend; highest CAC → pause. Marketplace thinking.
-**Say it again here:** the budget engine is deterministic code, not an LLM. Never let a model allocate money.
+**Steer on two signals, not one.** The engine reads CAC *and* posting rate — because Fleek is judged on *% of partners posting each month*, and CAC alone would pause the very motion that moves that number. Reactivating a dormant French partner is CAC-expensive early: the first order lags the post by weeks. A naive "pause highest CAC" rule kills reactivation — *"the whole game."* So the rule is:
+- **Low CAC + posting** → scale.
+- **High CAC, but posting climbing** → hold, don't pause. Activation leads revenue; give it the lag.
+- **High CAC + flat posting, on real data** → pause.
+- **Not enough data** → test pool. Never pause on noise.
+
+**The data gate is what makes it defensible.** The engine (`content_brain/budget.py`, deterministic) won't trust a segment's CAC below **8 first-orders**, ring-fences a **20% test pool** for under-observed segments, moves any share at most **±25%/week**, and only kills at **>2× channel-average CAC** *with* signal. That is the answer to "on how many orders?" — the question a single "pause highest CAC" line cannot survive.
+
+**The month-1 prior (example, £10k France test budget):**
+
+| Bucket | Share | Why it's a *prior*, not a rule |
+|---|---|---|
+| Reactivation — dormant inherited FR partners | 35% | Cheapest *posts*, not cheapest CAC. They already trust Fleek but haven't posted; highest leverage on the judged metric. |
+| New recruitment | 30% | The Part-1 acquisition motion. |
+| Experiments | 20% | Ring-fenced. Keep exploring or you over-exploit noise. |
+| Non-cash performance rewards | 15% | *Not* cash-per-post — see below. |
+
+Note the correction the brief forces: the biggest bucket is **reactivation**, justified as *cheapest posts* — **not** "existing partners, lowest CAC." Dormant partners have the *worst* realised CAC in the book (spend, zero orders); what they have is standing trust. Say it that precisely or an interviewer who read the brief catches it in the first two minutes.
+
+**Phasing (30/60/90), because a static split ignores the brief's own ask for phased GTM:**
+- **Days 0–30:** heavy experiment + recruit — there are barely any active FR partners to pour 40% into yet.
+- **Days 30–60:** first CAC + posting signal lands → the reallocation loop takes over from the prior; tilt toward whatever's posting.
+- **Days 60–90:** winners identified → shift into reactivation/rewards; experiments stay ring-fenced.
+
+**The 15% is where "get partners to post more without simply paying more per post" gets answered.** Flat cash bonuses *are* paying more per post. Structure the pool as non-linear, non-cash rewards: posting streaks, tier status, and access to the paid coaching/Discord layer French resellers *already pay for*. Status and access, not a bigger cheque.
+
+**Say it plainly:** the budget engine is deterministic code, not an LLM. Models write briefs; code moves money. Never let a model allocate spend.
 
 ## 10. Section 6 — AI throughout + the demo
 

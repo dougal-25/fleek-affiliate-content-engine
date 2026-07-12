@@ -47,8 +47,11 @@ def cmd_report(_: argparse.Namespace) -> None:
 
 def cmd_plan_budget(args: argparse.Namespace) -> None:
     creators, posts = store.load_creators(), store.load_posts()
-    stats = segmentation.segment_stats(creators, posts)
-    lines = budget.plan_budget(stats, weekly_budget=args.budget)
+    today = date(2026, 7, 1)
+    stats = segmentation.segment_stats(creators, posts, since_days=30, today=today)
+    prev = segmentation.segment_stats(creators, posts, since_days=30, today=today - timedelta(days=30))
+    prev_activation = {s.segment: s.activation_pct for s in prev}
+    lines = budget.plan_budget(stats, weekly_budget=args.budget, prev_activation=prev_activation)
     print(f"=== WEEKLY BUDGET PLAN (£{args.budget:,.0f}) ===")
     print(f"{'segment':<45}{'decision':>9}{'amount':>10}  rationale")
     for l in lines[:25]:
