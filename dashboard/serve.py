@@ -7,6 +7,7 @@ Serves the dashboard and proxies its data so the Airtable key never reaches the 
     /api/creators   live Airtable roster; falls back to the committed snapshot if offline
     /api/trends     keyword/hashtag intelligence computed from the 588 ingested posts
     /api/funnel     stage counts + compounding weekly history (snapshots itself on each run)
+    /api/qualify    POST — manual approval: move ONE creator Prospect<->Qualified (the human gate)
     /avatar/<h>     profile image proxy (unavatar.io), disk-cached, 404 -> client draws initials
 
 Stdlib only. Run:  python3 dashboard/serve.py   then open http://localhost:8787
@@ -98,6 +99,50 @@ def get_creators():
             print(f"  ! live fetch failed ({e}); serving snapshot")
     with open(SNAPSHOT) as f:
         return enrich({"source": "snapshot", "fetched": "2026-07-09", "records": json.load(f)})
+
+
+# ---- manual qualification: the human gate the discovery engine hands off to ----
+# Mirrors scripts/qualify.py — the engine RECOMMENDS (a star), a human QUALIFIES (Prospect->Qualified).
+# Auto-qualification stays off by design; approving a non-recommended creator is allowed but flagged.
+QUALIFY_MOVES = {"Qualified", "Prospect"}  # approve / reverse only — no arbitrary stage jumps from the UI
+RECOMMEND_MIN = 60  # the engine "recommends" a prospect at/above this fit score; below it, qualifying is an override
+
+
+def airtable_patch(key, record_id, fields):
+    url = f"https://api.airtable.com/v0/{_base_id}/Creators/{record_id}"
+    req = urllib.request.Request(url, data=json.dumps({"fields": fields}).encode(), method="PATCH")
+    req.add_header("Authorization", f"Bearer {key}")
+    req.add_header("Content-Type", "application/json")
+    with urllib.request.urlopen(req, timeout=15) as r:
+        return json.load(r)
+
+
+def set_stage(handle, stage):
+    """Move ONE creator to Qualified (approve) or Prospect (reverse). Keyed on Handle — the same
+    identity the discovery engine upserts on (scripts/run_discovery.py, merge_on=["Handle"]).
+    The engine surfaces & scores; a human qualifies. Returns the override flag so the UI can
+    surface the judgment call: qualifying a below-recommend-line prospect goes against the score."""
+    if stage not in QUALIFY_MOVES:
+        raise ValueError(f"stage must be one of {sorted(QUALIFY_MOVES)}")
+    if not handle:
+        raise ValueError("handle required")
+    key = load_key()
+    if not key:
+        raise RuntimeError("no Airtable key on the server")
+    records = fetch_creators_live(key)  # also ensures _base_id is resolved
+    h = str(handle).lstrip("@").lower()
+    rec = next((r for r in records if (r["fields"].get("Handle") or "").lstrip("@").lower() == h), None)
+    if not rec:
+        raise KeyError(f"no creator with handle {handle}")
+    f = rec["fields"]
+    was, score = f.get("Stage"), f.get("Score") or 0
+    recommended = score >= RECOMMEND_MIN
+    if was == stage:
+        return {"ok": True, "noop": True, "handle": f.get("Handle"), "from": was, "to": stage}
+    airtable_patch(key, rec["id"], {"Stage": stage})
+    return {"ok": True, "handle": f.get("Handle"), "platform": f.get("Platform"),
+            "from": was, "to": stage, "score": score, "recommended": recommended,
+            "override": stage == "Qualified" and not recommended}
 
 
 # ---- enrichment: audience-type tags + channel links, derived deterministically ----
@@ -482,6 +527,22 @@ class Handler(SimpleHTTPRequestHandler):
         except Exception as e:
             return self.send_json({"error": str(e)}, 500)
         return super().do_GET()
+
+    def do_POST(self):
+        # Local dev writes are ungated (localhost is Doug's own machine). The public
+        # deployment gates the same action behind QUALIFY_TOKEN — see api/qualify.py.
+        if self.path.split("?")[0] != "/api/qualify":
+            return self.send_json({"error": "not found"}, 404)
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+            body = json.loads(self.rfile.read(length) or b"{}")
+            return self.send_json(set_stage(body.get("handle"), body.get("stage")))
+        except (KeyError, ValueError) as e:
+            return self.send_json({"error": str(e)}, 400)
+        except BrokenPipeError:
+            return
+        except Exception as e:
+            return self.send_json({"error": str(e)}, 500)
 
 
 def main():

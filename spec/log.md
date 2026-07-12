@@ -230,3 +230,28 @@ performers turn out to be partner success stories and sourcing guides (×95–×
 the affiliate-education formats briefs should reference. Instagram reels play in the same in-page modal
 (`/p/<shortcode>/embed/`) with the full analysis panel. Verified locally and live: 36/36 thumbnails,
 filter counts correct, IG embed loads. Baked file now 20.5 MB (thumbs inline) — heavy but functional.
+
+## 2026-07-12 — Manual qualification: the human gate on the discovery engine
+
+The discovery engine surfaces & scores creators, upserting them as **Prospect** keyed on **Handle**
+(`scripts/run_discovery.py:84,155`). This adds the missing half — a **human qualifies** Prospect→Qualified
+from the dashboard, matching the mission's permanent rule *"the engine proposes, humans approve."*
+
+- **Where:** the creator drawer. A qualify block under the handle shows the funnel stage, a green
+  **✓ Qualify partner** button for prospects (**↩ Move back to Prospect** once qualified — fully reversible),
+  and the engine's judgment inline: *"Engine-recommended · fit score N"* at/above the recommend line (60),
+  or an amber *"⚠ below the recommend line — qualifying is an override"* below it. Overrides are allowed but
+  flagged, in the UI and the API response, so going against the score is a visible decision.
+- **Backend:** `set_stage(handle, stage)` in `serve.py` — keyed on Handle (the engine's own identity),
+  restricted to Prospect↔Qualified only (no arbitrary stage jumps from the UI), writes one Airtable PATCH.
+  Local dev (`/api/qualify` in `serve.py`) is ungated — it's Doug's machine. The public deployment
+  (`dashboard/api/qualify.py`) is **disabled by default** and only writes when `QUALIFY_TOKEN` is set in the
+  Vercel env and sent as an `X-Qualify-Token` header (browser stores it in localStorage, prompts once).
+- **Card motion:** optimistic — on success the card moves funnel sections live and a toast confirms; the
+  write is already persisted (verified: qualified @juliacrcl → Airtable showed Qualified → reversed → back
+  to Prospect, data restored).
+- **Read-only export:** the baked single-file dashboard shows the stage + "qualify on the live dashboard"
+  note instead of a button (no server to write to).
+
+**Deploy note:** enabling qualification on the production URL is a deliberate act — it needs `QUALIFY_TOKEN`
+set in Vercel (outward-facing write to real Airtable from a public page), so that's Doug's call, not baked in.

@@ -318,6 +318,46 @@ main { max-width: 1280px; margin: 0 auto; padding: var(--sp-5) var(--sp-6) var(-
 }
 .contact-box a { color: var(--ink); font-weight: 700; }
 
+/* ---------- manual qualification block (drawer) ---------- */
+.qualify-box {
+  border: 1px solid var(--border); border-radius: var(--r-md);
+  padding: var(--sp-3) var(--sp-4); background: var(--surface);
+}
+.qualify-status { display: flex; align-items: center; gap: var(--sp-2); margin-bottom: var(--sp-2); }
+.qualify-status .q-lbl {
+  font-size: var(--fs-xs); font-weight: 700; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: 0.6px;
+}
+.q-stage {
+  font-size: var(--fs-xs); font-weight: 800; padding: 3px 10px; border-radius: var(--r-pill);
+  background: var(--surface-tint); color: var(--ink);
+}
+.q-stage.stage-qualified { background: var(--ok); color: #fff; }
+.q-stage.stage-prospect { background: var(--gold-tint); color: var(--gold-deep); border: 1px solid var(--fleek-gold); }
+.qualify-btn {
+  width: 100%; border: 0; border-radius: var(--r-md);
+  padding: var(--sp-2) var(--sp-4); font-size: var(--fs-sm); font-weight: 800;
+  cursor: pointer; transition: filter var(--t-fast), transform var(--t-fast);
+}
+.qualify-btn:hover { filter: brightness(1.05); }
+.qualify-btn:active { transform: translateY(1px); }
+.qualify-btn[disabled] { opacity: 0.6; cursor: default; }
+.qualify-btn.primary { background: var(--ok); color: #fff; }
+.qualify-btn.reverse { background: var(--surface-tint); color: var(--ink); border: 1px solid var(--border); }
+.q-note { font-size: var(--fs-xs); color: var(--ink-3); margin-top: var(--sp-2); line-height: 1.5; }
+
+/* ---------- toast ---------- */
+.toast {
+  position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 40px);
+  background: var(--ink); color: #fff; font-size: var(--fs-sm); font-weight: 700;
+  padding: var(--sp-3) var(--sp-5); border-radius: var(--r-pill);
+  box-shadow: var(--shadow-lift); opacity: 0; pointer-events: none; z-index: 60;
+  transition: opacity var(--t-med), transform var(--t-med);
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.warn { background: var(--warn); }
+.toast.bad { background: var(--bad); }
+
 /* ---------- inspiration ---------- */
 .inspiration-head { margin-bottom: var(--sp-5); }
 .inspiration-head h2 { font-size: var(--fs-lg); font-weight: 800; }

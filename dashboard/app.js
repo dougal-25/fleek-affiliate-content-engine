@@ -300,6 +300,8 @@ function openDrawer(c) {
   head.append(h);
   d.append(head);
 
+  d.append(qualifyBlock(c));
+
   // contact — clearly displayed, actionable
   const contact = div("contact-box sec");
   contact.append(span(null, "📮 Contact: "));
@@ -396,6 +398,97 @@ function parseBreakdown(s) {
     const m = part.match(/([^:]+):\s*(\d+)\s*\/\s*(\d+)/);
     return m ? { label: m[1].trim(), got: +m[2], max: +m[3] } : null;
   }).filter(Boolean);
+}
+
+/* ---------- manual qualification: the human gate on the discovery engine ----------
+   Engine surfaces & scores prospects; a person reviews and qualifies (Prospect->Qualified).
+   Reversible. Below the recommend line it's an override, flagged but allowed. */
+const RECOMMEND_MIN = 60;
+const READONLY = !!window.__DATA__;  // baked single-file export can't write
+
+function toast(msg, kind = "ok") {
+  let t = $("#toast");
+  if (!t) {
+    t = div("toast"); t.id = "toast"; document.body.append(t);
+  }
+  t.textContent = msg;
+  t.className = "toast show " + kind;
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { t.className = "toast"; }, 3200);
+}
+
+async function postQualify(handle, stage) {
+  const headers = { "Content-Type": "application/json" };
+  const tok = localStorage.getItem("fleek_qualify_token");
+  if (tok) headers["X-Qualify-Token"] = tok;
+  let res = await fetch("/api/qualify", {
+    method: "POST", headers, body: JSON.stringify({ handle, stage }),
+  });
+  if (res.status === 401) {  // hosted + token required/wrong — ask once, retry
+    const entered = prompt("Enter the qualification token to approve on the live dashboard:");
+    if (!entered) throw new Error("cancelled");
+    localStorage.setItem("fleek_qualify_token", entered.trim());
+    headers["X-Qualify-Token"] = entered.trim();
+    res = await fetch("/api/qualify", {
+      method: "POST", headers, body: JSON.stringify({ handle, stage }),
+    });
+  }
+  const out = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(out.error || `HTTP ${res.status}`);
+  return out;
+}
+
+function qualifyBlock(c) {
+  const box = div("qualify-box sec");
+  const stage = c.Stage || "Prospect";
+  const score = c.Score || 0;
+  const recommended = score >= RECOMMEND_MIN;
+
+  const status = div("qualify-status");
+  status.append(span("q-lbl", "Funnel stage"), span("q-stage stage-" + stage.replace(/\s+/g, "-").toLowerCase(), stage));
+  box.append(status);
+
+  if (READONLY) {
+    box.append(div("q-note", "Read-only export — qualify on the live dashboard."));
+    return box;
+  }
+  if (stage !== "Prospect" && stage !== "Qualified") {
+    box.append(div("q-note", `Past the qualify gate — manage “${stage}” in Airtable.`));
+    return box;
+  }
+
+  const act = (label, next, cls) => {
+    const b = document.createElement("button");
+    b.className = "qualify-btn " + cls;
+    b.textContent = label;
+    b.addEventListener("click", async () => {
+      b.disabled = true; b.textContent = "…";
+      try {
+        const r = await postQualify(c.Handle, next);
+        c.Stage = r.to;                 // optimistic: the card moves funnel sections live
+        renderSections();
+        toast(r.noop ? `@${c.Handle} already ${r.to}`
+          : r.override ? `@${c.Handle} qualified (override — fit score ${r.score}, below ${RECOMMEND_MIN})`
+          : `@${c.Handle} → ${r.to}`, r.override ? "warn" : "ok");
+        openDrawer(c);                  // re-render the drawer in its new state
+      } catch (e) {
+        b.disabled = false; b.textContent = label;
+        toast(`Couldn't update: ${e.message}`, "bad");
+      }
+    });
+    return b;
+  };
+
+  if (stage === "Prospect") {
+    box.append(act("✓ Qualify partner", "Qualified", "primary"));
+    box.append(div("q-note", recommended
+      ? `Engine-recommended · fit score ${score}. You’re the approval gate.`
+      : `⚠ Fit score ${score} — below the recommend line (${RECOMMEND_MIN}). Qualifying is an override.`));
+  } else {  // Qualified
+    box.append(act("↩ Move back to Prospect", "Prospect", "reverse"));
+    box.append(div("q-note", "Qualified by a human. Reversible."));
+  }
+  return box;
 }
 
 loadCreators().catch(e => { $("#source-badge").textContent = "error"; console.error(e); });
