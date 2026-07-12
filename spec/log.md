@@ -5,6 +5,91 @@ Dated record of design intent changing. Newest first. Decisions with reasoning g
 
 ---
 
+## 2026-07-10 (later still) — Outreach goes live-shaped: qualification is the trigger, messages use first names
+
+Doug's spec for taking the outreach job operational (addendum 2 on
+`spec/decisions/2026-07-10-outreach-drafts.md`):
+
+- **Trigger = human qualification.** New `--qualified` mode drafts for every
+  `Stage = Qualified AND Outreach Status = Not started` creator — the exact call a scheduler makes
+  once the agent is active. Scoring surfaces candidates; a human qualifies; qualification releases
+  the draft. The percentile `--auto` mode is demoted to a candidate-finder.
+- **Still drafts, never sends** — confirmed explicitly. Auto-send offered and declined; the permanent
+  gate holds.
+- **First name, never the handle, never invented.** The evidence gatherer captures the profile
+  display name; the extract step derives a real given name or `null` (a shop name is not a name).
+  Verified live: `Alicia 🌙 → Salut Alicia`; `CODE DES GRANDS ✦ Friperies → null`, opened on content.
+
+Run manually this week; the autonomy layer only changes who presses enter.
+
+**Message content refined (same day):** the draft was over-indexing on the grading-pain wound. It now
+works from a **value palette** — direct global supply (2,000+ suppliers/100+ countries), de-risked
+buying (Make an Offer / ~10-piece MOQ / 30-day BNPL), grading trust (Fleek Sort + Buyer Protection),
+the human relationship, and buy-and-earn — picking what fits each creator's niche, led by the
+observation. Every figure is wiki-sourced (`Fleek Company Profile.md`); "competitive pricing" was
+deliberately not written as a superiority claim. Factual discipline is a hard prompt rule: palette
+facts only, everything else → `human_check`. It immediately caught a perfume-wholesaler qualified for
+a clothing marketplace and flagged the mismatch. (Addendum 3 on the decision record.)
+
+## 2026-07-10 (later) — Doug's review: the bar becomes a percentile; known partners flagged, not excluded
+
+Doug reviewed the outreach build and overturned two calls (addendum on
+`spec/decisions/2026-07-10-outreach-drafts.md`):
+
+- **Known partners stay in the pipeline, flagged.** The hard exclusion hid `@juliacourcelle` from the
+  run; the flag shows her to the human with a `⚠️ VERIFY / reframe as re-activation` banner on the
+  draft itself. Nothing sends, so visibility beats removal.
+- **The score bar is a percentile of the roster's live distribution, not an absolute number.**
+  `--auto` now defaults to the top 50% — which computes to a cutoff of exactly 62, where the
+  known-good partner sits. Raising the bar is activation's job: better briefs raise scores, and the
+  same percentile then selects a stronger cohort. Tiering is to be read the same way.
+
+Also per Doug: the deck's §6 must name the two build-time pushbacks (recency as a hard gate;
+multi-platform evidence) as a slide beat — human-in-the-loop at design time, not just at send.
+
+And the scoring roadmap is now explicit intent: v1 is a stated theory, upgraded by data not opinion —
+funnel outcomes re-fit the weights per cohort (a regression once volume allows, ~100+ outcomes), then
+a **re-weighting agent** owns the proposal step (never silently applies), and weights become
+**per-market config** — a scoping item for every new geo. Captured in the deck (§7 roadmap, §13
+closing slide) and `spec/engine-architecture.md` (next-build item 6).
+
+## 2026-07-10 — `outreach_drafts` is built, and the scoring model failed its calibration test
+
+The fifth engine job exists: `scripts/run_outreach.py` turns an Airtable creator into a 3-touch French
+outreach sequence, grounded in their own recent posts and audience comments, and writes it back as
+`Outreach Status = Draft`. Nothing is sent — there is no send code path anywhere in the repo. Full
+reasoning in `spec/decisions/2026-07-10-outreach-drafts.md`.
+
+**The thing worth reading.** `mission/mission.md` said to calibrate the scoring model against Fleek's
+three named top-performing partners. Doing that before writing the selector found one of them —
+`@juliacrcl` — already sitting in our own roster as `@juliacourcelle`, `Stage = Prospect`,
+`Outreach = Not started`, **scoring 62**. The bar this job was specced to use is 70. So: the engine
+would have cold-pitched one of Fleek's best partners, *and* our own threshold rejects a creator Fleek
+independently rates as top-performing. The `--min-score` default stays at 70 but is now labelled
+unevidenced in `--help`; re-weighting is the follow-up, and it needs Doug to confirm the
+juliacrcl ↔ juliacourcelle identity.
+
+Related: `Stage = Qualified` and `Score >= 70` turn out to be **disjoint sets** across the 49-creator
+roster (all 10 Qualified are TikTok, 52–62; all 8 at ≥70 are un-Qualified Prospects). The spec's
+"drafts for newly Qualified creators" would have drafted for nobody worth drafting for. Selection is
+now two explicit modes — `--handles` for hand-picked case-study creators, `--auto --min-score N` for
+the score-triggered scale story.
+
+**Also corrected:** the roster is 49 creators across three platforms (28 TikTok / 16 YouTube /
+5 Instagram), not the 12 TikTok creators the commit history implies — so the evidence gatherer
+(`content_brain/evidence.py`) has an adapter per platform. `deliverables/case-study-approach.md`
+promised transcripts as a personalisation input on every platform; only YouTube has them, and the
+claim is now accurate.
+
+**Three bugs fixed on the way**, one of them security-relevant: `apify_run` was passing the API token
+as a query param, and `requests` puts the full URL into `HTTPError` — so any actor failure printed the
+token to stdout, and would have written it into GitHub Actions logs under the autonomy layer. It now
+uses an `Authorization` header. `load_env` was silently finding no `.env` under git worktrees. And
+YouTube comments were being dropped wholesale because they key their parent on `pageUrl`, not `url`.
+
+**Open:** confirm `@juliacourcelle` is `@juliacrcl`, then re-weight the scoring model against all
+three named partners.
+
 ## 2026-07-11 — Manual qualification is now a command (`scripts/qualify.py`)
 
 The human approval gate becomes a first-class engine action instead of an Airtable click. `qualify.py

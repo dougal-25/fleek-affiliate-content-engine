@@ -72,6 +72,19 @@ python run_campaign.py weekly-cycle --limit 10
 Runs without an API key in deterministic mock mode. With `ANTHROPIC_API_KEY` set, the profiler, brief
 generator and insight agents run on Claude with structured outputs.
 
+The jobs that touch the **real** Airtable base (not the synthetic roster) are scripts, not `run_campaign`
+subcommands. They need `APIFY_API_TOKEN` and `AIRTABLE_API_KEY`:
+
+```bash
+python scripts/run_discovery.py --dry-run                        # scrape → score → Prospects
+python scripts/run_outreach.py --handles gdefou --dry-run        # hand-picked FR outreach drafts
+python scripts/run_outreach.py --auto --dry-run                  # score-triggered, at scale
+                                                                 # (percentile bar: --top-pct, default top 50%)
+```
+
+`run_outreach.py` **drafts, never sends** — it writes `Outreach Status = Draft` to Airtable and a human
+reviews, edits, sends and flips the status. That gate is permanent. Always `--dry-run` first.
+
 ## Code style
 
 - Python, minimal dependencies, full runnable code — no `# TODO: implement` placeholders.
