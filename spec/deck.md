@@ -64,12 +64,12 @@ rendered as slides (undesigned, code-block soup, no spine).
 | 2 | The one number: **# and % of partners posting each month** | `mission/mission.md` |
 | 3 | How I worked — the engine, and the receipts | `evidence/how-i-worked.md` |
 | 4 | Phase 0 — the knowledge base, and the hashtags it validated | `Fleek Wiki/`, `evidence/phase-0-knowledge.md` |
-| 5 | Part 1 — Discovery: ICP and scoring | `evidence/discovery.md` |
-| 6 | Part 1b — the shortlist | Airtable |
-| 7 | Part 2 — Outreach, and where the human gate sits | `evidence/outreach.md` |
-| 8 | Part 3 — the funnel is a view of the same database | `spec/decisions/` |
+| 5 | Part 1 — Discovery: market profile, both channels, real gates + run numbers | `spec/discovery-engine.md`, `evidence/discovery.md` |
+| 6 | Part 1b — the **live dashboard** (169 real scored creators) + shared link | `fleek-affiliate-dashboard.vercel.app`, `spec/creator-dashboard.md` |
+| 7 | Part 2 — Outreach: value palette, first-name, never-sends, Julia flag | `scripts/run_outreach.py`, `spec/decisions/2026-07-10-outreach-drafts.md` |
+| 8 | Part 3 — the real funnel (162/7/0) + the manual qualify gate | `scripts/qualify.py`, `spec/discovery-engine.md` |
 | 9 | Part 4 — Activation: the brief generator | `content_brain/brief_generator.py` |
-| 10 | Part 5 — Budget, CAC, reallocation | `content_brain/budget.py` |
+| 10 | Part 5 — CAC is a constraint not the selector; percentile bar | `spec/cac-model.md`, `spec/discovery-scoring.md` |
 | 11 | **Hero — the moment I overruled the machine** | `evidence/hero-overruled.md` |
 | 12 | The engine on autopilot — the scale answer | `spec/autonomy-layer.md` |
 | 13 | Live demo — `run_campaign.py brief CRE-0042` | the terminal |

@@ -436,6 +436,10 @@ body[data-notes] .slide[data-active] .notes { display: block; }
     height: auto;
     font-size: 10.5pt;
     overflow: visible;
+    /* Drop the container-query context in print. `container-type: inline-size`
+       breaks Chrome's pagination of the first paged child — it renders blank —
+       and the cqw slide font-size depends on it. Fixed pt below replaces cqw. */
+    container-type: normal;
   }
 
   .slide {
@@ -451,10 +455,18 @@ body[data-notes] .slide[data-active] .notes { display: block; }
     break-after: page;
     height: 167mm;
     padding: 14mm 18mm;
+    /* Fixed size in print — cqw needs the container context we just dropped. */
+    font-size: 11pt;
   }
 
   .slide:last-child { page-break-after: auto; break-after: auto; }
   .chrome, .progress { display: none; }
+
+  /* The initial [data-active] slide (the title) keeps `animation: rise` in print,
+     because `.slide[data-active]` outranks the `.slide { animation: none }` above.
+     rise starts at opacity:0, so headless print captured the title BLANK while every
+     other slide rendered. Reset it at matching specificity. */
+  .slide[data-active] { animation: none; opacity: 1; transform: none; }
 
   /* Print serves two readers, and they must not get the same file.
      Default (`p`, or ⌘P): the reviewer copy Fleek receives 24h ahead — no notes.

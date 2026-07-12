@@ -5,6 +5,41 @@ Dated record of design intent changing. Newest first. Decisions with reasoning g
 
 ---
 
+## 2026-07-13 — The deck was rebuilt against the real engine
+
+The 14-slide deck predated 30 commits of shipped work (live dashboard, market-driven discovery, outreach
+drafts, `qualify.py`). Refreshed the spine — same 14 slides, real content on every one, grounded in the spec
+pages and first-hand from the live dashboard (not the stale `49`/`588` figures the spec still carried).
+
+- **Slide 6 is now the live dashboard** — `fleek-affiliate-dashboard.vercel.app`, 169 scored creators,
+  32/100 avg fit, £85 median predicted CAC, filterable, funnel-grouped. Replaces the link-less Airtable
+  "shortlist". It ships both as the Vercel deploy and the offline self-contained HTML.
+- **Slide 5 (discovery):** the real engine — one FR market profile, TikTok + Instagram co-primary, YouTube
+  dropped from active search, the comment-free shortlist bar, 120 upserted / 39 recommended / roster 169.
+- **Slide 7 (outreach):** the value palette, first-name personalisation (`Alicia 🌙 → Salut Alicia`; a shop
+  name → null), never-sends (no send code path exists), the `⚠️ VERIFY` known-partner flag, and the
+  factual-discipline rule that caught the perfume-wholesaler mis-qualification.
+- **Slide 8 (funnel):** the real live funnel — 162 Prospect, 7 Qualified, 0 beyond, because outreach never
+  auto-sends and qualification is manual. Honest, not impressive, and that's the point.
+- **Slide 10 (CAC):** CAC is reach-weighted, so it ranks Fleek's own partners badly → fit selects the
+  shortlist, CAC is the constraint. Predicted CAC ships as a band, not a point; the model needs Fleek's three
+  numbers. Simulated allocator kept, badged.
+- New pushbacks worked into the strips: known-partners-flagged-not-excluded (slide 7),
+  auto-qualification-off + migrate-39-back (slide 8), percentile-bar-not-absolute (slide 10).
+
+**Print bug fixed, permanently.** Page 1 (the title) exported blank from every PDF — including last session's.
+Cause: the title is the initial `[data-active]` slide, and `.slide[data-active] { animation: rise }`
+(opacity:0 start) outranks the print block's `.slide { animation: none }`, so headless print captured the
+title mid-animation at opacity 0. Every other slide isn't `data-active`, so they rendered. Fixed at matching
+specificity in `deck.css`'s print block; also dropped `container-type` in print. Reviewer PDF re-verified page
+by page.
+
+**Known follow-up:** the `deliverables/evidence/` archive still holds the original 17 receipts; the new
+pushbacks live in the deck's inline strips but haven't been added to the generated evidence pages (their
+source transcripts postdate the 2026-07-10 archive). Slide 14's "17 receipts" remains literally accurate.
+
+---
+
 
 ## 2026-07-10 (later still) — Outreach goes live-shaped: qualification is the trigger, messages use first names
 
