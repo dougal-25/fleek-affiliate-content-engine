@@ -42,11 +42,12 @@ from content_brain.signals import (  # noqa: E402
 from content_brain import markets  # noqa: E402
 from discover_instagram_graph import run_graph_walk  # noqa: E402
 
-SCORE_SYSTEM = """You are Fleek's Content Brain, scoring creators as potential affiliate partners for a
+SCORE_SYSTEM = """You are Fleek's Content Brain, assessing creators as potential affiliate partners for a
 B2B secondhand-fashion wholesale marketplace. Fleek sells graded secondhand clothing in bulk to
 resellers. The best partners are French resellers/thrifters who ALREADY buy and resell stock — not
-generic fashion influencers. Score for one outcome only: will this creator drive reseller signups at
-low CAC. Judge from the evidence; never invent numbers. Reply with JSON only, no prose."""
+generic fashion influencers. Judge for one outcome only: will this creator drive reseller signups at
+low CAC. Rate each factor from the evidence; never invent numbers. You do NOT compute a total — code
+does that. Reply with JSON only, no prose."""
 
 SCORE_SCHEMA = """Return a JSON object:
 {
@@ -55,11 +56,43 @@ SCORE_SCHEMA = """Return a JSON object:
   "content_keywords": [up to 6 short tags describing their content],
   "strength": "one sentence — why they'd convert reseller signups",
   "weakness": "one sentence — the risk or gap",
-  "score": int 0-100,            // reseller credibility 40, audience relevance 30, wholesale/sourcing content 20, professionalism 10
-  "score_breakdown": "factor: points, ... (compact)",
+  "reseller_credibility": {"rating": int 0-10, "evidence": "one line citing what you saw"},
+  "audience_relevance":   {"rating": int 0-10, "evidence": "one line citing what you saw"},
+  "wholesale_sourcing":   {"rating": int 0-10, "evidence": "one line citing what you saw"},
+  "professionalism":      {"rating": int 0-10, "evidence": "one line citing what you saw"},
   "confidence": one of ["High","Medium","Low"]
-}"""
-# The model emits labels and a coarse fit score — never a currency figure (spec/cac-model.md §6).
+}
+
+Rate 0-10 per factor. Do NOT return an overall score — the weighted sum is computed in code."""
+# The model rates factors and emits labels — never a total, never a currency figure (spec/cac-model.md §6).
+
+# Weights are DATA and the arithmetic is CODE. The model used to return `score` as one integer, and
+# an audit of the first 49 creators (scripts/audit_scoring.py) found its totals contradicted its own
+# itemised breakdowns in 59% of records — always biased low, unauditable, impossible to re-weight.
+# Same four factors, same weights main already documented; the sum just moved out of the prompt.
+FIT_WEIGHTS = {"reseller_credibility": 40, "audience_relevance": 30,
+               "wholesale_sourcing": 20, "professionalism": 10}
+FIT_WEIGHTS_VERSION = "fit-v2-2026-07-11"
+
+
+def compute_fit(e: dict) -> tuple[int, str, str]:
+    """Weighted sum of the model's per-factor ratings. Returns (score, breakdown, confidence).
+
+    Confidence is derived from how many factors the model actually rated, not from its self-report:
+    a rating it skipped is a gap in evidence, not a neutral opinion.
+    """
+    points, rated = {}, 0
+    for factor, weight in FIT_WEIGHTS.items():
+        raw = e.get(factor)
+        r = raw.get("rating") if isinstance(raw, dict) else raw
+        r = max(0.0, min(10.0, float(r))) if r is not None else 0.0
+        if raw is not None:
+            rated += 1
+        points[factor] = round(r / 10.0 * weight, 1)
+    total = round(sum(points.values()))
+    breakdown = " · ".join(f"{f.replace('_', ' ')} {p:.0f}/{FIT_WEIGHTS[f]}" for f, p in points.items())
+    confidence = "High" if rated == len(FIT_WEIGHTS) else "Medium" if rated >= 2 else "Low"
+    return total, f"{breakdown}  [{FIT_WEIGHTS_VERSION}]", confidence
 
 
 def enrich_tiktok(c: dict) -> dict | None:
@@ -97,8 +130,9 @@ def tiktok_fields(c: dict, e: dict) -> dict:
         "Segment": "Wholesaler / supplier" if supplier else e.get("segment"),
         "Content Keywords": ", ".join(e.get("content_keywords") or []),
         "Strength": e.get("strength"), "Weakness": e.get("weakness"),
-        "Score": e.get("score"), "Score Breakdown": e.get("score_breakdown"),
-        "Confidence": e.get("confidence"), "Fleek Aware": fk["mentions_fleek"],
+        # Score and breakdown are computed here, not taken from the model (see compute_fit).
+        **dict(zip(("Score", "Score Breakdown", "Confidence"), compute_fit(e))),
+        "Fleek Aware": fk["mentions_fleek"],
         # The engine RECOMMENDS; a human approves. Passing the bar sets Recommended, not Qualified —
         # Stage stays Prospect until someone approves. Auto-qualification is off by design until the
         # system is proven consistent (spec/discovery-engine.md §4).
@@ -183,7 +217,7 @@ def run_tiktok(profile, token, per, fmin, fmax, limit_enrich, run_dir):
         rows.append(fields)
         qualified += q
         print(f"  {i}/{len(kept)} @{c['handle']:<20} {'RECOMMEND' if q else 'roster':<9} "
-              f"score={e.get('score')} {fields.get('Segment')} ({c.get('followers')} f)")
+              f"score={fields.get('Score')} {fields.get('Segment')} ({c.get('followers')} f)")
     print(f"[tiktok] {len(rows)} creators, {qualified} recommended")
     return rows, len(videos)
 
