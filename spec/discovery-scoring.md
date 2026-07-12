@@ -211,6 +211,50 @@ being resellers. This is the two-field distinction in its sharpest form.
   press-sourced handles are unverified, exactly as it warned.
 - No test suite. Same debt as the rest of `content_brain/`.
 
+## 9.5 Arithmetic ownership, the variance test, and the refit loop
+
+Two rubrics live in this repo. The **FIT rubric** (§5) is deterministic and code-owned — but it is
+*designed, not yet wired*: `Fit Score` is a defined field nothing computes. The **live** discovery score is
+the LLM read in `run_discovery.py`, and until 2026-07-11 it let the model return the total.
+
+**The arithmetic moved into code (`run_discovery.compute_fit`).** The model now returns four 0–10 ratings
+with evidence; code multiplies by the documented weights (credibility 40 · audience 30 · wholesale 20 ·
+professionalism 10) and sums. Why it mattered — `scripts/audit_scoring.py` over the first 49 creators:
+
+| | |
+|---|---|
+| totals contradicting their own itemised breakdown | **29 of 49 (59%)** |
+| mean / max error | 8.7 / 20 points |
+| direction of every error | stored total **below** the sum — an unstated, un-reweightable penalty |
+
+It moved the shortlist: `@fripeinstoregrossiste`, a grossiste and exactly the ICP, was pushed out of the
+top 10 by arithmetic the model did silently.
+
+**The variance test earns §5 its evidence.** `scripts/test_judge_variance.py` runs the real judge 5× per
+creator. Three of the four factors are stable (spread ≤ 2), but **`audience_relevance` swings up to 3 points**
+on a supplier/boilerplate account whose captions carry no real audience signal. That is not noise to tune
+away — it is the model being asked to judge *who watches* from *what the creator says*, which captions cannot
+answer. It is direct evidence for §5's central choice: **score audience from comments (`classify_audience.py`),
+not from captions.** The live LLM `audience_relevance` should be treated as provisional until the comment
+classifier confirms it, and the standing next step is to wire the §5 FIT rubric so it supersedes the LLM score.
+
+**The refit loop (designed, not built).** Weights here are v1 hypotheses; funnel outcomes should re-weight
+them. The mechanism mirrors `budget.py`'s trading desk, applied to points instead of pounds:
+
+- **Outcome label:** *First sale within 60 days of Contacted* — not replies, not signatures. "A signed
+  partner who never posts is worth nothing."
+- **Trigger:** every 25 decided outcomes **per market** (count, not calendar — a thin month is noise).
+- **Arithmetic:** converters' mean factor rating minus non-converters', capped ±5 points per factor per
+  cohort, re-normalised to 100. Deterministic; the model never touches it.
+- **Governance:** the engine proposes, a human approves the new weights, the version bumps, and every score
+  already carries its weight-version so old rankings stay auditable.
+- **Selection-bias guard:** ring-fence ~15% of outreach for below-bar creators, or the loop only ever learns
+  from its own winners.
+- **Per market:** `WEIGHTS["FR"]` / `["UK"]`, pooled fallback until a market clears the 25-outcome floor.
+  Geo only — per-niche-per-tier weights would be noise in a rigour costume.
+- **Cold start is Fleek's to solve, and they can:** two years of referral-code attribution across a 1,000+
+  roster means the refit recalibrates on real history in week one, not after a year of new cohorts.
+
 ## 10. Sources
 
 - `mission/task-brief.md`, `mission/mission.md` — the pro/hobbyist taxonomy, the three named partners, trust > reach
