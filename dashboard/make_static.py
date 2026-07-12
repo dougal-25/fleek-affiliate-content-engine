@@ -18,8 +18,8 @@ import shutil
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from serve import (AVATAR_DIR, HERE, HISTORY_PATH, SNAPSHOT, compute_inspiration,  # noqa: E402
-                   compute_trends, enrich, image_type)
+from pipeline import (AVATAR_DIR, HERE, HISTORY_PATH, SNAPSHOT, compute_inspiration,  # noqa: E402
+                      compute_trends, enrich, image_type)
 
 STATIC = os.path.join(HERE, "api", "_static")
 AVATARS_OUT = os.path.join(HERE, "avatars")

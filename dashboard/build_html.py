@@ -15,8 +15,8 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from serve import (HERE, compute_funnel, compute_inspiration, compute_trends,  # noqa: E402
-                   get_avatar, get_creators, image_type)
+from pipeline import (HERE, compute_funnel, compute_inspiration, compute_trends,  # noqa: E402
+                      get_avatar, get_creators, image_type)
 
 OUT = os.path.join(HERE, "fleek-affiliate-dashboard.html")
 

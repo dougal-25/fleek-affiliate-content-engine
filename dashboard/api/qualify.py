@@ -15,7 +15,7 @@ import sys
 from http.server import BaseHTTPRequestHandler
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from serve import set_stage  # noqa: E402
+from pipeline import set_stage  # noqa: E402
 
 
 class handler(BaseHTTPRequestHandler):

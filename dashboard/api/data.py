@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from serve import STAGES, enrich, fetch_creators_live  # noqa: E402
+from pipeline import STAGES, enrich, fetch_creators_live  # noqa: E402
 
 STATIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_static")
 REDACT = ("Contact Email", "Outreach Draft")

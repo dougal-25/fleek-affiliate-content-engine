@@ -255,3 +255,12 @@ from the dashboard, matching the mission's permanent rule *"the engine proposes,
 
 **Deploy note:** enabling qualification on the production URL is a deliberate act — it needs `QUALIFY_TOKEN`
 set in Vercel (outward-facing write to real Airtable from a public page), so that's Doug's call, not baked in.
+
+## 2026-07-12 — Refactor: serve.py split into pipeline.py + serve.py
+
+The qualify feature pushed `serve.py` to 557 lines, over the 500-line limit. Split along the natural seam:
+`pipeline.py` (474) holds all data + compute — Airtable IO, enrichment, trends/funnel/inspiration,
+avatars/thumbnails, `set_stage`. `serve.py` (100) is now just the HTTP `Handler` + `main`, importing what it
+serves from pipeline. No cycle (pipeline never imports serve). The four importers (`api/data.py`,
+`api/qualify.py`, `build_html.py`, `make_static.py`) now import from `pipeline`. Verified: all six files
+compile, all GET endpoints 200 (169 creators, 36 inspiration), qualify drawer renders end-to-end.
