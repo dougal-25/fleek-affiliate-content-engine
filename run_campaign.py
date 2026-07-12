@@ -5,22 +5,25 @@ Commands:
   report                  activation %, CAC, AOV — overall and top segments
   plan-budget [--budget]  weekly reallocation plan toward best-CAC segments
   brief <CREATOR_ID>      profile the creator and print their personalised brief
+  brief-real <HANDLE>     brief a REAL French creator from their scraped posts
   weekly-cycle [--limit]  end-to-end: target -> profile -> brief -> simulate -> feed back
 """
 
 from __future__ import annotations
 
 import argparse
+import os
 import random
 import runpy
 from datetime import date, timedelta
 from pathlib import Path
 
-from content_brain import activation, budget, feedback, segmentation, store
+from content_brain import activation, budget, evidence as evidence_mod, feedback, segmentation, store
 from content_brain.brief_generator import generate_brief
+from content_brain.engine_io import load_env
 from content_brain.llm import get_llm
 from content_brain.models import Brief, Creator, Post
-from content_brain.profiler import build_profile
+from content_brain.profiler import build_profile, build_profile_from_evidence
 
 TODAY = date(2026, 7, 1)
 
@@ -73,6 +76,55 @@ def cmd_brief(args: argparse.Namespace) -> None:
     store.save_brief(brief)
     print(f"\n=== BRIEF {brief.brief_id} ===")
     print(brief.model_dump_json(indent=1))
+
+
+def cmd_brief_real(args: argparse.Namespace) -> None:
+    """Brief a real French creator from their actual scraped posts.
+
+    This is the deck's Section 4 demo. Three creators, three lifecycles, one system:
+        python run_campaign.py brief-real juliacourcelle                    # inherited, re-activation
+        python run_campaign.py brief-real felixbeauregard                   # new recruit, onboarding
+        python run_campaign.py brief-real lina_momo_ --lifecycle active     # active, always-on
+    """
+    if args.mock:
+        # `env -u ANTHROPIC_API_KEY` is not enough: load_env() would put the key straight back
+        # from the workspace .env. Mock has to be an explicit choice.
+        os.environ.pop("ANTHROPIC_API_KEY", None)
+    else:
+        load_env()  # ANTHROPIC_API_KEY from the workspace .env, before the client is built
+
+    llm = get_llm()
+    if llm.mock:
+        print("(mock mode — deterministic template, NOT a personalised brief)\n")
+
+    evidence = evidence_mod.load_evidence(args.handle, lifecycle=args.lifecycle)
+    c = evidence.creator
+    print(f"=== EVIDENCE: @{c.handle} ===")
+    print(f"segment           {c.segment}")
+    print(f"lifecycle         {c.lifecycle}"
+          + ("  (inferred: already carries a live Fleek code)" if evidence.has_referral_history else ""))
+    print(f"posts scraped     {len(evidence.top_posts)}")
+    if evidence.has_referral_history:
+        print(f"referral code     {evidence.referral_code} "
+              f"({evidence.referral_post_count} of {len(evidence.top_posts)} posts)")
+    else:
+        print(f"referral code     none yet — this is brief #1")
+    if evidence.referral_evidence:
+        print(f"field evidence    \"{evidence.referral_evidence[:130]}…\"")
+    print(f"trend context     {len(evidence.trend_note):,} chars from the wiki (cached prompt prefix)")
+
+    profile = build_profile_from_evidence(evidence)
+    print(f"\n=== PROFILE ===")
+    print(profile.model_dump_json(indent=1))
+
+    brief = generate_brief(
+        c, profile, store.load_insights(),
+        campaign="FR launch — activation", evidence=evidence,
+    )
+    store.save_brief(brief)
+    print(f"\n=== BRIEF {brief.brief_id} ===")
+    print(brief.model_dump_json(indent=1))
+    print(f"\nprompt cache: {llm.cache_report()}")
 
 
 def _simulate_post_from_brief(creator: Creator, brief: Brief, rng: random.Random) -> Post:
@@ -151,6 +203,13 @@ def main() -> None:
     p = sub.add_parser("brief")
     p.add_argument("creator_id")
     p.set_defaults(func=cmd_brief)
+    p = sub.add_parser("brief-real", help="brief a real French creator by handle")
+    p.add_argument("handle")
+    p.add_argument("--lifecycle", choices=["new", "active", "at_risk", "dormant", "core"],
+                   default=None, help="override; inferred from referral history if omitted")
+    p.add_argument("--mock", action="store_true",
+                   help="force offline template mode, ignoring any key in .env")
+    p.set_defaults(func=cmd_brief_real)
     p = sub.add_parser("weekly-cycle")
     p.add_argument("--limit", type=int, default=10)
     p.set_defaults(func=cmd_weekly_cycle)

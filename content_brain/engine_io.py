@@ -15,16 +15,36 @@ from typing import Any
 
 import requests
 
-ENV_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "..", ".env")
 AIRTABLE_BASE_NAME = "Fleek Affiliate Ecosystem"
 EMAIL_RE = re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}")
+
+
+def _find_env() -> str | None:
+    """Walk up from this file looking for the workspace `.env`.
+
+    A fixed `../../../.env` breaks inside a git worktree, where the project sits three
+    levels deeper than in a normal checkout. Walking up finds it either way.
+    """
+    d = os.path.dirname(os.path.abspath(__file__))
+    for _ in range(8):
+        candidate = os.path.join(d, ".env")
+        if os.path.exists(candidate):
+            return candidate
+        parent = os.path.dirname(d)
+        if parent == d:
+            break
+        d = parent
+    return None
+
+
+ENV_PATH = _find_env()
 
 
 def load_env() -> dict[str, str]:
     """Read the workspace .env into os.environ (once). Returns the parsed dict too."""
     parsed: dict[str, str] = {}
-    path = os.path.abspath(ENV_PATH)
-    if os.path.exists(path):
+    path = ENV_PATH
+    if path and os.path.exists(path):
         with open(path) as f:
             for line in f:
                 line = line.strip()
@@ -156,6 +176,68 @@ class Airtable:
         r = requests.post(url, headers=self.h, json={"fields": fields, "typecast": True}, timeout=60)
         r.raise_for_status()
         return r.json()["id"]
+
+    # ---- brief-generator additions ----
+
+    def update(self, table: str, record_id: str, fields: dict) -> None:
+        """Patch one record by id. The ecosystem stays the source of truth."""
+        tid = self.tables[table]
+        url = f"https://api.airtable.com/v0/{self.base_id}/{tid}/{record_id}"
+        r = requests.patch(url, headers=self.h, json={"fields": fields, "typecast": True}, timeout=60)
+        if r.status_code >= 400:
+            raise RuntimeError(f"Airtable {r.status_code} updating {record_id}: {r.text[:300]}")
+
+    def select(self, table: str, formula: str | None = None) -> list[dict]:
+        """Fetch records, optionally filtered by an Airtable formula. Follows pagination."""
+        tid = self.tables[table]
+        url = f"https://api.airtable.com/v0/{self.base_id}/{tid}"
+        out: list[dict] = []
+        offset: str | None = None
+        while True:
+            params: dict[str, str] = {"pageSize": "100"}
+            if formula:
+                params["filterByFormula"] = formula
+            if offset:
+                params["offset"] = offset
+            r = requests.get(url, headers=self.h, params=params, timeout=60)
+            r.raise_for_status()
+            body = r.json()
+            out.extend(body.get("records", []))
+            offset = body.get("offset")
+            if not offset:
+                return out
+            time.sleep(0.25)  # stay under 5 req/s
+
+    def field_names(self, table: str) -> set[str]:
+        r = requests.get(f"https://api.airtable.com/v0/meta/bases/{self.base_id}/tables",
+                         headers=self.h, timeout=30)
+        r.raise_for_status()
+        for t in r.json()["tables"]:
+            if t["name"] == table:
+                return {f["name"] for f in t["fields"]}
+        raise RuntimeError(f"Table '{table}' not found in base")
+
+    def ensure_fields(self, table: str, specs: list[dict]) -> list[str]:
+        """Create any missing fields. Idempotent — safe to run on every job start.
+
+        `specs` are Airtable field definitions, e.g.
+        `{"name": "Brief", "type": "multilineText"}`. Returns the names actually created.
+        """
+        existing = self.field_names(table)
+        tid = self.tables[table]
+        created = []
+        for spec in specs:
+            if spec["name"] in existing:
+                continue
+            r = requests.post(
+                f"https://api.airtable.com/v0/meta/bases/{self.base_id}/tables/{tid}/fields",
+                headers=self.h, json=spec, timeout=30,
+            )
+            if r.status_code >= 400:
+                raise RuntimeError(f"Airtable {r.status_code} creating field {spec['name']}: {r.text[:300]}")
+            created.append(spec["name"])
+            time.sleep(0.25)
+        return created
 
 
 # ---------------- Claude ----------------

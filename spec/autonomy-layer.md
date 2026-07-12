@@ -10,6 +10,7 @@
 | `discovery` | Apify run seeded with wiki keywords → Claude enrichment → scoring → upsert Prospects | Cron: Mon 07:00 (after wiki_refresh) | Airtable |
 | `outreach_drafts` | FR drafts for newly Qualified creators → Status = Draft | Cron: daily | Airtable |
 | `brief_generator` | Personalised brief for creators whose Stage = Onboarded and Brief = empty → brief + Notion share page | Poll: hourly Airtable query | Airtable + Notion |
+| ↳ **built** `scripts/run_brief_job.py` | Idempotent (only empty-`Brief` records), capped at 25 Claude calls/run, degrades to Airtable-only if Notion fails. `--dry-run`, `--handle`, `--no-notion`. Airtable path verified live; Claude + Notion not yet fired — see `spec/log.md` 2026-07-10. | | |
 | `weekly_report` | Funnel counts, CAC by segment, run health → summary page | Cron: Fri 16:00 | Notion |
 
 All five are the SAME Python scripts run manually today — the layer changes *who presses enter*, not the code.

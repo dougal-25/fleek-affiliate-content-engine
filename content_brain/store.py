@@ -38,7 +38,7 @@ def save_creators(creators: list[Creator]) -> None:
 
 def save_profile(profile: PartnerProfile) -> None:
     d = DATA_DIR / "profiles"
-    d.mkdir(exist_ok=True)
+    d.mkdir(parents=True, exist_ok=True)
     (d / f"{profile.creator_id}.json").write_text(profile.model_dump_json(indent=1))
 
 
@@ -49,7 +49,7 @@ def load_profile(creator_id: str) -> PartnerProfile | None:
 
 def save_brief(brief: Brief) -> None:
     d = DATA_DIR / "briefs"
-    d.mkdir(exist_ok=True)
+    d.mkdir(parents=True, exist_ok=True)
     (d / f"{brief.brief_id}.json").write_text(brief.model_dump_json(indent=1))
 
 

@@ -20,7 +20,8 @@
 | `Creator` | id, handle, tier (nano→mega), channel, geo (UK/FR), niche, lifecycle, follower count, join date, gifting cost, incentive rate | Lifecycle is derived: `new`, `active`, `at_risk` (no post 30–60d), `dormant` (60d+), `core` (top decile by buyers) |
 | `Post` | creator id, date, format, hook type, views, clicks, signups, first orders, revenue, spend | The funnel: views → clicks → signups → first orders. Spend = gifting amortisation + incentives |
 | `PartnerProfile` | strengths, best formats/hooks, audience-ICP fit, recommended ask, risk flags, one-line "how to work with them" | **LLM-generated**, cached, refreshed when new posts land |
-| `Brief` | hooks (3 options), format, CTA stack (code/link/deadline/incentive), do's, don'ts, reference examples, success target | **LLM-generated** from profile + segment insights + campaign spec |
+| `Brief` | objective, 3 content ideas, hooks (3 options), format, talking points, thumbnail direction, CTA stack, example captions, posting schedule, do's, don'ts, **do-not-mention list**, reference examples, success target | **LLM-generated** from profile + segment insights + campaign spec + real post evidence |
+| `BriefEvidence` | the creator's Airtable record, their scraped posts and hashtags, the wiki's trend pack, any live Fleek referral code found in their own captions | Deterministic (`evidence.py`). Carries its own provenance rules into the prompt |
 | `SegmentInsight` | segment key, what worked, what didn't, recommended play, confidence | LLM narrative over deterministic aggregates |
 | `BudgetPlan` | per-segment allocation, test budgets, caps, kill/scale calls | Deterministic |
 
@@ -36,12 +37,41 @@ persistent memory that makes the *next* brief better than the last.
 
 ### 2. Brief Generator (`brief_generator.py`)
 **Input:** `PartnerProfile` + current `SegmentInsight`s + campaign spec (objective, offer,
-geo/language, deadline).
-**Output (structured):** `Brief` with the JD's exact field list — hook, format, full CTA
-stack, do's and don'ts, reference examples.
+geo/language, deadline) +, for real creators, a `BriefEvidence` bundle (`evidence.py`).
+**Output (structured):** `Brief` — the JD's field list (hook, format, full CTA stack, do's
+and don'ts, reference examples) plus three content ideas, talking points, thumbnail
+direction, example captions, posting schedule, and a **do-not-mention list**.
 **Personalisation levers:** the creator's own best past post is cited as reference #1;
 hooks are written in the creator's register; the CTA stack carries their unique code; French
 creators get French briefs.
+
+**Two input paths, because the evidence genuinely differs.** Synthetic roster creators have
+a full attribution funnel; real French prospects have posts and no attribution at all.
+Forcing the second through the first would mean synthesising `first_orders=0` for every
+post — which a model reads as *"this creator never converts"* rather than *"we have never
+measured them."* Hence `build_profile_from_evidence` alongside `build_profile`.
+
+**The evidence bundle states what it does not know.** Captions are not transcripts. Fleek's
+named top partners are archetypes, not an asset library. A creator with no Fleek history has
+no conversion numbers, and the prompt says so rather than letting the model invent them.
+This is the same standard the wiki holds itself to: kept honest, not laundered.
+
+**Codes are found, not minted.** `evidence.py` scans a creator's own captions for a live
+`RFD-` Fleek code. If one is there, the creator is an inherited partner regardless of what
+the Airtable `Stage` column claims, the brief reuses their real code, and the lifecycle
+flips to `dormant` (re-activation). This is how the engine found Julia Courcelle carrying
+`RFD-JULIA` in 25 of 25 videos while the CRM had her as *"Prospect / Not started"*.
+**Evidence beats the CRM.**
+
+### 2b. Brief job (`scripts/run_brief_job.py`)
+Polls Airtable for `Stage = Onboarded AND Brief = ""`, generates, writes the brief back to
+the record, and publishes a shareable Notion page (`notion_publish.py`) — the link the
+creator actually opens, because the record is Fleek's and the page is theirs.
+
+Idempotent by construction: it only touches records with an empty `Brief`, so recovery is
+just re-running. Capped at 25 Claude calls per run — a runaway loop must not be able to bill
+the whole roster. If Notion fails, the brief is still written to Airtable and the failure is
+reported; delivery degrades, the work is never lost.
 
 ### 3. Feedback Loop (`feedback.py`)
 **Input:** cycle's posts joined to their briefs, aggregated per segment (deterministic), plus
@@ -65,9 +95,18 @@ onboarding.
 
 - Model: `claude-opus-4-8`, adaptive thinking, structured outputs via `client.messages.parse`
   with Pydantic schemas — briefs come back as validated objects, no JSON parsing.
-- **Prompt caching:** the system prompt (Fleek context, ICP definition, brief style guide) is
-  stable and cached with `cache_control: {"type": "ephemeral"}`; per-creator evidence goes
-  after the breakpoint. At 300 briefs/cycle this is most of the token bill.
+- **Prompt caching, with the catch stated.** The cached prefix is the system prompt (Fleek
+  context, ICP definition, style guide) **plus the cycle's shared context** — the FR trend
+  pack and Fleek's partner archetypes. Per-creator evidence goes after the breakpoint, so it
+  never invalidates the prefix. At 300 briefs/cycle the prefix is most of the token bill.
+
+  The catch: **Opus 4.8 will not cache a prefix shorter than 4096 tokens.** Below that,
+  `cache_control` is silently ignored — no error, `cache_creation_input_tokens: 0`. The bare
+  system prompt is ~250 tokens, so marking *it alone* would have cached nothing while looking
+  like it did. Passing the trend pack as `cached_context` is what carries the prefix over the
+  line. `llm.cache_report()` prints the actual outcome (hit / write / miss-under-minimum), so
+  the saving is measured rather than asserted. Trimming the trend pack "to save tokens" would
+  lose every cache hit and make each brief *more* expensive.
 - **Batch API for scale:** generating briefs for the whole roster is not latency-sensitive —
   the Message Batches API runs it at 50% cost. The prototype runs sequentially for clarity;
   the production path is batching (noted in code).

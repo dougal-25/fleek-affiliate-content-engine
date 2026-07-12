@@ -1,11 +1,26 @@
-"""Partner Profiler agent — builds and refreshes the living profile of each creator."""
+"""Partner Profiler agent — builds and refreshes the living profile of each creator.
+
+Two entry points, because the evidence genuinely differs:
+
+- `build_profile` — synthetic roster creators. We hold their full attribution funnel
+  (views -> clicks -> first orders -> CAC), so the profile is grounded in conversion.
+- `build_profile_from_evidence` — real French creators. We hold their posts and engagement
+  but, for anyone not already carrying a Fleek code, **no attribution at all**. Passing
+  them through `build_profile` would mean synthesising `first_orders=0` for every post,
+  and the model would read that as "this creator never converts" rather than "we have
+  never measured them." Different evidence, different prompt.
+"""
 
 from __future__ import annotations
 
 from collections import Counter
+from typing import TYPE_CHECKING
 
 from .llm import get_llm
 from .models import Creator, PartnerProfile, Post, SegmentStats
+
+if TYPE_CHECKING:  # avoids a circular import at runtime
+    from .evidence import BriefEvidence
 
 
 def _post_evidence(posts: list[Post]) -> str:
@@ -47,6 +62,87 @@ Their recent posts (newest first):
 Set creator_id to "{creator.id}"."""
     result = llm.generate(prompt, PartnerProfile)
     return result if result is not None else _mock_profile(creator, posts)
+
+
+def build_profile_from_evidence(evidence: "BriefEvidence") -> PartnerProfile:
+    """Profile a real French creator from scraped posts — no attribution funnel exists."""
+    llm = get_llm()
+    c = evidence.creator
+    attribution = (
+        f"They already carry a live Fleek referral code ({evidence.referral_code}) and are "
+        f"posting with it unmanaged. Treat this as an inherited, active partner."
+        if evidence.has_referral_history
+        else "No Fleek referral history. There is NO conversion data for this creator — do not "
+             "invent any. Judge ICP fit from their content and audience alone."
+    )
+    prompt = f"""Build a partner profile for this real French creator.
+
+Creator: {c.handle} ({c.id}) — {evidence.profile_url}
+Tier/channel/geo/niche: {c.tier} / {c.channel} / {c.geo} / {c.niche}
+Followers: {c.followers:,} | Lifecycle: {c.lifecycle}
+
+Attribution status: {attribution}
+
+Discovery scoring notes:
+- Strength: {evidence.strength}
+- Weakness: {evidence.weakness}
+- Predicted CAC: {evidence.predicted_cac or 'unknown'} EUR
+
+Their real posts (their own captions/titles — not transcripts), best-performing first:
+{evidence.posts_block(limit=12)}
+
+Hashtags they use: {', '.join('#' + h for h in evidence.hashtags) or 'none captured'}
+
+`conversion_track_record` must state honestly what we do and do not know. If there is no
+attribution data, say that outright rather than implying poor performance.
+
+Set creator_id to "{c.id}"."""
+    result = llm.generate(prompt, PartnerProfile)
+    return result if result is not None else _mock_profile_from_evidence(evidence)
+
+
+def _mock_profile_from_evidence(evidence: "BriefEvidence") -> PartnerProfile:
+    """Offline fallback for real creators. Formats inferred from their own post language."""
+    c = evidence.creator
+    text = " ".join(p["text"].lower() for p in evidence.top_posts)
+    format_signals = {
+        "haul": ["haul", "unboxing", "ballot", "colis", "lot"],
+        "tutorial": ["comment", "astuce", "tuto", "guide", "conseil"],
+        "day-in-the-life": ["journée", "semaine", "vlog", "avec moi"],
+        "live-selling": ["live", "whatnot", "vente live", "enchère"],
+        "review": ["test", "avis", "rentable"],
+    }
+    ranked = sorted(
+        format_signals,
+        key=lambda f: sum(text.count(w) for w in format_signals[f]),
+        reverse=True,
+    )
+    best_formats = [f for f in ranked if any(w in text for w in format_signals[f])] or ["haul"]
+
+    track = (
+        f"Carries live Fleek code {evidence.referral_code} in {evidence.referral_post_count} "
+        f"of {len(evidence.top_posts)} scraped posts. No first-order attribution wired up yet."
+        if evidence.has_referral_history
+        else f"{len(evidence.top_posts)} posts scraped; no Fleek attribution exists yet — unmeasured, not unproven."
+    )
+    risks = [] if not evidence.weakness else [evidence.weakness]
+    if evidence.has_referral_history:
+        risks.append("Promoting a competitor's code alongside Fleek's — unmanaged partner.")
+
+    return PartnerProfile(
+        creator_id=c.id,
+        summary=(
+            f"{c.tier.title()} {c.niche} creator on {c.channel} ({c.geo}), {c.followers:,} followers. "
+            f"{evidence.strength[:160]}"
+        ),
+        audience_icp_fit=evidence.strength or "Unknown — no audience data captured.",
+        best_formats=best_formats[:3],
+        best_hooks=["result-first", "curiosity"],
+        conversion_track_record=track,
+        recommended_ask=f"One {best_formats[0]} post carrying their code this month.",
+        risk_flags=risks,
+        working_style_note="(mock mode — set ANTHROPIC_API_KEY for a real profile)",
+    )
 
 
 def _mock_profile(creator: Creator, posts: list[Post]) -> PartnerProfile:
