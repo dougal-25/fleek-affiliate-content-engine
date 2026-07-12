@@ -103,14 +103,26 @@ A research agent (Claude Code + Perplexity) produces a small wiki on French/EU r
 
 ## 6. Section 2 — Outreach
 
-**Per-creator personalisation pipeline:**
-Creator profile → transcript → recent captions → audience comments → Claude summary → personalisation variables → Claude drafts in French → human edit → native-speaker QA → sent.
+**The trigger is qualification, and it stays human.** Discovery *scores* creators; a human *qualifies* the ones worth pursuing (`Stage = Qualified` in Airtable — always a human act, always overridable). Qualification is what releases the agent: `run_outreach.py --qualified` drafts for everyone newly qualified and not yet contacted. That's the whole "engine proposes, humans approve" story told through the data model — the score surfaces candidates, a person decides, the agent drafts. Run by hand this week; a scheduler makes the identical call once the agent is live.
 
-**Deck moment:** split screen. Left = AI inputs (the variables extracted). Right = final French message. Highlight what the human changed. "AI translated → I localised → native speaker QA'd" shows maturity.
+**Per-creator personalisation pipeline** (built: `scripts/run_outreach.py`):
+Creator record → recent posts (last 45d) + audience comments + transcript *(YouTube only — TikTok and IG have none)* → Claude extracts personalisation variables, each carrying a verbatim quote → Claude drafts 3 French touches → human edit → native-speaker QA → sent by a human.
+
+**Personalised the way a person would be:** real **first name**, not the @handle (`"Alicia 🌙"` → *Salut Alicia*; a shop name like `"CODE DES GRANDS ✦ Friperies"` → no name, opened on their content — never a fabricated one). Plus their recent posts, their audience's actual comments, and the live FR trend their content sits on. A wrong name is worse than no name; a `[name]` placeholder is the tell of a mail-merge.
+
+**Recency is a gate.** A creator with no posts inside the window is skipped, not drafted. A stale personalisation is worse than a generic one: it proves you looked and didn't care.
+
+**Deck moment:** split screen. Left = AI inputs (the variables extracted). Right = final French message. Highlight what the human changed. "AI translated → I localised → native speaker QA'd" shows maturity. The localisation choices are written up in `deliverables/outreach-localisation.md`.
 
 **Emergent segments (orange note):** every creator is tagged with content keywords during enrichment. Group by tag in Airtable → segments you didn't know existed appear. Outreach angle differs per segment. Trends from the wiki keep the keyword set current.
 
 **AI receipts:** input variables → prompt → draft → human-edited final, side by side.
+
+**Where the human pushed back (slide beat — show this):** the human gate isn't only at send; it shaped the engine's design. Two pushbacks from Doug during the build, both of which changed the system:
+1. *"The personalised touches HAVE to be recent and relevant and trending"* → recency became a **hard gate**, not a preference. A creator with no posts inside the window is skipped, not drafted — and it fired correctly on its first live run (a creator 86 days quiet was skipped rather than sent a fake "loved your recent post").
+2. *"What about the Instagram scraper?"* → the evidence gatherer went **multi-platform**. The roster turned out to be 28 TikTok / 16 YouTube / 5 Instagram; a TikTok-only build would have silently skipped 21 of 49 creators. One question saved 43% of the pipeline.
+
+This is the deck's honest answer to "where does the human stay in the loop": at design time, at review, and at send — with receipts for all three (`spec/decisions/2026-07-10-outreach-drafts.md`).
 
 **Where this runs (stack strip for this section):** Python in the repo — Claude Code today, cron later. Drafts write back to each creator's Airtable record with Status = Draft. Nothing is machine-sent: a human reviews in Airtable, edits, sends via DM/email, flips Status = Sent. The human gate doubles as the audit trail.
 
@@ -126,7 +138,18 @@ Keep the drop-off slide: 100 prospects → 70 qualified → 40 replies → 20 ca
 2. **Factors are chosen for signal on that outcome:** Audience relevance 30 · Reseller credibility 25 · Posting consistency 15 · Wholesale content 10 · Engagement quality 10 · Professionalism 10.
 3. **Why these weights:** relevance + credibility = 55% because trust inside the reseller community is the conversion mechanism. Follower count is deliberately absent — vanity metric for this goal.
 4. **Grounded in the wiki:** what "credible" looks like in FR resale comes from the knowledge base, not gut feel.
-5. **Calibrated, then learning:** score 3 known-good archetype creators first; sanity-check the ranking. Weights are v1 hypotheses — funnel data (who actually converts) re-weights them each cohort. The feedback loop IS the "rich factoring system".
+5. **Calibrated, then learning:** score the 3 known-good partners first; sanity-check the ranking. Weights are v1 hypotheses — funnel data (who actually converts) re-weights them each cohort. The feedback loop IS the "rich factoring system".
+
+**Scoring roadmap (say this in the room):** v1 is a stated theory — six weighted factors, one
+calibration point — and that's the honest pitch, not a weakness. The upgrade path is data, not
+opinion: each cohort's funnel outcomes (who converted, at what CAC, by scored band) re-fit the
+weights, and at ~100+ outcomes that's a regression, not a debate. Then the weighting itself becomes
+an engine job: a **re-weighting agent** that reads the cohort numbers and *proposes* new weights with
+a rationale — never silently applies them. And weights are **per-market**: what "credible" looks like
+in FR came from the FR wiki, so every new market gets its own wiki pass, its own known-good
+calibration partners, and its own weights. That's scoping item #1 for any new geo.
+
+> 🎯 **We ran that calibration, it failed, and the failure set the bar.** `@juliacrcl`, one of the three partners Fleek names as top-performing, is in our scraped roster as `@juliacourcelle` and scores **62** — under the guessed absolute bar of 70. The model that was supposed to find creators like her rejected her. The fix isn't a better guess: **the bar is a percentile, not a number.** It's set today at the top ~50% of the roster's live score distribution — which computes to exactly 62, where the proven-good partner sits. From there, raising the bar is activation's job: better briefs → more posting → higher scores → the *same percentile* selects a stronger cohort. Tiering reads the same way — percentile bands over a distribution activation keeps pushing right, not fixed grades. Known partners found in the roster are flagged loudly on their drafts, never silently dropped, because the engine can't know who Fleek already works with — but the human gate can. (Full record: `spec/decisions/2026-07-10-outreach-drafts.md`.)
 
 **Division of labour line (use it):** LLMs for judgment at scale; deterministic code for money and measurement.
 
@@ -200,7 +223,7 @@ Rule: every AI claim in the deck has a visible input AND output. No "trust me, A
 
 ## 13. Closing slide — "If I had six months"
 
-Keep from draft 1: continuous AI discovery + scoring · automated enrichment · AI outreach with human approval · CRM pipeline with activation tracking · personalised brief generation per creator style · performance dashboard reallocating budget to lowest-CAC creators. You're designing the infrastructure Fleek would actually build.
+Keep from draft 1: continuous AI discovery + scoring · automated enrichment · AI outreach with human approval · CRM pipeline with activation tracking · personalised brief generation per creator style · performance dashboard reallocating budget to lowest-CAC creators · a re-weighting agent that re-fits the scoring weights from each cohort's funnel data, per market. You're designing the infrastructure Fleek would actually build.
 
 ---
 
