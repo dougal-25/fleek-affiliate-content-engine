@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fleek — Affiliate Brain · France</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌟</text></svg>">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <img class="logo" src="assets/fleek-logo.webp" alt="Fleek" height="30">
+    <span class="brand-sub">Affiliate Brain <span class="brand-geo">🇫🇷 France</span></span>
+  </div>
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-view="creators" role="tab">Creators</button>
+    <button class="tab" data-view="funnel" role="tab">Recruitment funnel</button>
+    <button class="tab" data-view="trends" role="tab">Trends &amp; keywords</button>
+    <button class="tab" data-view="inspiration" role="tab">Inspiration</button>
+  </nav>
+  <div class="topbar-right">
+    <button id="lang-toggle" class="lang-toggle" title="Translate keywords & niches">🇫🇷 Original</button>
+    <span id="source-badge" class="badge badge-loading">connecting…</span>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ CREATORS ============ -->
+<section id="view-creators" class="view active">
+  <div class="stat-strip" id="creator-stats"></div>
+  <div class="toolbar">
+    <input id="search" class="search" type="search" placeholder="Search handle, keyword, audience…" autocomplete="off">
+    <div class="seg-control" id="type-control" role="group" aria-label="Creator type">
+      <button class="seg on" data-type="">All</button>
+      <button class="seg" data-type="Pro reseller">Pro resellers</button>
+      <button class="seg" data-type="Hobbyist">Hobbyists</button>
+    </div>
+    <div class="platform-toggles" id="platform-toggles"></div>
+    <select id="sort" class="sort" aria-label="Sort by">
+      <option value="score">Sort · Fit score</option>
+      <option value="cac">Sort · Predicted CAC</option>
+      <option value="followers">Sort · Followers</option>
+    </select>
+    <span class="result-count" id="result-count"></span>
+    <button class="clear-btn" id="clear-filters" hidden>Clear ✕</button>
+  </div>
+  <div class="toolbar-chips" id="filter-chips"></div>
+  <div id="card-sections"></div>
+</section>
+
+<!-- ============ FUNNEL ============ -->
+<section id="view-funnel" class="view">
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Recruitment pipeline — today</h2>
+      <p class="panel-sub" id="funnel-sub"></p>
+    </div>
+    <div id="funnel-chart"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Pipeline over time</h2>
+      <p class="panel-sub">Solid = real snapshots (the server records one on every launch, compounding weekly).
+      Dashed = <strong>modelled projection</strong> from playbook assumptions — not data.</p>
+    </div>
+    <div id="history-chart"></div>
+    <p class="footnote" id="model-note"></p>
+  </div>
+</section>
+
+<!-- ============ TRENDS ============ -->
+<section id="view-trends" class="view">
+  <div class="stat-strip" id="trend-stats"></div>
+  <div class="panel-row">
+    <div class="panel">
+      <div class="panel-head"><h2>Top hashtags by posts</h2>
+        <p class="panel-sub">Across the ingested FR reseller posts</p></div>
+      <div id="volume-chart"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>Top hashtags by views</h2>
+        <p class="panel-sub">Where the audience actually is</p></div>
+      <div id="engagement-chart"></div>
+    </div>
+  </div>
+  <div class="panel-row">
+    <div class="panel">
+      <div class="panel-head"><h2>Rising now</h2>
+        <p class="panel-sub">Last 90 days vs the 90 before — feed these into outreach &amp; briefs</p></div>
+      <ul class="rising-list" id="rising-list"></ul>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>Top-performing posts</h2>
+        <p class="panel-sub">The formats worth briefing</p></div>
+      <table class="posts-table" id="posts-table"></table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INSPIRATION ============ -->
+<section id="view-inspiration" class="view">
+  <div class="panel-head inspiration-head">
+    <h2>Inspiration — proven reseller content, playable here</h2>
+    <p class="panel-sub">Relevance-gated (reselling &amp; secondhand fashion only), max 18 months old, ranked by
+    how far each video outperforms its creator's own median — repeatable techniques, not lucky accounts.
+    This wall + Airtable feed the next stage: the brief &amp; activation generator.</p>
+  </div>
+  <div class="toolbar insp-toolbar">
+    <div class="seg-control" id="insp-source" role="group" aria-label="Video source">
+      <button class="seg on" data-source="">All</button>
+      <button class="seg" data-source="fleek">🌟 Fleek</button>
+      <button class="seg" data-source="roster">Community</button>
+    </div>
+    <div class="chip-group" id="insp-format-chips"></div>
+    <select id="insp-sort" class="sort" aria-label="Sort videos">
+      <option value="score">Sort · Best technique</option>
+      <option value="ratio">Sort · Overperformance</option>
+      <option value="views">Sort · Views</option>
+      <option value="date">Sort · Newest</option>
+    </select>
+    <span class="result-count" id="insp-count"></span>
+  </div>
+  <div class="insp-grid" id="insp-grid"></div>
+</section>
+
+</main>
+
+<!-- creator detail drawer -->
+<div id="drawer-scrim" class="scrim"></div>
+<aside id="drawer" class="drawer" aria-hidden="true"></aside>
+
+<div id="tooltip" class="tooltip" hidden></div>
+
+<!-- in-page video player + per-video analysis -->
+<div id="video-modal" class="video-modal" hidden>
+  <div class="video-layout">
+    <div class="video-frame" id="video-frame"></div>
+    <aside class="video-analysis" id="video-analysis"></aside>
+  </div>
+  <button class="video-close" id="video-close" aria-label="Close player">✕</button>
+</div>
+
+<script src="charts.js"></script>
+<script src="translations.js"></script>
+<script src="helpers.js"></script>
+<script src="views.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
