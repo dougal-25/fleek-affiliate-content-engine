@@ -443,3 +443,12 @@ avatars/thumbnails, `set_stage`. `serve.py` (100) is now just the HTTP `Handler`
 serves from pipeline. No cycle (pipeline never imports serve). The four importers (`api/data.py`,
 `api/qualify.py`, `build_html.py`, `make_static.py`) now import from `pipeline`. Verified: all six files
 compile, all GET endpoints 200 (169 creators, 36 inspiration), qualify drawer renders end-to-end.
+
+## 2026-07-12 — Qualification: removed the token gate (it's a prototype)
+
+Reversed the earlier QUALIFY_TOKEN protection. Qualifying only flips a creator's Stage label
+Prospect↔Qualified — it never contacts anyone (outreach is a separate, draft-only step). For a
+case-study prototype on a demo base, a reversible status change doesn't warrant an auth wall, and the
+token prompt was friction in the live demo. `dashboard/api/qualify.py` now writes on any POST; the browser
+prompt is gone from `app.js`. QUALIFY_TOKEN removed from Vercel env and `.env`. If this ever becomes a real
+internal tool, a proper login goes back in — not a shared token.

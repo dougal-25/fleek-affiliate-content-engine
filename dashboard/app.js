@@ -418,21 +418,11 @@ function toast(msg, kind = "ok") {
 }
 
 async function postQualify(handle, stage) {
-  const headers = { "Content-Type": "application/json" };
-  const tok = localStorage.getItem("fleek_qualify_token");
-  if (tok) headers["X-Qualify-Token"] = tok;
-  let res = await fetch("/api/qualify", {
-    method: "POST", headers, body: JSON.stringify({ handle, stage }),
+  const res = await fetch("/api/qualify", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ handle, stage }),
   });
-  if (res.status === 401) {  // hosted + token required/wrong — ask once, retry
-    const entered = prompt("Enter the qualification token to approve on the live dashboard:");
-    if (!entered) throw new Error("cancelled");
-    localStorage.setItem("fleek_qualify_token", entered.trim());
-    headers["X-Qualify-Token"] = entered.trim();
-    res = await fetch("/api/qualify", {
-      method: "POST", headers, body: JSON.stringify({ handle, stage }),
-    });
-  }
   const out = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(out.error || `HTTP ${res.status}`);
   return out;
