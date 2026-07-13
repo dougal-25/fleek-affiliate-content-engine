@@ -464,7 +464,7 @@ a { color: var(--c-machine); text-underline-offset: 0.2em; }
 .chip--x b { color: var(--c-false); }
 
 table.calls { font-size: var(--t-xs); }
-table.calls td, table.calls th { padding: 0.32em var(--space-3) 0.32em 0; }
+table.calls td, table.calls th { padding: 0.24em var(--space-3) 0.24em 0; }
 table.calls .why { color: var(--c-text-dim); }
 table.calls .bad { color: var(--c-false); }
 
@@ -484,7 +484,7 @@ table.calls .bad { color: var(--c-false); }
 
 /* ---- Scoring weight bars ---- */
 
-.weights { display: grid; gap: var(--space-2); max-width: 40em; }
+.weights { display: grid; gap: var(--space-1); max-width: 40em; }
 .weights .w {
   display: grid;
   grid-template-columns: 11em 1fr 2.5em;
@@ -504,7 +504,7 @@ table.calls .bad { color: var(--c-false); }
   background: var(--c-brand);
 }
 .weights .w .pts { font-family: var(--font-mono); font-weight: var(--weight-bold); text-align: right; }
-.weights .why { font-size: var(--t-xs); color: var(--c-text-dim); margin: 0 0 var(--space-2); }
+.weights .why { font-size: var(--t-xs); color: var(--c-text-dim); margin: 0 0 var(--space-1); }
 
 /* ---- Tech stack grid ---- */
 

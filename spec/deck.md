@@ -62,6 +62,23 @@ weighted, and why" (50/20/20/10 with rationale + the calibration table against F
 **dashboard screenshots** embedded as deck assets (`deck/assets/`), captured from
 fleek-affiliate-dashboard.vercel.app; LIVE / SIMULATED badges promoted to page level, receipt-style.
 
+## Review round 2 — 2026-07-13 (Doug's Notion notes, slides 1–16)
+
+Slide-by-slide review on the Notion mirror, applied:
+- **Title** now quotes Fleek's own words — *"How would you take this from 10 to 10,000 influencer leads?"*
+- **Slide 2** is an executive-summary synopsis: their 5 brief parts → my 6 builds, with slide numbers.
+- **Phase 0** reframed as *architecture + context window* (the wiki teaches the engine); Obsidian graph + file tree.
+- **Discovery** number chain made dashboard-consistent (169 → 34 → 10); technical multi-platform prompt.
+- **Scoring** carries the self-tuning loop Doug asked for — an agent re-weights on market data, human approves.
+- **Call table** gained a Predicted-CAC column; counts synced live (10 qualified / 34 recommended / 125 gated).
+- **New localisation slide** — split FR/EN of a real `@gdefou` draft, observation-led.
+- **Activation** is now the live **Brief Studio** (added to the dashboard) — per-creator briefs, their top posts as context, guardrails.
+- **Budget** reframed as Fleek's **data moat**; automation of CAC grows with proprietary data.
+- **Autopilot** — "no 6am Monday, it's constantly on"; the full 8-stage trigger chain, qualification manual today with a roadmap to automate on score.
+- **Demo** — "live and ready to ingest your data", a walkthrough not a mockup.
+- **Close** — Doug's own 30/60/90 (understand the existing roster → activate + Discord → trust the data, new markets).
+- **The HERO overrule slide was deleted** on Doug's call. The "I knew when to distrust it" thread survives in the per-section pushback strips + `deliverables/evidence/`. Deck is **16 slides**. (Supersedes the earlier "slide 11 is the hero" note in `decisions/2026-07-10-evidence-and-deck.md`.)
+
 ## Content rules
 
 - **14 core slides**, appendix behind them. Twenty minutes is ~90 seconds a slide; 25+ slides means rushing

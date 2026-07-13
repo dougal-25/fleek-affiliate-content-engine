@@ -12,39 +12,38 @@
 
 <!-- 1 ─────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="title">
-  <p class="eyebrow">Influencer Marketing Manager · case study · 2026-07-10</p>
-  <h1>I didn't find ten French creators.<br>I built the system that finds ten thousand.</h1>
-  <p class="lede">A working prototype of Fleek's Content Brain, pointed at France — and the complete,
-    timestamped record of how it was built, including the parts where the AI was wrong.</p>
-  <p class="cites">Doug Woolfenden · <a href="https://github.com/dougal-25/fleek-affiliate-content-engine">github.com/dougal-25/fleek-affiliate-content-engine</a></p>
-  <aside class="notes">Twenty minutes. Don't rush. The 40 minutes of questions afterwards is where this is
-    really decided — leave them room. Open by naming the metric, not the tooling.</aside>
+  <p class="eyebrow">Influencer Marketing Manager · case study · owning France</p>
+  <h1>"How would you take this from<br>10 to 10,000 influencer leads?"</h1>
+  <p class="lede">Your brief, your words. So I didn't bring a list of creators — I built the affiliate engine:
+    <em>"something that would still work if France was 500 creators instead of 10."</em> Deployed, running,
+    receipts attached.</p>
+  <p class="cites">Doug Woolfenden · <a href="https://github.com/dougal-25/fleek-affiliate-content-engine">github.com/dougal-25/fleek-affiliate-content-engine</a> · <a href="https://fleek-affiliate-dashboard.vercel.app">fleek-affiliate-dashboard.vercel.app</a></p>
+  <aside class="notes">The headline is their sentence from the task brief, quoted back. Twenty minutes, don't
+    rush — the 40 minutes of questions is where it's decided. Open on their question, answer it with the
+    engine.</aside>
 </section>
 
 <!-- 2 ─────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="the-number">
-  <p class="eyebrow">What we're judged on</p>
-  <h2>A signed partner who never posts is worth nothing.</h2>
-  <div class="figure-row">
-    <div>
-      <span class="figure"># and %</span>
-      <span class="label">of partners posting each month</span>
-    </div>
-    <div>
-      <span class="figure">~20,000</span>
-      <span class="label">total addressable FR/EU resellers</span>
-    </div>
-    <div>
-      <span class="figure">81.7%</span>
-      <span class="label">of TikTok Shop FR GMV is affiliate-driven</span>
-    </div>
+  <p class="eyebrow">Executive summary — one engine, five parts of your brief</p>
+  <h2>The task wasn't a shortlist. It was the pipeline behind one.</h2>
+  <table>
+    <tr><th>Your brief</th><th>What I built</th><th class="num">Slides</th></tr>
+    <tr><td class="dim">Foundation</td><td><strong>Context window + stack</strong> — the wiki that teaches the engine French resale</td><td class="num">03–04</td></tr>
+    <tr><td><strong>1 · The French shortlist</strong></td><td><strong>Discovery engine + live dashboard</strong> — 169 scored creators, filterable</td><td class="num">05–06</td></tr>
+    <tr><td><strong>2 · Signal from noise</strong></td><td><strong>Scoring framework + the call table</strong> — who's in, out, and why</td><td class="num">07–08</td></tr>
+    <tr><td><strong>3 · Outreach</strong></td><td><strong>Personalised FR drafts</strong> — from their own posts; human sends</td><td class="num">09–10</td></tr>
+    <tr><td><strong>4 · Activation briefs</strong></td><td><strong>Brief generator</strong> — per-creator, from what converted</td><td class="num">12</td></tr>
+    <tr><td><strong>5 · GTM, budget, CAC</strong></td><td><strong>Deterministic allocator</strong> — money follows measured CAC</td><td class="num">13</td></tr>
+  </table>
+  <div class="figure-row" style="margin:var(--space-4) 0 0">
+    <div><span class="figure" style="font-size:var(--t-lg)"># and %</span><span class="label">posting monthly — the metric</span></div>
+    <div><span class="figure" style="font-size:var(--t-lg)">~20,000</span><span class="label">FR/EU resellers — the ceiling</span></div>
+    <div><span class="figure" style="font-size:var(--t-lg)">81.7%</span><span class="label">of TikTok Shop FR GMV is affiliate</span></div>
   </div>
-  <p class="lede">France is structurally affiliate-first. The market is small enough to know personally, and
-    the metric is activation — not reach, not follower count, not contracts signed.</p>
-  <p class="cites">mission/mission.md · Fleek Wiki/research/TikTok Shop France.md</p>
-  <aside class="notes">Say their number back to them before saying anything of your own. ~20,000 bounds every
-    scale claim you'll make later — use it when they ask "does this go to 10,000 leads?" The honest answer is
-    that the ceiling is the market, not the pipeline.</aside>
+  <aside class="notes">The synopsis slide: their five parts, my six builds, slide numbers to jump to.
+    Say the metric out loud — # and % posting monthly is theirs. ~20,000 bounds every scale claim; France is
+    structurally affiliate-first. Then move.</aside>
 </section>
 
 <!-- 3 ─────────────────────────────────────────────────────────────────────── -->
@@ -70,20 +69,21 @@
 
 <!-- 4 ─────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="phase-0">
-  <p class="eyebrow"><span class="dot dot--live">●</span> live · claude code + perplexity</p>
-  <h2>First, teach the system what "good" looks like.</h2>
+  <p class="eyebrow"><span class="dot dot--live">●</span> live · claude code + perplexity · phase 0 — architecture &amp; context window</p>
+  <h2>Step 1: build the context window, not the shortlist.</h2>
   <div class="cols cols--wide">
     <div class="receipt">
       <div class="card r-prompt">
-        <span class="r-label">prompt — Doug, verbatim</span>
-        <p>quite frankly, I don't think it's rich enough. The research task doesn't seem to have populated the
-          wiki base with enough material</p>
+        <span class="r-label">prompt</span>
+        <p>Before any discovery: build the engine's context window. Scrape and synthesise a cited FR-resale
+          knowledge base — from the creators Fleek named and the French market itself — that every downstream
+          job reads: discovery keywords, scoring weights, outreach tone.</p>
       </div>
       <div class="card r-input">
         <span class="r-label">input</span>
-        <pre><span class="fn">wiki-knowledge-base-builder</span> — rejected the summary
-sweep, switched to deep-reads of named FR primary
-sources · 25 questions, hard cap 35 calls</pre>
+        <pre><span class="fn">wiki-knowledge-base-builder</span> · Perplexity sweep, 25 questions
+→ rejected as too thin → deep-reads of named FR primary sources
++ post-level scrape of Fleek's own named partners</pre>
       </div>
       <div class="card r-output">
         <span class="r-label">output</span>
@@ -97,40 +97,47 @@ sources · 25 questions, hard cap 35 calls</pre>
       </div>
     </div>
     <div>
-      <div class="shot shot--crop"><img src="assets/dash-trends.jpg" alt="Live trends: top FR hashtags by posts and views, computed from ingested posts"></div>
-      <p class="cites">Live on the dashboard: they say <code>kilo</code>, never <code>ballot</code> —
-        creator language, not supplier jargon. <code>#friperiemontpellier</code>: geo-tags are real in France.</p>
+      <div class="shot shot--crop" style="max-height:14em"><img style="height:14em" src="assets/obsidian-wiki.png" alt="The Fleek Wiki as an Obsidian graph — 21 linked, cited research pages"></div>
+      <div class="terminal" style="margin-top:var(--space-2); font-size:var(--t-xs)"><span class="fn">the engine</span>
+mission/        the brief, verbatim — read-only
+Fleek Wiki/     context window · 21 cited pages
+spec/           intent + decision records
+content_brain/  scoring · markets · outreach
+scripts/        discovery · qualify · outreach
+dashboard/      the live Vercel surface</div>
     </div>
   </div>
-  <aside class="notes">The story in one line: the agent said done, I said not good enough, and the deep-read
-    method that came out of that rejection produced the vault's best pages — later corrected BY the scrape.
-    Research proposes, data verifies. "Friperie" is the word no English-language reasoning surfaces.</aside>
+  <aside class="notes">Treat it like any project: architecture first. The wiki IS the context window — it
+    chose the scrape keywords, shaped the scoring weights, set the outreach tone. Story in one line: the
+    first sweep came back thin, I rejected it, the deep-read method produced the pages the scrape later
+    corrected. Research proposes, data verifies.</aside>
 </section>
 
 <!-- 5 ─────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="discovery">
-  <p class="eyebrow"><span class="dot dot--live">●</span> live · apify + claude · part 1, discovery</p>
-  <h2>Scrape the market, gate hard, recommend — never auto-qualify.</h2>
+  <p class="eyebrow"><span class="dot dot--live">●</span> live · apify + claude · section 1 — discovery</p>
+  <h2>Scrape both platforms, gate hard, recommend — never auto-qualify.</h2>
   <div class="receipt">
     <div class="card r-prompt">
-      <span class="r-label">prompt — Doug, verbatim</span>
-      <p>Is my apify setup so i can run multiple scrapes across social channels… to find the best as well as
-        up and comming france based clothing resellers. think friperie, think vintage resale</p>
+      <span class="r-label">prompt</span>
+      <p>Run market-driven discovery for France on both channels: TikTok hashtag scrape on the wiki's
+        validated lanes + Instagram graph-walk from verified reseller seeds. Gate on reseller lexicon,
+        clothing vertical, supplier filter. Score and upsert to Airtable, keyed platform:handle.</p>
     </div>
     <div class="card r-input">
-      <span class="r-label">input</span>
-      <pre><span class="fn">run_discovery.py</span> --market france
-tiktok hashtags + instagram graph-walk from verified seeds
-gates: genuine reseller AND clothing AND not a supplier</pre>
+      <span class="r-label">input — two platforms, one enrichment path</span>
+      <pre><span class="fn">tiktok</span>    #friperie #secondemain #revente #achatrevente #fripe…
+<span class="fn">instagram</span> graph-walk 2 hops from @juliacrcl @nathanvialle @saw2hands
+<span class="fn">gates</span>     genuine reseller AND clothing AND not a supplier</pre>
     </div>
     <div class="card r-output">
-      <span class="r-label">output — first live run</span>
+      <span class="r-label">output — live roster, matches the dashboard</span>
       <div class="flow">
-        <span class="n">120<small>creators upserted</small></span>
+        <span class="n">169<small>scored onto the roster</small></span>
         <span class="arr">→</span>
-        <span class="n">39<small>recommended by the engine</small></span>
+        <span class="n">34<small>recommended — in review</small></span>
         <span class="arr">→</span>
-        <span class="n n--win">169<small>roster · pennies of Apify</small></span>
+        <span class="n n--win">10<small>human-qualified</small></span>
       </div>
     </div>
   </div>
@@ -173,22 +180,21 @@ gates: genuine reseller AND clothing AND not a supplier</pre>
 
 <!-- 7 · SCORING ───────────────────────────────────────────────────────────── -->
 <section class="slide" id="scoring">
-  <p class="eyebrow"><span class="dot dot--live">●</span> live · calibrated on Fleek's real partners</p>
+  <p class="eyebrow"><span class="dot dot--live">●</span> live · section 2 — scoring &amp; framework · calibrated on Fleek's real partners</p>
   <h2>The score predicts one thing: will their audience buy stock.</h2>
   <div class="cols cols--wide">
     <div>
       <div class="weights">
         <div class="w"><span>Audience quality</span><span class="bar"><i style="width:50%"></i></span><span class="pts">50</span></div>
-        <p class="why">Half the score — because the customer is the <em>viewer</em>, not the creator. Pro-reseller viewers weigh full, hobbyists 0.8, general fashion ~0.</p>
+        <p class="why">Half the score: the customer is the <em>viewer</em>, not the creator. Pro 1.0 · hobbyist 0.8 · fashion ~0.</p>
         <div class="w"><span>Sourcing intent</span><span class="bar"><i style="width:20%"></i></span><span class="pts">20</span></div>
-        <p class="why">Do they talk sourcing, kilos, marges? A haul channel isn't a sourcing channel.</p>
+        <p class="why">Sourcing, kilos, marges — a haul channel isn't a sourcing channel.</p>
         <div class="w"><span>Creator credibility</span><span class="bar"><i style="width:20%"></i></span><span class="pts">20</span></div>
-        <p class="why">Do they demonstrably resell — Whatnot, Discord, coaching? Trust converts; reach doesn't.</p>
+        <p class="why">Do they demonstrably resell — Whatnot, Discord, coaching? Trust converts.</p>
         <div class="w"><span>Fleek warmth</span><span class="bar"><i style="width:10%"></i></span><span class="pts">10</span></div>
-        <p class="why">Already mentions Fleek or carries an RFD- code. Small on purpose — warmth is a tiebreak, not a strategy.</p>
+        <p class="why">Mentions Fleek / carries RFD-. Small on purpose: a tiebreak, not a strategy.</p>
       </div>
-      <p class="cites">Followers: <strong>0 points</strong>. Confidence is a gate, not points. Weights are v1 —
-        a stated theory the funnel re-fits with outcomes, per cohort.</p>
+      <p class="cites">Followers: <strong>0 points</strong>. Confidence is a gate, not points.</p>
     </div>
     <div>
       <h3>Does it agree with reality?</h3>
@@ -204,18 +210,23 @@ gates: genuine reseller AND clothing AND not a supplier</pre>
         not a training set, and labelled so.</p>
     </div>
   </div>
+  <div class="pipeline">
+    <div class="step"><b>funnel data in</b>replies · first posts · CAC per cohort</div>
+    <div class="step"><b>agent re-weights</b>low-CAC FR converters → raise sourcing-intent</div>
+    <div class="step step--gate"><b>human approves</b>never silently applied · per market</div>
+  </div>
   <div class="pushback">
     <span class="tag">Overruled</span>
     <blockquote>the bar is a percentile of the live distribution, not an absolute number</blockquote>
     <p class="outcome"><span class="stamp">2026-07-10</span> — My hard-coded cutoff of 70 rejected
-      <code>@juliacrcl</code>, who scores 62 on TikTok. Doug made the bar the top ~50% of the live roster — it
-      lands exactly where the proven partner sits. Activation's job is to raise scores; the same percentile
-      then selects a stronger cohort.</p>
+      <code>@juliacrcl</code>, a Fleek partner scoring 62. Doug made the bar the top ~50% of the live roster —
+      it lands exactly where the proven partner sits.</p>
   </div>
-  <aside class="notes">Why 50 on audience: the referral code converts VIEWERS into resellers — the creator is
-    the channel, the audience is the customer. Why warmth is only 10: an RFD- code proves contact, not
-    conversion power. The engagement-rate trap: @giu.cst has the HIGHEST engagement in the set at 8.1% — and
-    the worst fit. Her comments are sellers advertising their own closets.</aside>
+  <aside class="notes">Why 50 on audience: the referral code converts VIEWERS — the creator is the channel,
+    the audience is the customer. Warmth is only 10 because an RFD- code proves contact, not conversion.
+    The trap: @giu.cst has the HIGHEST engagement (8.1%) and the worst fit. The bottom strip is the roadmap
+    Doug asked for: v1 is a stated theory; the funnel re-fits it; an agent proposes, a human approves — the
+    more data it sees, the more of this loop can run itself.</aside>
 </section>
 
 <!-- 8 · THE CALL TABLE ────────────────────────────────────────────────────── -->
@@ -223,42 +234,46 @@ gates: genuine reseller AND clothing AND not a supplier</pre>
   <p class="eyebrow"><span class="dot dot--live">●</span> live · the roster, called — qualify · watch · cut</p>
   <h2>Who's in, who's next, who's out — and why.</h2>
   <div class="chipline">
-    <span class="chip chip--q"><b>7</b>qualified — human-approved</span>
-    <span class="chip chip--w"><b>36</b>recommended — in review</span>
-    <span class="chip chip--x"><b>126</b>watching / gated out</span>
+    <span class="chip chip--q"><b>10</b>qualified — human-approved</span>
+    <span class="chip chip--w"><b>34</b>recommended — in review</span>
+    <span class="chip chip--x"><b>125</b>watching / gated out</span>
   </div>
   <table class="calls">
-    <tr><th>Creator</th><th class="num">Fit</th><th>Segment</th><th>Why</th><th>Call</th></tr>
-    <tr><td>@coco_duc</td><td class="num">84</td><td>Reseller educator</td><td class="why">9,000+ Vinted sales, teaches sourcing to FR resellers</td><td><span class="call call--q">QUALIFIED</span></td></tr>
-    <tr><td>@bartorico_</td><td class="num">82</td><td>Reseller educator</td><td class="why">91k followers whose audience is actively seeking sourcing</td><td><span class="call call--q">QUALIFIED</span></td></tr>
-    <tr><td>@five_max_</td><td class="num">82</td><td>Thrift flipper</td><td class="why">physical Paris thrift op, 40,000+ pieces — buys stock constantly</td><td><span class="call call--q">QUALIFIED</span></td></tr>
-    <tr><td>@laprovidencewholesale</td><td class="num">92</td><td class="bad">Wholesaler / supplier</td><td class="why">top score, but a <em>supplier</em> — partnership talk, not affiliate</td><td><span class="call call--q">QUALIFIED</span></td></tr>
-    <tr><td>@juliacrcl</td><td class="num">100</td><td>Thrift flipper</td><td class="why bad">⚠ likely existing Fleek partner — re-activation, never a cold pitch</td><td><span class="call call--w">WATCH</span></td></tr>
-    <tr><td>@saw2hands</td><td class="num">76</td><td>Live seller</td><td class="why">111k Whatnot sales, 2.4k followers — invisible to any follower floor</td><td><span class="call call--w">WATCH</span></td></tr>
-    <tr><td>@giu.cst</td><td class="num bad">10</td><td>General fashion</td><td class="why bad">253k followers, best engagement in set — audience is sellers, not buyers</td><td><span class="call call--x">CUT</span></td></tr>
-    <tr><td>@alex_yeddertcg</td><td class="num bad">—</td><td class="bad">Off-vertical</td><td class="why bad">passed every IG gate; his TikTok bio: Pokémon TCG. Second platform = lie detector</td><td><span class="call call--x">CUT</span></td></tr>
-    <tr><td>@50.grass</td><td class="num bad">—</td><td class="bad">Off-vertical</td><td class="why bad">perfect pro lexicon — sells synthetic lawn. Forced the clothing gate</td><td><span class="call call--x">CUT</span></td></tr>
+    <tr><th>Creator</th><th class="num">Fit</th><th class="num">Pred. CAC</th><th>Segment</th><th>Why</th><th>Call</th></tr>
+    <tr><td>@coco_duc</td><td class="num">84</td><td class="num">—</td><td>Reseller educator</td><td class="why">9,000+ Vinted sales, teaches sourcing to FR resellers</td><td><span class="call call--q">QUALIFIED</span></td></tr>
+    <tr><td>@bartorico_</td><td class="num">82</td><td class="num">—</td><td>Reseller educator</td><td class="why">91k followers actively seeking sourcing</td><td><span class="call call--q">QUALIFIED</span></td></tr>
+    <tr><td>@felixbeauregard</td><td class="num">82</td><td class="num bad">£350</td><td>Reseller educator</td><td class="why">teaches Vinted resale — but runs his own supplier funnel; watch the margin</td><td><span class="call call--q">QUALIFIED</span></td></tr>
+    <tr><td>@artifycevintageclothing</td><td class="num">62</td><td class="num true">£45</td><td>Thrift flipper</td><td class="why">nano tier — the cheap-CAC lane, trust density highest</td><td><span class="call call--q">QUALIFIED</span></td></tr>
+    <tr><td>@juliacrcl</td><td class="num">100</td><td class="num">—</td><td>Thrift flipper</td><td class="why bad">⚠ likely existing Fleek partner — re-activation, never a cold pitch</td><td><span class="call call--w">WATCH</span></td></tr>
+    <tr><td>@saw2hands</td><td class="num">76</td><td class="num">—</td><td>Live seller</td><td class="why">111k Whatnot sales, 2.4k followers — invisible to follower floors</td><td><span class="call call--w">WATCH</span></td></tr>
+    <tr><td>@giu.cst</td><td class="num bad">10</td><td class="num">—</td><td>General fashion</td><td class="why bad">253k followers, best engagement in set — audience is sellers, not buyers</td><td><span class="call call--x">CUT</span></td></tr>
+    <tr><td>@alex_yeddertcg</td><td class="num bad">—</td><td class="num">—</td><td class="bad">Off-vertical</td><td class="why bad">passed every IG gate; TikTok bio: Pokémon TCG — second platform = lie detector</td><td><span class="call call--x">CUT</span></td></tr>
+    <tr><td>@50.grass</td><td class="num bad">—</td><td class="num">—</td><td class="bad">Off-vertical</td><td class="why bad">perfect pro lexicon — sells synthetic lawn; forced the clothing gate</td><td><span class="call call--x">CUT</span></td></tr>
   </table>
-  <aside class="notes">This is the slide that answers "we don't want 10 names you already knew." Every row is
-    real. Point at @saw2hands — the pro Fleek says it can't reach, invisible to follower floors, found two
-    hops out of Julia's graph. And @giu.cst is the whole thesis in one row: highest engagement, worst fit —
-    trust beats reach. The supplier row: honesty about an edge the gates and a human must argue over.</aside>
+  <p class="cites">CAC = model band, — where evidence is thin (roster median £85). Per-creator LTV needs
+    Fleek's order data — the day-one ask.</p>
+  <aside class="notes">Every row is real, live from Airtable. @saw2hands: the pro Fleek can't reach —
+    invisible to follower floors, found two hops out of Julia's graph. @giu.cst: highest engagement, worst
+    fit — trust beats reach in one row. @felixbeauregard: qualified AND flagged — he monetises his own
+    supplier funnel, so the margin conversation comes first. If they ask why LTV is blank: that's their
+    number, and it's the first thing I'd wire in month one.</aside>
 </section>
 
 <!-- 9 ─────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="outreach">
-  <p class="eyebrow"><span class="dot dot--live">●</span> live · claude · part 2, outreach</p>
+  <p class="eyebrow"><span class="dot dot--live">●</span> live · claude · section 3 — outreach · personalisation · localisation</p>
   <h2>The engine drafts. A human sends. Always.</h2>
   <div class="receipt">
     <div class="card r-prompt">
       <span class="r-label">prompt — Doug's spec</span>
-      <p>qualification is the trigger. Drafts use first names, never handles, never invented. And it still
-        never sends.</p>
+      <p>qualification is the trigger. Personalise from what they actually post. First names, never handles,
+        never invented. And it still never sends.</p>
     </div>
     <div class="card r-input">
-      <span class="r-label">input</span>
+      <span class="r-label">input — the evidence scrape, per creator</span>
       <pre><span class="fn">run_outreach.py</span> --qualified
-their real posts → value palette (wiki-sourced facts only)
+recent posts + captions + audience comments + profile keywords
+→ observation → value palette pick (wiki-sourced facts only)
 → 3-touch FR sequence · no send code path exists in the repo</pre>
     </div>
     <div class="card r-output">
@@ -285,6 +300,46 @@ their real posts → value palette (wiki-sourced facts only)
     human stay in the loop" is asked twice in their brief; this slide is the answer.</aside>
 </section>
 
+<!-- 10 · LOCALISATION ─────────────────────────────────────────────────────── -->
+<section class="slide" id="localisation">
+  <p class="eyebrow"><span class="dot dot--live">●</span> live · a real draft, unedited · section 3 — localisation</p>
+  <h2>What the engine saw, and what it wrote.</h2>
+  <div class="cols">
+    <div>
+      <h3>It saw — <code>@gdefou</code>, reseller educator</h3>
+      <div class="terminal"><span class="fn">recent video</span>  counterfeits on Vinted —
+              strong anti-fake stance
+<span class="fn">his promise</span>  a "vraie stratégie" for resellers
+<span class="fn">the wall</span>     his audience gets stuck on
+              sourcing legit stock at volume
+<span class="fn">palette pick</span> graded + traceable supply
+              (Fleek Sort · Buyer Protection)</div>
+      <p class="cites">Observation first, pitch second: his problem is the opening line, Fleek is the answer
+        to <em>his</em> promise — not a generic intro.</p>
+    </div>
+    <div>
+      <h3>It wrote — touch 1 of 3, French first</h3>
+      <div class="card r-prompt" style="border-left-color:var(--c-brand); border:var(--rule) solid var(--c-rule); border-left-width:3px; border-radius:var(--radius); padding:var(--space-3) var(--space-4); background:var(--c-bg)">
+        <span class="r-label" style="display:block; font-family:var(--font-mono); font-size:var(--t-xs); letter-spacing:.14em; text-transform:uppercase; color:var(--c-machine); margin-bottom:var(--space-2)">🇫🇷 sent language</span>
+        <p style="margin:0; font-size:var(--t-sm); line-height:var(--leading-snug); color:var(--c-human)">« Ta vidéo sur le faux sur Vinted, t'as raison… Le souci après, c'est que ta 'vraie stratégie' bute
+        sur le sourcing — trouver du stock légit et rentable en volume. On fait du sourcing en gros pour les
+        revendeurs, tout tracé et gradé. Je te dis en deux mots comment ça branche sur ton audience ? »</p>
+      </div>
+      <div style="border:var(--rule) solid var(--c-rule); border-left:3px solid var(--c-text-faint); border-radius:var(--radius); padding:var(--space-3) var(--space-4); margin-top:var(--space-2)">
+        <span style="display:block; font-family:var(--font-mono); font-size:var(--t-xs); letter-spacing:.14em; text-transform:uppercase; color:var(--c-text-faint); margin-bottom:var(--space-2)">🇬🇧 the same message — reviewer's mirror</span>
+        <p class="dim" style="margin:0; font-size:var(--t-sm); line-height:var(--leading-snug)">"Your video on fakes on Vinted — you're right… The problem after that is your 'real strategy' hits a
+        wall on sourcing: finding legit, profitable stock at volume. We do wholesale sourcing for resellers,
+        all traced and graded. Two lines on how it plugs into your audience?"</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">This is a real draft from the live run — status Draft in Airtable, unsent, unedited.
+    The tone is deliberate: tutoiement, community slang ("légit"), no corporate opener — that's the
+    localisation answer. The EN panel exists for the room, not for sending. If asked "at scale?": the
+    observation is scraped, the palette is fixed, only the connection is generated — and a human still reads
+    every one before it goes anywhere.</aside>
+</section>
+
 <!-- 8 ─────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="funnel">
   <p class="eyebrow"><span class="dot dot--live">●</span> live · airtable · part 3, the funnel</p>
@@ -296,15 +351,15 @@ their real posts → value palette (wiki-sourced facts only)
         outreach never auto-sends</em>. The funnel is a view of the same database, not a second system.</p>
     </div>
     <div>
-      <h3>The gate is a command</h3>
-      <div class="terminal"><span class="prompt">qualify.py --list</span>
-<span class="dim">162 in review queue</span>
-<span class="prompt">qualify.py @coco_duc</span>
-Prospect → Qualified ✓
-<span class="prompt">qualify.py @somebrand</span>
-<span class="false">⚠ not engine-recommended —
-  approving on your judgment</span></div>
-      <p class="cites">Qualification releases the outreach draft. Approval is deliberate — never automatic.</p>
+      <h3>The agent, once a lead is qualified</h3>
+      <div class="pipeline" style="flex-direction:column; gap:var(--space-2); margin:0 0 var(--space-2)">
+        <div class="step step--gate"><b>human qualifies</b><code>qualify.py @handle</code> — Prospect → Qualified releases the agent</div>
+        <div class="step"><b>agent gathers</b>recent posts · captions · comments · profile keywords</div>
+        <div class="step"><b>agent drafts</b>3-touch FR sequence from the value palette → Airtable, status Draft</div>
+        <div class="step step--gate"><b>human sends</b>reads, edits, sends, flips status — no send code path exists</div>
+      </div>
+      <p class="cites">Scheduled, this runs itself: every new Qualified gets drafts waiting by morning.
+        The two gates never come off.</p>
     </div>
   </div>
   <div class="pushback">
@@ -321,222 +376,177 @@ Prospect → Qualified ✓
 
 <!-- 9 ─────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="activation">
-  <p class="eyebrow"><span class="dot dot--sim">●</span> simulated · brief generator mechanism · part 4 — "the whole game"</p>
-  <h2>Nobody hand-writes 475 briefs. So the engine writes them.</h2>
+  <p class="eyebrow"><span class="dot dot--live">●</span> live · brief studio · section 4 — activation, "the whole game"</p>
+  <h2>Every brief is deliberate — built from what already worked for them.</h2>
   <div class="cols cols--wide">
     <div>
-      <p>For each creator: profile them from their own post history, study what has already converted <em>for
-        them</em>, then generate a brief in their format, their hook, their vocabulary.</p>
-      <p>Feedback closes the loop — last month's post performance becomes next month's brief. That loop, not
-        the generator, is the asset.</p>
-      <p><strong>How to get partners posting more without paying more per post:</strong> pay them in
-        <em>sourcing advantage</em>, not cash. French resellers already pay for private Discord coaching. Fleek
-        is the only party that can offer commission <em>and</em> wholesale margin in one relationship.</p>
+      <div class="shot shot--crop" style="max-height:14em"><img style="height:14em" src="assets/dash-brief-studio.jpg" alt="Brief Studio: one personalised, localised brief per creator with rationale and guardrails"></div>
+      <p class="cites"><a href="https://fleek-affiliate-dashboard.vercel.app">dashboard → Brief Studio</a> —
+        a real brief per creator: type, target CAC, channel, format, hooks, FR/EN, guardrails.</p>
     </div>
-    <div class="terminal"><span class="prompt">python run_campaign.py brief CRE-0042</span>
-profiling  CRE-0042 · micro · tiktok · FR
-           best format: bale-unboxing
-           best hook:   price-reveal
-           last 90d:    12 posts, 3 conversions
-
-generating brief…
-  hook     "180€ le ballot — on voit tout"
-  format   unboxing, 45s, price at 0:03
-  cta      RFD code in caption + voiceover
-  why      your price-reveal posts convert
-           2.4× your haul posts
-
-written    data/briefs/CRE-0042.json</div>
+    <div>
+      <h3>The context the brief agent gets</h3>
+      <ul>
+        <li><strong>Their top posts</strong> — Trends &amp; Inspiration surface what over-indexes; the brief <em>extends their proven format, doesn't invent one.</em></li>
+        <li><strong>Their signals</strong> — segment, keywords, audience, RFD- code from their own videos.</li>
+        <li><strong>Guardrails</strong> — never "for beginners", never a rival's code, never an unprovable margin.</li>
+      </ul>
+      <p class="lede">More posting without paying more per post: pay in <em>sourcing advantage</em> — commission
+        <em>and</em> wholesale margin, only Fleek offers both.</p>
+    </div>
   </div>
-  <div class="pushback">
-    <span class="tag">Overruled</span>
-    <blockquote>delete scout and brain research agent. rename skill to wiki knowledge base builder</blockquote>
-    <p class="outcome"><span class="stamp">2026-07-09 13:22</span> — I asked for one research agent; it built
-      two, each welded to Fleek. I deleted both. What replaced them is project-agnostic and has since been
-      pointed at other domains. <em>Something that still works if France were 500 creators — or if the project
-      weren't Fleek.</em></p>
-  </div>
-  <aside class="notes">This is the slide that answers their hardest problem — "pro resellers think Fleek is
-    for beginners." The answer is not messaging. It's the offer: sourcing margin. Say it plainly.</aside>
+  <aside class="notes">Open Brief Studio live. The point Doug wants clear: the brief is guided, not generic —
+    it reads the creator's own best-performing videos (the trends tab) and aligns Fleek's angle to their niche.
+    The richness of the context window is the moat. Their hardest problem — "pro resellers think Fleek is for
+    beginners" — is answered by the guardrails AND the offer: sourcing margin.</aside>
 </section>
 
 <!-- 10 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="budget">
-  <p class="eyebrow"><span class="dot dot--sim">●</span> simulated · the allocator mechanism · part 5</p>
-  <h2>Models write briefs. Code moves money — and CAC is a constraint, not the selector.</h2>
+  <p class="eyebrow"><span class="dot dot--sim">●</span> simulated allocator · section 5 — budget, CAC &amp; the moat</p>
+  <h2>The moat isn't the model. It's Fleek's data flowing through it.</h2>
   <div class="cols cols--wide">
     <div>
-      <p><strong>The trap I designed around:</strong> CAC is reach-weighted, and the brief says trust beats
-        reach. Run the numbers on Fleek's <em>own</em> named partners and CAC ranks them badly. So
-        <strong>fit selects the shortlist; CAC is the budget constraint.</strong> Predicted CAC ships as a
-        band — <code>£ / ££ / £££</code> with a confidence — never a false-precision point.</p>
-      <p>The real model needs three numbers only Fleek has: <strong>referral funnel rate, first-order AOV by
-        tier, LTV by segment.</strong> Until then it's honest scaffolding, not a shipped figure.</p>
-      <p class="cites">Money splits recruitment vs re-activation, reallocates monthly toward best-CAC segments —
-        deterministic code, never a model.</p>
+      <p><strong>Today, honestly:</strong> CAC is reach-weighted, so it ranks Fleek's own best partners badly.
+        <strong>Fit selects; CAC constrains.</strong> Predicted CAC ships as a band — <code>£ / ££ / £££</code>
+        — never a false-precision point, because the three inputs that make it real are Fleek's:
+        <strong>funnel rate, first-order AOV by tier, LTV by segment.</strong></p>
+      <p><strong>Why that's the opportunity, not the gap:</strong> every signed partner, every referral order,
+        every repeat post feeds proprietary data no competitor has. The model gets more verifiable against real
+        CAC and LTV each month — and the more it matures, the more of the allocation Fleek can safely automate.</p>
     </div>
     <div>
-      <p><span class="badge badge--sim">simulated roster</span> The allocator runs today against a
-        1,000-creator simulation — proving the <em>mechanism</em>, not reporting Fleek's numbers.</p>
-      <div class="terminal"><span class="prompt">run_campaign.py plan-budget</span>
-segment                      CAC   move
-mid/tiktok/FR/live-selling   £17   <span style="color:var(--c-true)">+38%</span>
-mid/tiktok/FR/sustainability £17   <span style="color:var(--c-true)">+31%</span>
-mega/youtube/UK/vintage      £38   <span style="color:var(--c-false)">−44%</span>
-
-<span class="dim">mega buys reach. micro/mid buy
-customers. money follows the second.</span></div>
+      <div class="pipeline" style="flex-direction:column; gap:var(--space-2); margin:0 0 var(--space-3)">
+        <div class="step"><b>now</b>band + confidence · human owns every £ move</div>
+        <div class="step"><b>+ Fleek's order data</b>bands tighten to numbers, per cohort</div>
+        <div class="step step--gate"><b>matured</b>agent proposes reallocations · human approves</div>
+        <div class="step"><b>trusted</b>bounded auto-allocation within guardrails</div>
+      </div>
+      <div class="terminal" style="font-size:var(--t-xs)"><span class="prompt">run_campaign.py plan-budget</span>
+mid/tiktok/FR/live-selling £17 <span style="color:var(--c-true)">+38%</span>
+mega/youtube/UK/vintage    £38 <span style="color:var(--c-false)">−44%</span>
+<span class="dim">mega buys reach; micro/mid buy customers</span></div>
     </div>
   </div>
   <div class="pushback">
-    <span class="tag">Constrained</span>
-    <blockquote>I do not want to use 8 million tokens. I do not want to exhaust all the token usage</blockquote>
-    <p class="outcome"><span class="stamp">2026-07-09 11:45</span> — The first thing Doug said about the
-      research agent, before what it should <em>do</em>, was what it must not <em>cost</em>. The Perplexity
-      call cap, the cheap model, the scrape limits all descend from this line.</p>
+    <span class="tag">Permanent gate</span>
+    <blockquote>never let a model allocate spend — code computes CAC, allocates budget, measures attribution</blockquote>
+    <p class="outcome"><span class="stamp">standing rule</span> — Even "trusted" auto-allocation stays bounded
+      and human-set. Models write judgement (briefs, profiles); deterministic code moves money. That line
+      doesn't move as the data matures — it's <em>why</em> the data can be trusted.</p>
   </div>
-  <aside class="notes">Say the simulation is synthetic, unprompted — volunteering it buys credibility for
-    everything real. The strong, honest line: "I could show you a confident CAC number. It would be fiction. The
-    three inputs are yours, and here's exactly which three." That's commercial judgement, not a dodge.</aside>
+  <aside class="notes">Doug's framing: this is Fleek's moat — proprietary CAC/LTV data compounding into a model
+    only they can build. Say the simulation is synthetic, unprompted. The honest, strong line: "I could show a
+    confident CAC number today; it'd be fiction. Here are the exact three inputs that make it real, and they're
+    yours." The staircase on the right is the automation roadmap — trust grows with data.</aside>
 </section>
 
-<!-- 11 ────────────────────────────────────────────────────────── HERO ────── -->
-<section class="slide slide--hero" id="overruled">
-  <p class="eyebrow">2026-07-09 · 22:17 · nine hours into the build</p>
-  <h2>The moment I overruled the machine.</h2>
-  <div class="exchange">
-    <blockquote>
-      <span class="who">Doug, verbatim</span>
-      <span class="said--human">I need to approach this differently. If we look at the task in hand, do you
-        have the job description and the influencer marketing engine task and case study task at hand? Do you
-        have it in mind? <strong>Do you know what the task was?</strong></span>
-    </blockquote>
-    <blockquote>
-      <span class="who">Claude, verbatim</span>
-      <span class="said--machine">Honest answer first: I have the Draft 2 approach doc, but I haven't read the
-        <strong>original task brief or the job description verbatim</strong> this session — I only know them
-        second-hand through references.</span>
-    </blockquote>
-    <div class="verdict">
-      <span class="mark">✗</span>
-      <span><strong>"Fleek has no structured creator program — greenfield, not a fix-up."</strong>
-        <span class="dim">The JD describes a 1,000+ creator roster, built over two years, recruitment largely
-        automated. The wiki had inferred absence from Fleek's <em>public</em> surface. Said in this room, it
-        would have cost me the first two minutes.</span></span>
-      <span class="mark">✗</span>
-      <span><strong>"Anchor on activation; recruitment is a supporting motion."</strong>
-        <span class="dim">The brief weights both. Discovery is explicitly the core AI-nativeness test.</span></span>
-    </div>
-  </div>
-  <p class="lede" style="margin-top:var(--space-5)">Nine hours of good work resting on a paraphrase. The
-    corrections are dated at the bottom of <code>mission/mission.md</code> — recorded, not quietly patched.</p>
-  <aside class="notes">Slow down. Let the second quote sit for two full seconds before you speak.
-    Then: "Working natively with AI isn't trusting it. It's knowing the question that catches it."
-    This is the line the whole deck exists to earn. Don't step on it.</aside>
-</section>
-
-<!-- 12 ────────────────────────────────────────────────────────────────────── -->
+<!-- ──────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="autopilot">
-  <p class="eyebrow">The question you'll ask at every section</p>
-  <h2>Monday, 06:00. Nobody is awake.</h2>
+  <p class="eyebrow">The engine on autopilot — the answer to "how does this scale?"</p>
+  <h2>There is no 6am Monday. It's constantly on.</h2>
   <div class="pipeline">
-    <div class="step"><b>discover</b>Apify scrapes the FR lanes, new handles land as Prospect</div>
-    <div class="step"><b>enrich</b>Claude classifies and scores against the rubric</div>
-    <div class="step"><b>brief</b>Generator writes briefs for everyone who posted last week</div>
-    <div class="step"><b>measure</b>Attribution reads referral codes into CAC by segment</div>
-    <div class="step step--gate"><b>propose</b>Outreach drafts queue for a human. Budget shift proposed, not applied.</div>
+    <div class="step"><b>1 · discover</b>scrape FR lanes → new handles land as Prospect</div>
+    <div class="step"><b>2 · score</b>fit + activation-risk against the rubric</div>
+    <div class="step step--gate"><b>3 · qualify</b><span class="false">manual today</span> → scope: auto-qualify on score, human override always</div>
+    <div class="step"><b>4 · outreach</b>3-touch FR drafts on qualification</div>
+    <div class="step"><b>5 · brief</b>per-creator, from their top posts</div>
+    <div class="step"><b>6 · measure</b>referral codes → CAC by cohort</div>
+    <div class="step"><b>7 · re-weight</b>agent proposes new scoring weights</div>
+    <div class="step"><b>8 · trends</b>re-check top videos → feed 5</div>
   </div>
   <div class="cols">
     <div>
-      <p>Same Python, same repo, on a scheduler — GitHub Actions or Railway cron. Nothing lives only on a
-        laptop; every stage is an API call, which is exactly what makes it schedulable.</p>
-      <p class="lede">The engine proposes. Humans approve. Two gates, permanent: nothing is sent to a real
-        creator, and no model ever allocates spend.</p>
+      <p>Each stage is an API call, so the whole loop runs on a scheduler — no laptop, no 6am. The one gate
+        that's manual today is <strong>qualification</strong>; the roadmap automates it on the scoring
+        framework as the data proves out, with a manual override that never goes away.</p>
+      <p class="lede">The loop feeds itself: measure → re-weight → better briefs → more posting → more data.
+        Two permanent gates hold: nothing sends to a creator, no model moves money.</p>
     </div>
     <div>
-      <h3>Why this survives me leaving</h3>
-      <p>The knowledge is in the wiki, the intent is in <code>spec/</code>, the constants are in
-        <code>mission/</code>, and the judgement is in a scoring rubric anyone can read and argue with.</p>
+      <h3>Why it survives me leaving</h3>
+      <p>Knowledge in the wiki, intent in <code>spec/</code>, constants in <code>mission/</code>, judgement in a
+        scoring rubric anyone can read and argue with. The whole build cost less than a day of agency time.</p>
       <p class="cites">spec/autonomy-layer.md</p>
     </div>
   </div>
-  <div class="pushback">
-    <span class="tag">Overruled</span>
-    <blockquote>git update please — bare in mind the more recent architectural udpates in other sessions that have outadted this session</blockquote>
-    <p class="outcome"><span class="stamp">2026-07-09 23:59</span> — Six worktrees in parallel means a session
-      can be confidently working from an architecture another session replaced an hour ago. Managing that
-      staleness is a real skill of working this way. Nobody warns you about it.</p>
-  </div>
-  <aside class="notes">Pre-empt "how does this scale?" here so you don't answer it five times. If they push on
-    cost: the whole build, including every research sweep, cost less than a day of agency time.</aside>
+  <aside class="notes">Doug's steer: kill the "Monday 6am" conceit — it's always on, a continuous loop, not a
+    cron that wakes up once. Walk the eight triggers left to right. The honest line on stage 3: qualifying is
+    manual now by choice; the scope is to automate it on the same scoring the room just saw, always keeping a
+    manual override. Emphasise the feedback loop — the more it runs, the better it gets.</aside>
 </section>
 
 <!-- 13 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="demo">
-  <p class="eyebrow">Live, in a terminal, right now</p>
-  <h2>It isn't a mockup.</h2>
+  <p class="eyebrow"><span class="dot dot--live">●</span> not a slide — a running system · let's walk through it</p>
+  <h2>It's live, and ready for your data.</h2>
   <div class="cols cols--wide">
     <div class="terminal"><span class="dim"># the real engine <span class="badge badge--real">live · Airtable</span></span>
 <span class="prompt">run_discovery.py --market france</span>
-120 upserted · 39 recommended · £0.24 Apify
+scrapes TikTok + Instagram → scored roster
 
 <span class="prompt">qualify.py --list</span>
-7 qualified · 162 in review queue
+10 qualified · 34 recommended · 125 in review
 
 <span class="prompt">run_outreach.py --qualified</span>
 FR 3-touch drafts written · <span class="false">0 sent</span>
 
-<span class="dim"># the mechanism, no API key needed
-<span class="badge badge--sim">simulated</span></span>
-<span class="prompt">run_campaign.py plan-budget</span>
-reallocates toward best-CAC segments</div>
+<span class="dim"># point it at Fleek's own data →</span>
+<span class="prompt">--market france  +  your 1,000 roster</span>
+<span class="dim">same engine, your affiliates, your codes</span></div>
     <div>
-      <p>Two things run in the room. The <strong>real pipeline</strong> — discover, qualify, draft — against
-        the live Airtable, redacted. And the <strong>simulated allocator</strong>, which runs with no API key
-        at all in deterministic mock mode, so anyone can clone the repo and reproduce it.</p>
-      <p>The dashboard at <a href="https://fleek-affiliate-dashboard.vercel.app">fleek-affiliate-dashboard.vercel.app</a>
-        is the same data, made touchable.</p>
+      <p>This isn't a mockup and it isn't finished-and-frozen — it's a system <strong>ready to ingest Fleek's
+        own affiliates and proprietary data</strong>. Point <code>run_discovery</code> at your roster, wire in
+        your order data, and the scoring, briefs and CAC sharpen against real outcomes from day one.</p>
+      <p>Everything you've seen is one repo + one live dashboard —
+        <a href="https://fleek-affiliate-dashboard.vercel.app">fleek-affiliate-dashboard.vercel.app</a>.
+        Clonable, runnable, redacted.</p>
       <p class="cites">github.com/dougal-25/fleek-affiliate-content-engine · <code>pip install -r requirements.txt</code></p>
     </div>
   </div>
-  <aside class="notes">Have the terminal open, venv active, on this slide. `qualify.py --list` is the safest
-    live command — read-only, instant, and it shows the real queue. If wifi dies, the simulated
-    `plan-budget` runs offline. Never run a send command; there isn't one, and that's the point.</aside>
+  <aside class="notes">Frame it as Doug asked: this is live and ready, not a demo — offer the walkthrough.
+    "Give me your creator list and your order data and this is running against real numbers this week."
+    `qualify.py --list` is the safe live command (read-only). If wifi dies, the simulated allocator runs
+    offline. Never run a send command — there isn't one.</aside>
 </section>
 
 <!-- 14 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="close">
-  <p class="eyebrow">If I had six months</p>
-  <h2>Close the gap between signed and posting.</h2>
-  <div class="cols">
-    <div>
-      <ul>
-        <li><strong>Month 1</strong> — point the engine at Fleek's real 1,000+ roster and confirm the
-          <code>@juliacrcl</code> matches: live affiliates the system currently reads as strangers. Wire in
-          Fleek's three numbers — funnel rate, AOV by tier, LTV — so predicted CAC stops being scaffolding.</li>
-        <li><strong>Month 2–3</strong> — the re-weighting agent: funnel outcomes re-fit the scoring weights per
-          cohort (it proposes, never silently applies). Test the sourcing-advantage offer against cash-per-post
-          on matched segments. If pro resellers stay away, the offer is wrong, not the messaging.</li>
-        <li><strong>Month 4–6</strong> — weights become per-market config, so <code>markets/germany.py</code> is
-          the next country. The community layer: French resellers already pay for private Discord coaching —
-          Fleek should be the room they're paying to be in.</li>
-      </ul>
+  <p class="eyebrow">The plan — 30 · 60 · 90</p>
+  <h2>Understand what Fleek has. Then activate it. Then trust the data.</h2>
+  <div class="stack" style="grid-template-columns:repeat(3,1fr)">
+    <div class="tool">
+      <span class="role">days 0–30 · build &amp; verify</span>
+      <b>Understand the roster you already have</b>
+      <span>Ingest Fleek's proprietary data + the 1,000+ creator roster. New creators are easy — but understand
+        the existing ones first. Verify and test the engine and scoring against real outcomes.</span>
     </div>
-    <div>
-      <p class="lede">The thing I'd want you to take from this is not the engine. It's that when the machine
-        was confident and wrong, I caught it — twice, on the record, with timestamps.</p>
-      <p>Every prompt, every failure, every reversal:</p>
-      <p class="cites"><code>deliverables/evidence/</code> · 17 receipts, verbatim, generated from the raw
-        transcripts</p>
+    <div class="tool">
+      <span class="role">days 30–60 · activate</span>
+      <b>Double down on what works</b>
+      <span>Activate on the findings — which techniques actually drive posting? Lean into them. Stand up the
+        educational <strong>Discord community</strong> — the room French resellers already pay to be in.</span>
+    </div>
+    <div class="tool">
+      <span class="role">days 60–90 · trust &amp; expand</span>
+      <b>Bet on the data</b>
+      <span>An activated, engaged community and data reliable enough for long-term calls — e.g. "in France we
+        back pro sellers on Instagram; CAC leans that way." Best creators run Discord trainings. Foundation set
+        for <strong>new markets</strong>: Germany, Spain, LatAm.</span>
     </div>
   </div>
-  <aside class="notes">Stop talking here. You have ~40 minutes of questions and that's where the job is
-    decided. The last line is the thesis — say it, then be quiet.</aside>
+  <p class="cites" style="margin-top:var(--space-4)">The whole build — every prompt, failure and reversal — is
+    on the record: <code>deliverables/evidence/</code>, verbatim from the raw transcripts. Working natively
+    with AI isn't trusting it; it's knowing the question that catches it.</p>
+  <aside class="notes">Doug's plan, his words — lean on the suggestions. 30: understand what they have before
+    chasing new; input proprietary data. 60: activate, best techniques, Discord. 90: trust the data enough to
+    make market bets (FR → pro sellers on IG), best creators teach the community, ready for Germany/Spain/LatAm.
+    Then stop — 40 minutes of questions is where it's decided.</aside>
 </section>
 
 <div class="chrome">
   <span>← → navigate · s notes · t theme · p print</span>
-  <span class="counter">01 / 14</span>
+  <span class="counter">01 / 16</span>
 </div>
 </main>
 <script src="deck.js"></script>
