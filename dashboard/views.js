@@ -34,14 +34,28 @@ async function loadFunnel() {
     "Modelled assumptions: 60% of prospects qualify → all contacted over 3 weeks → 25% respond → 50% book a call → 60% sign → 90% onboard. Stated so they can be challenged; replaced by real snapshots as weeks accrue.";
 }
 
+/* Fleek-light categorical palette — warm hue sweep, distinguishable on white with a 2px gap + legend */
+const STREAM_COLORS = ["#e23c56", "#f2789f", "#c9468f", "#8b3fb0", "#5b6ee0", "#1a9fb0", "#d99418"];
+const CAT_COLORS = { Sourcing: "#e23c56", Platform: "#8b3fb0", Format: "#1a9fb0", Style: "#d99418" };
+
+function legend(container, items) {
+  container.replaceChildren(...items.map(([label, color]) => {
+    const chip = span("leg");
+    const sw = span("leg-sw"); sw.style.background = color;
+    chip.append(sw, span("leg-txt", label));
+    return chip;
+  }));
+}
+
 async function loadTrends() {
   const t = await getData("trends");
   const weeks = t.weekly_posts.reduce((a, w) => a + w.count, 0);
+  const topMover = (t.movers || []).find(m => m.direction === "up");
   const stats = [
     [t.post_count, "posts analysed"],
     [t.top_by_volume.length ? "#" + t.top_by_volume[0].tag : "—", "top hashtag"],
-    [t.rising.length ? "#" + t.rising[0].tag : "—", "fastest riser"],
-    [weeks, "posts in last 12 weeks"],
+    [topMover ? "#" + topMover.tag : "—", "fastest riser"],
+    [(t.cooccurrence?.edges || []).length, "tag links mapped"],
   ];
   $("#trend-stats").replaceChildren(...stats.map(([num, lbl]) => {
     const s = div("stat");
@@ -50,22 +64,27 @@ async function loadTrends() {
     return s;
   }));
 
-  hBarChart($("#volume-chart"),
-    t.top_by_volume.map(r => ({ label: "#" + r.tag, value: r.count })),
-    { color: "var(--chart-1)" });
-  hBarChart($("#engagement-chart"),
-    t.top_by_engagement.map(r => ({ label: "#" + r.tag, value: r.views })),
-    { color: "var(--chart-2)" });
+  // streamgraph
+  const stream = t.stream || { weeks: [], series: [] };
+  window.Charts.streamgraph($("#stream-chart"), stream.weeks, stream.series, STREAM_COLORS);
+  legend($("#stream-legend"), stream.series.map((s, i) => ["#" + s.tag, STREAM_COLORS[i % STREAM_COLORS.length]]));
 
-  const ul = $("#rising-list");
-  ul.replaceChildren(...t.rising.map(r => {
-    const li = document.createElement("li");
-    li.append(span("rtag", "#" + r.tag),
-      span("rcounts", `${r.prior} → ${r.recent} posts`),
-      span("rdelta", "+" + r.delta));
-    return li;
+  // co-occurrence network
+  const cooc = t.cooccurrence || { nodes: [], edges: [] };
+  window.Charts.networkGraph($("#cooc-chart"), cooc.nodes, cooc.edges, CAT_COLORS);
+  legend($("#cooc-legend"), Object.entries(CAT_COLORS));
+
+  // movers
+  const movers = $("#movers-list");
+  movers.replaceChildren(...(t.movers || []).map(m => {
+    const row = div("mover");
+    row.append(span("mv-tag", "#" + m.tag));
+    const pct = span("mv-pct " + m.direction, (m.direction === "up" ? "▲ " : "▼ ") + Math.abs(m.pct) + "%");
+    row.append(pct);
+    row.append(window.Charts.sparkline(m.spark, CAT_COLORS[m.category] || "var(--chart-muted)"));
+    return row;
   }));
-  if (!t.rising.length) ul.append(div("empty-note", "No risers in the current window."));
+  if (!(t.movers || []).length) movers.append(div("empty-note", "No movers in the current window."));
 
   const table = $("#posts-table");
   table.replaceChildren(...t.top_posts.map(p => {
