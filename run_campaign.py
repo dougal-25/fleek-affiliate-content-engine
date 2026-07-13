@@ -18,7 +18,7 @@ import runpy
 from datetime import date, timedelta
 from pathlib import Path
 
-from content_brain import activation, budget, evidence as evidence_mod, feedback, segmentation, store
+from content_brain import activation, budget, brief_evidence as evidence_mod, feedback, segmentation, store
 from content_brain.brief_generator import generate_brief
 from content_brain.engine_io import load_env
 from content_brain.llm import get_llm

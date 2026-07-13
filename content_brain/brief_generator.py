@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import itertools
 
-from .evidence import FLEEK_ARCHETYPES, BriefEvidence
+from .brief_evidence import FLEEK_ARCHETYPES, BriefEvidence
 from .llm import get_llm
 from .models import Brief, ContentIdea, Creator, PartnerProfile, SegmentInsight
 

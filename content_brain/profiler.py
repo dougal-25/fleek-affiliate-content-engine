@@ -20,7 +20,7 @@ from .llm import get_llm
 from .models import Creator, PartnerProfile, Post, SegmentStats
 
 if TYPE_CHECKING:  # avoids a circular import at runtime
-    from .evidence import BriefEvidence
+    from .brief_evidence import BriefEvidence
 
 
 def _post_evidence(posts: list[Post]) -> str:

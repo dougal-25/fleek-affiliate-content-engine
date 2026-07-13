@@ -29,7 +29,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 from content_brain.brief_generator import generate_brief
 from content_brain.engine_io import Airtable, load_env
-from content_brain.evidence import evidence_for_record
+from content_brain.brief_evidence import evidence_for_record
 from content_brain.llm import get_llm
 from content_brain.notion_publish import NotionError, brief_to_markdown, publish_brief
 from content_brain.profiler import build_profile_from_evidence
