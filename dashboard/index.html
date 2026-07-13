@@ -9,6 +9,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="trends.css">
+<link rel="stylesheet" href="briefs.css">
 </head>
 <body>
 
@@ -22,6 +24,7 @@
     <button class="tab" data-view="funnel" role="tab">Recruitment funnel</button>
     <button class="tab" data-view="trends" role="tab">Trends &amp; keywords</button>
     <button class="tab" data-view="inspiration" role="tab">Inspiration</button>
+    <button class="tab" data-view="briefs" role="tab">Brief Studio</button>
   </nav>
   <div class="topbar-right">
     <button id="lang-toggle" class="lang-toggle" title="Translate keywords & niches">🇫🇷 Original</button>
@@ -77,29 +80,38 @@
 <!-- ============ TRENDS ============ -->
 <section id="view-trends" class="view">
   <div class="stat-strip" id="trend-stats"></div>
-  <div class="panel-row">
+
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Momentum over time</h2>
+      <p class="panel-sub">Answers: <b>what's rising</b> · streamgraph, band thickness = weekly mentions</p>
+    </div>
+    <div id="stream-chart"></div>
+    <div class="legend-row" id="stream-legend"></div>
+  </div>
+
+  <div class="trends-grid">
     <div class="panel">
-      <div class="panel-head"><h2>Top hashtags by posts</h2>
-        <p class="panel-sub">Across the ingested FR reseller posts</p></div>
-      <div id="volume-chart"></div>
+      <div class="panel-head">
+        <h2>Co-occurrence map</h2>
+        <p class="panel-sub">Answers: <b>what clusters</b> · tags linked when they share a post</p>
+      </div>
+      <div id="cooc-chart"></div>
+      <div class="legend-row" id="cooc-legend"></div>
     </div>
     <div class="panel">
-      <div class="panel-head"><h2>Top hashtags by views</h2>
-        <p class="panel-sub">Where the audience actually is</p></div>
-      <div id="engagement-chart"></div>
+      <div class="panel-head">
+        <h2>Movers</h2>
+        <p class="panel-sub">Answers: <b>what's biggest &amp; fastest</b> · vs 3 weeks ago</p>
+      </div>
+      <div class="movers" id="movers-list"></div>
     </div>
   </div>
-  <div class="panel-row">
-    <div class="panel">
-      <div class="panel-head"><h2>Rising now</h2>
-        <p class="panel-sub">Last 90 days vs the 90 before — feed these into outreach &amp; briefs</p></div>
-      <ul class="rising-list" id="rising-list"></ul>
-    </div>
-    <div class="panel">
-      <div class="panel-head"><h2>Top-performing posts</h2>
-        <p class="panel-sub">The formats worth briefing</p></div>
-      <table class="posts-table" id="posts-table"></table>
-    </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>Top-performing posts</h2>
+      <p class="panel-sub">The formats worth briefing</p></div>
+    <table class="posts-table" id="posts-table"></table>
   </div>
 </section>
 
@@ -129,6 +141,11 @@
   <div class="insp-grid" id="insp-grid"></div>
 </section>
 
+<!-- ============ BRIEF STUDIO ============ -->
+<section id="view-briefs" class="view">
+  <div id="bf-root"></div>
+</section>
+
 </main>
 
 <!-- creator detail drawer -->
@@ -151,5 +168,6 @@
 <script src="helpers.js"></script>
 <script src="views.js"></script>
 <script src="app.js"></script>
+<script src="briefs.js"></script>
 </body>
 </html>

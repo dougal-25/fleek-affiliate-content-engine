@@ -358,6 +358,29 @@ class Airtable:
         r.raise_for_status()
         return r.json()["id"]
 
+    def select(self, table: str, formula: str | None = None) -> list[dict]:
+        """Fetch whole records (with id), optionally filtered by an Airtable formula. Follows
+        pagination. Used by the brief job (Stage=Onboarded selection) and the single-record
+        update path. Distinct from `list`, which returns plain field dicts for the outreach job."""
+        tid = self.tables[table]
+        url = f"https://api.airtable.com/v0/{self.base_id}/{tid}"
+        out: list[dict] = []
+        offset: str | None = None
+        while True:
+            params: dict[str, str] = {"pageSize": "100"}
+            if formula:
+                params["filterByFormula"] = formula
+            if offset:
+                params["offset"] = offset
+            r = requests.get(url, headers=self.h, params=params, timeout=60)
+            r.raise_for_status()
+            body = r.json()
+            out.extend(body.get("records", []))
+            offset = body.get("offset")
+            if not offset:
+                return out
+            time.sleep(0.25)  # stay under 5 req/s
+
     def list(self, table: str, formula: str | None = None, max_records: int = 100) -> list[dict]:
         """Fetch records as plain field dicts, optionally server-side filtered. Follows pagination.
         Used by the outreach job's selection (Stage/Score/Outreach-Status formulae). Distinct from
@@ -381,20 +404,16 @@ class Airtable:
         return out[:max_records]
 
     def list_records(self, table: str) -> list[dict]:
+        """Unfiltered fetch of whole records — thin alias over select(), kept for existing callers."""
+        return self.select(table)
+
+    def update(self, table: str, record_id: str, fields: dict) -> None:
+        """Patch one record by id. The ecosystem stays the source of truth."""
         tid = self.tables[table]
-        url = f"https://api.airtable.com/v0/{self.base_id}/{tid}"
-        out, offset = [], None
-        while True:
-            params = {"pageSize": 100}
-            if offset:
-                params["offset"] = offset
-            r = requests.get(url, headers=self.h, params=params, timeout=60)
-            r.raise_for_status()
-            body = r.json()
-            out.extend(body.get("records", []))
-            offset = body.get("offset")
-            if not offset:
-                return out
+        url = f"https://api.airtable.com/v0/{self.base_id}/{tid}/{record_id}"
+        r = requests.patch(url, headers=self.h, json={"fields": fields, "typecast": True}, timeout=60)
+        if r.status_code >= 400:
+            raise RuntimeError(f"Airtable {r.status_code} updating {record_id}: {r.text[:300]}")
 
     def update_records(self, table: str, updates: list[dict]) -> int:
         """updates: [{"id": rec_id, "fields": {...}}, ...]"""
@@ -411,6 +430,37 @@ class Airtable:
             done += len(batch)
             time.sleep(0.25)
         return done
+
+    def field_names(self, table: str) -> set[str]:
+        r = requests.get(f"https://api.airtable.com/v0/meta/bases/{self.base_id}/tables",
+                         headers=self.h, timeout=30)
+        r.raise_for_status()
+        for t in r.json()["tables"]:
+            if t["name"] == table:
+                return {f["name"] for f in t["fields"]}
+        raise RuntimeError(f"Table '{table}' not found in base")
+
+    def ensure_fields(self, table: str, specs: list[dict]) -> list[str]:
+        """Create any missing fields. Idempotent — safe to run on every job start.
+
+        `specs` are Airtable field definitions, e.g.
+        `{"name": "Brief", "type": "multilineText"}`. Returns the names actually created.
+        """
+        existing = self.field_names(table)
+        tid = self.tables[table]
+        created = []
+        for spec in specs:
+            if spec["name"] in existing:
+                continue
+            r = requests.post(
+                f"https://api.airtable.com/v0/meta/bases/{self.base_id}/tables/{tid}/fields",
+                headers=self.h, json=spec, timeout=30,
+            )
+            if r.status_code >= 400:
+                raise RuntimeError(f"Airtable {r.status_code} creating field {spec['name']}: {r.text[:300]}")
+            created.append(spec["name"])
+            time.sleep(0.25)
+        return created
 
 
 def creator_key(platform: str, handle: str) -> str:

@@ -1,9 +1,16 @@
 /* Creators view: toolbar, cards grouped by funnel stage, detail drawer.
    Shared constants/helpers live in helpers.js; funnel/trends/inspiration in views.js. */
 
-/* One universal score for every creator: the FIT rubric (spec/score-dashboard.md), computed in
-   pipeline.py and delivered as c._fit {total, pillars[4], audience_mix}. Creator type is the
-   dominant reseller bucket of their audience — the same signal that drives Audience quality. */
+/* Two distinct axes, kept apart on purpose:
+   - creator TYPE (who they are): Pro reseller vs Hobbyist, from their niche/segment.
+   - AUDIENCE bucket (who watches): pro/hobbyist/consumer, drives Audience quality + pill colour.
+   The score itself is the FIT rubric (spec/score-dashboard.md), computed in pipeline.py and
+   delivered as c._fit {total, pillars[4], audience_mix}. */
+const PRO_SEGMENTS = new Set(["Wholesaler / supplier", "Wholesale buyer", "Reseller educator",
+  "Sourcing vlogger", "Live seller"]);
+function creatorType(c) {
+  return PRO_SEGMENTS.has(c.Segment) ? "Pro reseller" : "Hobbyist";
+}
 const TAG_BUCKET = {
   "wholesale buyers": "pro",
   "aspiring resellers": "hobby", "bargain hunters": "hobby",
@@ -13,12 +20,6 @@ const TAG_BUCKET = {
   "general fashion audience": "consumer",
 };
 const audBucket = t => TAG_BUCKET[t] || "consumer";
-function creatorType(c) {
-  const m = (c._fit && c._fit.audience_mix) || {};
-  if ((m.pro || 0) >= (m.hobbyist || 0) && (m.pro || 0) > 0) return "Pro reseller";
-  if ((m.hobbyist || 0) > 0) return "Hobbyist";
-  return "General fashion";
-}
 
 let creators = [];
 let AVATARS = null;  // handle → src map (data URIs when baked, static paths when hosted)
@@ -56,16 +57,19 @@ async function loadCreators() {
 }
 
 function renderStats() {
-  const scores = creators.map(c => c.Score || 0);
+  // fit score is only meaningful for creators the engine has actually scored (freshly
+  // discovered prospects sit at 0 until scored) — averaging over those would understate quality
+  const scored = creators.map(c => c.Score || 0).filter(s => s > 0);
+  const avgScore = scored.length ? Math.round(scored.reduce((a, b) => a + b, 0) / scored.length) : 0;
   const cacs = creators.map(c => c["Predicted CAC"]).filter(Boolean).sort((a, b) => a - b);
   const medCac = cacs.length ? cacs[Math.floor(cacs.length / 2)] : 0;
   const reach = creators.reduce((s, c) => s + (c.Followers || 0), 0);
   const pro = creators.filter(c => c._type === "Pro reseller").length;
   const stats = [
-    [creators.length, "scored FR creators"],
+    [creators.length, "creators discovered"],
     [`${pro} / ${creators.length - pro}`, "pro resellers / hobbyists"],
     [fmt(reach), "combined reach"],
-    [Math.round(scores.reduce((a, b) => a + b, 0) / (scores.length || 1)) + "/100", "avg fit score"],
+    [avgScore + "/100", "avg fit score (scored)"],
     ["£" + medCac, "median predicted CAC"],
   ];
   $("#creator-stats").replaceChildren(...stats.map(([num, lbl]) => {

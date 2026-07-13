@@ -83,21 +83,44 @@ class PartnerProfile(BaseModel):
     working_style_note: str = Field(description="One line on how to work with them (tone, cadence, incentive sensitivity)")
 
 
+class ContentIdea(BaseModel):
+    """One of the three concrete post concepts a brief proposes."""
+
+    title: str = Field(description="The post's working title, in the creator's language")
+    premise: str = Field(description="One sentence: what happens in the post and why their audience watches")
+    why_this_creator: str = Field(description="The evidence from THEIR posts that makes this idea fit them specifically")
+
+
 class Brief(BaseModel):
-    """Personalised campaign brief — the JD's field list: hook, format, full CTA stack,
-    do's and don'ts, reference examples."""
+    """Personalised campaign brief.
+
+    Covers the JD's field list (hook, format, full CTA stack, do's and don'ts, reference
+    examples) plus the outputs Section 4 of the deck promises: three content ideas,
+    thumbnail direction, talking points, a do-not-mention list, example captions, and a
+    posting schedule.
+
+    `do_not_mention` is the load-bearing one. Fleek's hardest problem, in their words, is
+    that pro resellers think Fleek is for beginners. A brief that lets a creator say
+    "great for anyone starting out" actively damages the positioning.
+    """
 
     brief_id: str
     creator_id: str
     campaign: str
     objective: str = Field(description="One sentence: what this post should achieve, in buyer terms")
+    content_ideas: list[ContentIdea] = Field(description="Exactly three distinct post concepts, best first")
     hooks: list[str] = Field(description="Three hook options written in the creator's own register")
     format: str = Field(description="The single recommended format, chosen from their proven winners")
+    talking_points: list[str] = Field(description="4-6 points to cover on camera, ordered as they should be said")
+    thumbnail_direction: str = Field(description="What the thumbnail/cover frame shows: subject, text overlay, why it earns the click")
     cta_stack: list[str] = Field(description="Ordered CTA stack: discount code, link placement, deadline, incentive framing")
+    example_captions: list[str] = Field(description="Two ready-to-post captions in the creator's language, with hashtags")
+    posting_schedule: str = Field(description="When to post and why, tied to their audience's actual activity or the campaign deadline")
     dos: list[str] = Field(description="3-5 specific do's grounded in what has worked for them")
     donts: list[str] = Field(description="3-5 specific don'ts grounded in what has flopped for them or their segment")
-    reference_examples: list[str] = Field(description="Reference posts to emulate — their own best post first, then segment winners")
-    success_target: str = Field(description="The measurable bar, e.g. '15+ first orders at CAC under £45'")
+    do_not_mention: list[str] = Field(description="Things this creator must NOT say: off-positioning claims, competitor codes, unsupported promises, brand-safety lines")
+    reference_examples: list[str] = Field(description="Reference posts to emulate — their own best post first, then Fleek partner archetypes")
+    success_target: str = Field(description="The measurable bar, e.g. '15+ first orders at CAC under EUR45'")
 
 
 class SegmentInsight(BaseModel):

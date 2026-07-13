@@ -60,6 +60,7 @@ def build_payload():
         "funnel": {"stages": stages, "history": history, "source": creators["source"]},
         "trends": read_static("trends.json", {}),
         "inspiration": read_static("inspiration.json", {"posts": []}),
+        "briefs": read_static("briefs.json", {"creators": []}),
         "avatars": read_static("avatars.json", {}),
     }
 

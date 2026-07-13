@@ -39,3 +39,6 @@ _evidence_raw/
 # Playwright MCP byproduct — screenshots of our own UI mid-iteration, never source.
 .playwright-mcp/
 .vercel/
+
+# dashboard runtime cache (avatars, funnel history) — regenerated on each run
+dashboard/data/

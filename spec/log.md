@@ -23,6 +23,39 @@ Verified in-browser (high-fit 73 and low-fit 30 render identical five-section pa
 in `discovery-scoring.md §9.5`: `run_discovery.py` still writes the older 4-factor LLM score to Airtable;
 the two write-paths should converge on FIT.
 
+## 2026-07-12 — Section 4 shipped and proven: the AI brief generator on real French creators
+
+The deck described a brief generator the engine could not yet be. Now it is — and it ran live. Full
+reasoning: `spec/decisions/2026-07-10-brief-generator-activation.md`.
+
+**What shipped.** `Brief` grew from 8 fields to the 14 the deck promises — three content ideas, talking
+points, thumbnail direction, example captions, posting schedule, and a **do-not-mention list** (the one that
+protects Fleek's "not just for beginners" positioning). New `content_brain/evidence.py` assembles the real
+inputs; `content_brain/profiler.py` gains `build_profile_from_evidence` (real creators have posts but no
+attribution funnel); `content_brain/notion_publish.py` renders a brief as a shareable page;
+`scripts/run_brief_job.py` is the `Stage = Onboarded` job — idempotent, capped at 25 Claude calls per run,
+degrades to Airtable-only if Notion fails. `run_campaign.py brief-real <handle>` is the demo.
+
+**The finding that reframes the section.** The engine scans creators' own captions for a live `RFD-` code.
+Julia Courcelle carries `RFD-JULIA` in **25 of 25** scraped videos while Airtable had her as
+`Stage = Prospect / Not started`. The engine reclassifies her from the evidence, reuses her real code, and
+puts the competitor code she also runs on the do-not-mention list. **Evidence beats the CRM.**
+
+**Proven live.** Three Claude-generated briefs (Opus 4.8), three lifecycles — Julia re-activation, Felix
+onboarding, Lina always-on — each grounded in the creator's own posts and structurally different. The prompt
+cache fired: 11,868 tokens read at ~0.1x on repeat calls. Notion publish verified against the real workspace
+(all do-not-mention callouts rendered); Airtable writeback + `Stage=Onboarded` trigger verified against the
+live base.
+
+**Two false claims corrected.** (1) The prompt cache was caching nothing — Opus 4.8 needs a 4096-token
+prefix and the system prompt is ~250; the trend pack now carries the prefix over the line, and
+`llm.cache_report()` measures it. (2) The deck promised transcripts and a Fleek creative library; we have
+captions and three named archetypes. `deliverables/case-study-approach.md` §8 now says so.
+
+**Next:** an operator brief-review page in the dashboard (evidence → brief → approve → publish), specced
+before build.
+
+---
 ## 2026-07-12 — Budget engine steers on two signals, not just CAC
 
 `content_brain/budget.py` now reads CAC **and** posting rate. Why: Fleek is judged on *% of partners
@@ -633,3 +666,23 @@ case-study prototype on a demo base, a reversible status change doesn't warrant 
 token prompt was friction in the live demo. `dashboard/api/qualify.py` now writes on any POST; the browser
 prompt is gone from `app.js`. QUALIFY_TOKEN removed from Vercel env and `.env`. If this ever becomes a real
 internal tool, a proper login goes back in — not a shared token.
+
+## 2026-07-13 — Trends page rebuilt as an editorial data-viz console (Fleek-light)
+
+Replaced the two hashtag bar charts with three richer, reference-inspired visualisations, all
+computed from the real posts (new module `dashboard/trend_viz.py`, kept out of pipeline.py for the
+500-line limit):
+- **Momentum over time** — a centered streamgraph, band thickness = weekly mentions per tag (answers
+  "what's rising"). 7 bands over 10 weeks.
+- **Co-occurrence map** — a force-directed network (layout simulated in the browser), tags linked when
+  they share a post, nodes coloured by family: Sourcing / Platform / Format / Style (answers "what
+  clusters"). Layout tuned to spread across the canvas with no node overlaps (verified headless).
+- **Movers** — biggest gainers + sharpest fallers vs 3 weeks ago, each with a sparkline (answers
+  "what's biggest & fastest"). Windowed 3-week-vs-3-week comparison so single-week ingest spikes don't
+  produce fake +999% movers.
+
+Kept Fleek's light theme (Doug's call) — a warm hue-sweep categorical palette on white, not the dark
+reference. New renderers (`streamgraph`, `networkGraph`, `sparkline`) in charts.js; styles in the new
+`trends.css` (inlined into the baked file by build_html). Deployed; live API + DOM verified (7 bands,
+16 nodes spread x73–492, 8 movers). Note: the browser-pane screenshot tool was glitching during this
+build — visual once-over on the live site still wanted.

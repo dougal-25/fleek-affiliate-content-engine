@@ -26,6 +26,15 @@ from pipeline import (HERE, compute_funnel, compute_inspiration, compute_trends,
 PORT = int(os.environ.get("PORT", 8787))
 
 
+def read_static_json(name, default):
+    """Read a precomputed snapshot from api/_static (same source api/data.py serves on Vercel)."""
+    try:
+        with open(os.path.join(HERE, "api", "_static", name)) as f:
+            return json.load(f)
+    except OSError:
+        return default
+
+
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *a, **kw):
         super().__init__(*a, directory=HERE, **kw)
@@ -53,6 +62,8 @@ class Handler(SimpleHTTPRequestHandler):
                 return self.send_json(compute_funnel(get_creators()))
             if path == "/api/inspiration":
                 return self.send_json(compute_inspiration(get_creators()))
+            if path == "/api/briefs":
+                return self.send_json(read_static_json("briefs.json", {"creators": []}))
             if path.startswith("/avatar/"):
                 handle = urllib.parse.unquote(path.split("/avatar/", 1)[1])
                 platform = "youtube" if "platform=YouTube" in self.path else "tiktok"
