@@ -153,6 +153,88 @@ AUDIENCE_RULES = [
 ]
 AUDIENCE_RES = [(tag, re.compile(pat, re.I)) for tag, pat in AUDIENCE_RULES]
 
+
+# ---- the universal score: one framework, every creator (spec/score-dashboard.md) ----
+#
+# FIT (0-100) = audience quality 50 + sourcing intent 20 + creator credibility 20 + fleek warmth 10.
+# The score predicts one thing: will this creator's AUDIENCE buy stock at low CAC. The customer is the
+# viewer, not the creator, so audience is half the score. Follower count scores nothing.
+#
+# Computed deterministically here (stdlib only — this module ships as a Vercel function), reusing the
+# same lexicon style as AUDIENCE_RULES. Weights are v1; the tag->bucket map is the one judgment call and
+# lives in the spec so it can be tuned.
+
+BUCKET_WEIGHT = {"pro": 1.0, "hobbyist": 0.8, "consumer": 0.0}
+TAG_BUCKET = {
+    "wholesale buyers": "pro",
+    "aspiring resellers": "hobbyist",
+    "bargain hunters": "hobbyist",
+    "live-shopping viewers": "hobbyist",
+    "sneakerheads": "hobbyist",
+    "vintage lovers": "consumer",
+    "eco-conscious shoppers": "consumer",
+    "luxury-resale shoppers": "consumer",
+    "fashion-inspo seekers": "consumer",
+    "general fashion audience": "consumer",
+}
+
+# Distinct term hits, scaled to the pillar's max. Kept deliberately small and legible.
+SOURCING_RE = re.compile(
+    r"grossiste|fournisseur|en gros|\bkilo|\bmarge|sourcing|d[eé]stockage|\bbulk\b|wholesale|"
+    r"ballot|premier choix|1er choix|\blot\b", re.I)
+CRED_RE = re.compile(
+    r"whatnot|discord|coaching|formation|acad[eé]mie|resell ?pro|reseller (course|income|tips)|"
+    r"mentor|\bvinted\b|depop|vestiaire|boutique|\bshop\b|revente", re.I)
+FLEEK_RE = re.compile(r"joinfleek|\bfleek\b|\bRFD-\w+", re.I)
+
+# One canonical risk pill, first match wins. Replaces the old "Watch out" paragraph.
+RISK_RES = [
+    (re.compile(r"compet|rival|own (supplier|funnel|monetiz)|dilute|their own", re.I), "Rival sourcing"),
+    (re.compile(r"consumer|not.*resell|bargain shopper|may be.*shopper|primed for", re.I), "Consumer-leaning"),
+    (re.compile(r"dormant|inactive|infrequent|low.*(post|activity)", re.I), "Low activity"),
+]
+
+
+def _distinct_hits(rx, text):
+    return len({m.group(0).lower() for m in rx.finditer(text)})
+
+
+def compute_fit(f: dict) -> dict:
+    """The one universal score. Returns {total, pillars[4], audience_mix} for every creator."""
+    tags = f.get("_audience_tags") or ["general fashion audience"]
+    weights = [BUCKET_WEIGHT[TAG_BUCKET.get(t, "consumer")] for t in tags]
+    audience = round(50 * (sum(weights) / len(weights)))
+    mix = Counter(TAG_BUCKET.get(t, "consumer") for t in tags)
+
+    # Score the creator's OWN signals, never our Strength/Weakness analysis prose — that would be
+    # circular (and "Fleek" appears in almost every Strength line, falsely maxing warmth).
+    own = " ".join(str(f.get(k) or "") for k in ("Content Keywords", "Audience", "Notes", "Segment"))
+    sourcing = min(20, 5 * _distinct_hits(SOURCING_RE, own))
+    credibility = min(20, 7 * _distinct_hits(CRED_RE, own))
+    warmth = 10 if FLEEK_RE.search(own) else 0
+
+    total = audience + sourcing + credibility + warmth
+    return {
+        "total": total,
+        "pillars": [
+            {"key": "audience", "label": "Audience quality", "got": audience, "max": 50},
+            {"key": "sourcing", "label": "Sourcing intent", "got": sourcing, "max": 20},
+            {"key": "credibility", "label": "Creator credibility", "got": credibility, "max": 20},
+            {"key": "warmth", "label": "Fleek warmth", "got": warmth, "max": 10},
+        ],
+        "audience_mix": {"pro": mix.get("pro", 0), "hobbyist": mix.get("hobbyist", 0),
+                         "consumer": mix.get("consumer", 0)},
+    }
+
+
+def risk_flag(f: dict):
+    """One short risk label from the Weakness prose, or None. Replaces the 'Watch out' paragraph."""
+    weakness = str(f.get("Weakness") or "")
+    for rx, label in RISK_RES:
+        if rx.search(weakness):
+            return label
+    return None
+
 CHANNEL_PATTERNS = [
     ("TikTok", r"(?:https?://)?(?:www\.)?tiktok\.com/@([\w.\-]+)", "https://www.tiktok.com/@{}"),
     ("Instagram", r"(?:https?://)?(?:www\.)?instagram\.com/([\w.\-]+)", "https://www.instagram.com/{}"),
@@ -172,6 +254,10 @@ def enrich(data):
                           ("Content Keywords", "Audience", "Strength", "Segment"))
         f["_audience_tags"] = [tag for tag, rx in AUDIENCE_RES if rx.search(signal)][:3] \
             or ["general fashion audience"]
+
+        # the one universal score + one risk pill, for every creator (spec/score-dashboard.md)
+        f["_fit"] = compute_fit(f)
+        f["_risk"] = risk_flag(f)
 
         channels = {}
         if f.get("Platform") and f.get("Profile URL"):

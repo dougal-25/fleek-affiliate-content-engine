@@ -209,7 +209,15 @@ main { max-width: 1280px; margin: 0 auto; padding: var(--sp-5) var(--sp-6) var(-
 }
 .tag.seg { background: var(--fleek-gold); border-color: var(--fleek-gold); color: var(--ink); }
 .tag.stage { background: var(--ink); border-color: var(--ink); color: var(--ink-inverse); }
-.tag.aud { background: var(--gold-tint); border-color: var(--fleek-gold); color: var(--gold-deep); font-style: italic; }
+.tag.aud { background: var(--gold-tint); border-color: var(--fleek-gold); color: var(--gold-deep); }
+/* audience pills coloured by reseller bucket — green = buys stock, grey = doesn't */
+.tag.aud.aud-pro { background: rgba(22, 163, 74, 0.12); border-color: var(--ok); color: #15803d; }
+.tag.aud.aud-hobby { background: var(--gold-tint); border-color: var(--fleek-gold); color: var(--gold-deep); }
+.tag.aud.aud-consumer { background: var(--surface-tint); border-color: var(--border); color: var(--ink-3); }
+.tag.risk { background: rgba(248, 104, 104, 0.12); border-color: var(--fleek-coral); color: var(--fleek-coral-deep); }
+.score-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--sp-3); }
+.score-head h4 { margin: 0; }
+.score-total { font-size: var(--fs-xl); font-weight: 800; color: var(--ink); line-height: 1; }
 .card-foot {
   display: flex; align-items: center; gap: var(--sp-4);
   border-top: 1px solid var(--border); padding-top: var(--sp-3);
@@ -249,7 +257,7 @@ main { max-width: 1280px; margin: 0 auto; padding: var(--sp-5) var(--sp-6) var(-
 .breakdown-bar { display: flex; align-items: center; gap: var(--sp-2); margin-bottom: var(--sp-2); }
 .breakdown-bar .blbl { width: 150px; font-size: var(--fs-xs); color: var(--ink-2); font-weight: 600; }
 .breakdown-bar .btrack { flex: 1; height: 8px; border-radius: var(--r-pill); background: var(--chart-grid); }
-.breakdown-bar .bfill { height: 8px; border-radius: var(--r-pill); background: var(--chart-1); }
+.breakdown-bar .bfill { height: 8px; border-radius: var(--r-pill); background: var(--fleek-gold); }
 .breakdown-bar .bval { width: 44px; font-size: var(--fs-xs); font-weight: 700; text-align: right; }
 
 /* ---------- charts ---------- */

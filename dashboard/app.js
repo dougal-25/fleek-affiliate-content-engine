@@ -1,24 +1,25 @@
 /* Creators view: toolbar, cards grouped by funnel stage, detail drawer.
    Shared constants/helpers live in helpers.js; funnel/trends/inspiration in views.js. */
 
-/* Pro reseller vs hobbyist — derived from the engine's own scoring sub-scores, so the
-   distinction is deterministic and explainable: heavy wholesale content, or strong reseller
-   credibility plus wholesale sourcing keywords. */
-const PRO_KEYWORDS = /grossiste|wholesale|en gros|fournisseur|balle|bulk|b2b|destockage/i;
-// niches that mean the creator makes money from reselling (independent of the engine's sub-scores,
-// which are absent for freshly-discovered prospects)
+/* Two distinct axes, kept apart on purpose:
+   - creator TYPE (who they are): Pro reseller vs Hobbyist, from their niche/segment.
+   - AUDIENCE bucket (who watches): pro/hobbyist/consumer, drives Audience quality + pill colour.
+   The score itself is the FIT rubric (spec/score-dashboard.md), computed in pipeline.py and
+   delivered as c._fit {total, pillars[4], audience_mix}. */
 const PRO_SEGMENTS = new Set(["Wholesaler / supplier", "Wholesale buyer", "Reseller educator",
   "Sourcing vlogger", "Live seller"]);
-function subScore(c, name) {
-  const m = (c["Score Breakdown"] || "").match(new RegExp(name + String.raw`:\s*(\d+)\s*/`, "i"));
-  return m ? +m[1] : 0;
-}
 function creatorType(c) {
-  const pro = PRO_SEGMENTS.has(c.Segment) ||
-    subScore(c, "wholesale content") >= 6 ||
-    (subScore(c, "reseller credibility") >= 18 && PRO_KEYWORDS.test(c["Content Keywords"] || ""));
-  return pro ? "Pro reseller" : "Hobbyist";
+  return PRO_SEGMENTS.has(c.Segment) ? "Pro reseller" : "Hobbyist";
 }
+const TAG_BUCKET = {
+  "wholesale buyers": "pro",
+  "aspiring resellers": "hobby", "bargain hunters": "hobby",
+  "live-shopping viewers": "hobby", "sneakerheads": "hobby",
+  "vintage lovers": "consumer", "eco-conscious shoppers": "consumer",
+  "luxury-resale shoppers": "consumer", "fashion-inspo seekers": "consumer",
+  "general fashion audience": "consumer",
+};
+const audBucket = t => TAG_BUCKET[t] || "consumer";
 
 let creators = [];
 let AVATARS = null;  // handle → src map (data URIs when baked, static paths when hosted)
@@ -40,7 +41,8 @@ async function loadCreators() {
   const data = await getData("creators");
   AVATARS = (await getData("avatars").catch(() => null)) || null;
   creators = data.records.map(r => ({ id: r.id, ...r.fields }));
-  creators.forEach(c => { c._type = creatorType(c); });
+  // FIT is the one score: overwrite the legacy Score so ring, sort and the avg-score stat all agree.
+  creators.forEach(c => { if (c._fit) c.Score = c._fit.total; c._type = creatorType(c); });
   const badge = $("#source-badge");
   if (window.__DATA__) {
     badge.textContent = "airtable data · " + (data.fetched || "").slice(0, 10);
@@ -267,7 +269,7 @@ function cardNode(c) {
   if (snippet) card.append(div("audience-line", "“" + snippet + "”"));
 
   const aud = div("tag-row");
-  (c._audience_tags || []).forEach(t => aud.append(span("tag aud", "👥 " + t)));
+  (c._audience_tags || []).forEach(t => aud.append(span("tag aud aud-" + audBucket(t), t)));
   card.append(aud);
 
   const tags = div("tag-row");
@@ -347,10 +349,33 @@ function openDrawer(c) {
     d.append(sec);
   }
 
+  // Score — the ONE framework, same four pillars for every creator (spec/score-dashboard.md)
+  const fit = c._fit || { total: c.Score || 0, pillars: [] };
+  const scoreSec = div("sec");
+  const sh = div("score-head");
+  sh.append(Object.assign(document.createElement("h4"), { textContent: "Fit score" }),
+    span("score-total", fit.total));
+  scoreSec.append(sh);
+  for (const b of fit.pillars) {
+    const row = div("breakdown-bar");
+    row.append(div("blbl", b.label));
+    const track = div("btrack");
+    const fill = div("bfill");
+    fill.style.width = Math.round((b.got / b.max) * 100) + "%";
+    track.append(fill);
+    row.append(track, div("bval", `${b.got}/${b.max}`));
+    scoreSec.append(row);
+  }
+  scoreSec.append(Object.assign(document.createElement("p"), {
+    className: "footnote",
+    textContent: "Predicts one thing: will their audience buy stock. Audience is half the score — "
+      + "the customer is the viewer, not the creator. Follower count scores nothing.",
+  }));
+  d.append(scoreSec);
+
   const kv = document.createElement("dl");
   kv.className = "kv sec";
-  const pairs = [["Type", c._type + " (derived from wholesale + credibility sub-scores)"],
-    ["Audience type", (c._audience_tags || []).join(", ")],
+  const pairs = [["Type", c._type],
     ["Platform", c.Platform], ["Followers", fmt(c.Followers || 0)],
     ["Niche", window.Lang.t(c.Segment || "")], ["Funnel stage", c.Stage],
     ["Predicted CAC", c["Predicted CAC"] ? "£" + c["Predicted CAC"] : "—"],
@@ -362,34 +387,21 @@ function openDrawer(c) {
   }
   d.append(kv);
 
-  const breakdown = parseBreakdown(c["Score Breakdown"]);
-  if (breakdown.length) {
-    const sec = div("sec");
-    sec.append(Object.assign(document.createElement("h4"), { textContent: "Score breakdown" }));
-    for (const b of breakdown) {
-      const row = div("breakdown-bar");
-      row.append(div("blbl", b.label));
-      const track = div("btrack");
-      const fill = div("bfill");
-      fill.style.width = Math.round((b.got / b.max) * 100) + "%";
-      track.append(fill);
-      row.append(track, div("bval", `${b.got}/${b.max}`));
-      sec.append(row);
-    }
-    d.append(sec);
-  }
-
-  for (const [title, field] of [["Audience & bio", "Audience"], ["Why they fit", "Strength"],
-    ["Watch out", "Weakness"], ["Keywords", "Content Keywords"], ["Notes", "Notes"]]) {
-    if (!c[field]) continue;
+  // Audience, keywords, risk — all pills, no prose. The four bars above are the "why they fit".
+  const pillSec = (title, nodes) => {
+    if (!nodes.length) return;
     const sec = div("sec");
     sec.append(Object.assign(document.createElement("h4"), { textContent: title }));
-    const body = field === "Content Keywords"
-      ? c[field].split(",").map(k => window.Lang.t(k.trim())).join(", ")
-      : c[field];
-    sec.append(Object.assign(document.createElement("p"), { textContent: body }));
+    const row = div("tag-row");
+    nodes.forEach(n => row.append(n));
+    sec.append(row);
     d.append(sec);
-  }
+  };
+  pillSec("Audience", (c._audience_tags || []).map(t => span("tag aud aud-" + audBucket(t), t)));
+  pillSec("Keywords", (c["Content Keywords"] || "").split(",").map(s => s.trim()).filter(Boolean)
+    .map(k => span("tag", window.Lang.t(k))));
+  if (c._risk) pillSec("Risk", [span("tag risk", "⚠ " + c._risk)]);
+
   d.classList.add("open");
   $("#drawer-scrim").classList.add("open");
 }
@@ -399,14 +411,6 @@ function closeDrawer() {
 }
 $("#drawer-scrim").addEventListener("click", closeDrawer);
 addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
-
-function parseBreakdown(s) {
-  if (!s) return [];
-  return s.split(",").map(part => {
-    const m = part.match(/([^:]+):\s*(\d+)\s*\/\s*(\d+)/);
-    return m ? { label: m[1].trim(), got: +m[2], max: +m[3] } : null;
-  }).filter(Boolean);
-}
 
 /* ---------- manual qualification: the human gate on the discovery engine ----------
    Engine surfaces & scores prospects; a person reviews and qualifies (Prospect->Qualified).
