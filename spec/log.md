@@ -38,6 +38,112 @@ captions and three named archetypes. `deliverables/case-study-approach.md` §8 n
 before build.
 
 ---
+## 2026-07-12 — Budget engine steers on two signals, not just CAC
+
+`content_brain/budget.py` now reads CAC **and** posting rate. Why: Fleek is judged on *% of partners
+posting each month*, and posts lead orders by weeks (post → signup → first order). A CAC-only rule would
+*pause the highest-CAC segments* — but reactivating dormant French partners is CAC-expensive early precisely
+because the orders haven't landed yet. Pausing them starves the motion the headline metric rewards ("the
+whole game").
+
+The rule: a segment with blown CAC (>2× channel avg, on ≥8 orders) is **killed only if posting isn't
+climbing**. If its activation % rose >2 points vs the prior period, it's **held a cycle** instead — give the
+lag time to convert. `plan_budget(prev_activation=…)` is optional: omit it and the engine steers on CAC alone
+(old behaviour, fully backwards-compatible); `run_campaign.py plan-budget` now passes the prior 30-day window
+so the trend signal is live.
+
+Chose **trend, not activation level**, deliberately: dormant FR reactivation segments start at *low* absolute
+activation but *rising* — a level-floor would fail to protect exactly the France case. Verified: with no trend
+data a >2× segment is killed; forcing a climbing prior flips the same segment kill→hold; and on real data the
+one over-threshold segment (flat posting) is correctly still killed, so the gate discriminates rather than
+always-holds. This closes the gap where `deliverables/case-study-approach.md` §5 described a two-signal engine
+the code didn't yet run.
+
+## 2026-07-10 (later still) — Outreach goes live-shaped: qualification is the trigger, messages use first names
+
+Doug's spec for taking the outreach job operational (addendum 2 on
+`spec/decisions/2026-07-10-outreach-drafts.md`):
+
+- **Trigger = human qualification.** New `--qualified` mode drafts for every
+  `Stage = Qualified AND Outreach Status = Not started` creator — the exact call a scheduler makes
+  once the agent is active. Scoring surfaces candidates; a human qualifies; qualification releases
+  the draft. The percentile `--auto` mode is demoted to a candidate-finder.
+- **Still drafts, never sends** — confirmed explicitly. Auto-send offered and declined; the permanent
+  gate holds.
+- **First name, never the handle, never invented.** The evidence gatherer captures the profile
+  display name; the extract step derives a real given name or `null` (a shop name is not a name).
+  Verified live: `Alicia 🌙 → Salut Alicia`; `CODE DES GRANDS ✦ Friperies → null`, opened on content.
+
+Run manually this week; the autonomy layer only changes who presses enter.
+
+**Message content refined (same day):** the draft was over-indexing on the grading-pain wound. It now
+works from a **value palette** — direct global supply (2,000+ suppliers/100+ countries), de-risked
+buying (Make an Offer / ~10-piece MOQ / 30-day BNPL), grading trust (Fleek Sort + Buyer Protection),
+the human relationship, and buy-and-earn — picking what fits each creator's niche, led by the
+observation. Every figure is wiki-sourced (`Fleek Company Profile.md`); "competitive pricing" was
+deliberately not written as a superiority claim. Factual discipline is a hard prompt rule: palette
+facts only, everything else → `human_check`. It immediately caught a perfume-wholesaler qualified for
+a clothing marketplace and flagged the mismatch. (Addendum 3 on the decision record.)
+
+## 2026-07-10 (later) — Doug's review: the bar becomes a percentile; known partners flagged, not excluded
+
+Doug reviewed the outreach build and overturned two calls (addendum on
+`spec/decisions/2026-07-10-outreach-drafts.md`):
+
+- **Known partners stay in the pipeline, flagged.** The hard exclusion hid `@juliacourcelle` from the
+  run; the flag shows her to the human with a `⚠️ VERIFY / reframe as re-activation` banner on the
+  draft itself. Nothing sends, so visibility beats removal.
+- **The score bar is a percentile of the roster's live distribution, not an absolute number.**
+  `--auto` now defaults to the top 50% — which computes to a cutoff of exactly 62, where the
+  known-good partner sits. Raising the bar is activation's job: better briefs raise scores, and the
+  same percentile then selects a stronger cohort. Tiering is to be read the same way.
+
+Also per Doug: the deck's §6 must name the two build-time pushbacks (recency as a hard gate;
+multi-platform evidence) as a slide beat — human-in-the-loop at design time, not just at send.
+
+And the scoring roadmap is now explicit intent: v1 is a stated theory, upgraded by data not opinion —
+funnel outcomes re-fit the weights per cohort (a regression once volume allows, ~100+ outcomes), then
+a **re-weighting agent** owns the proposal step (never silently applies), and weights become
+**per-market config** — a scoping item for every new geo. Captured in the deck (§7 roadmap, §13
+closing slide) and `spec/engine-architecture.md` (next-build item 6).
+
+## 2026-07-10 — `outreach_drafts` is built, and the scoring model failed its calibration test
+
+The fifth engine job exists: `scripts/run_outreach.py` turns an Airtable creator into a 3-touch French
+outreach sequence, grounded in their own recent posts and audience comments, and writes it back as
+`Outreach Status = Draft`. Nothing is sent — there is no send code path anywhere in the repo. Full
+reasoning in `spec/decisions/2026-07-10-outreach-drafts.md`.
+
+**The thing worth reading.** `mission/mission.md` said to calibrate the scoring model against Fleek's
+three named top-performing partners. Doing that before writing the selector found one of them —
+`@juliacrcl` — already sitting in our own roster as `@juliacourcelle`, `Stage = Prospect`,
+`Outreach = Not started`, **scoring 62**. The bar this job was specced to use is 70. So: the engine
+would have cold-pitched one of Fleek's best partners, *and* our own threshold rejects a creator Fleek
+independently rates as top-performing. The `--min-score` default stays at 70 but is now labelled
+unevidenced in `--help`; re-weighting is the follow-up, and it needs Doug to confirm the
+juliacrcl ↔ juliacourcelle identity.
+
+Related: `Stage = Qualified` and `Score >= 70` turn out to be **disjoint sets** across the 49-creator
+roster (all 10 Qualified are TikTok, 52–62; all 8 at ≥70 are un-Qualified Prospects). The spec's
+"drafts for newly Qualified creators" would have drafted for nobody worth drafting for. Selection is
+now two explicit modes — `--handles` for hand-picked case-study creators, `--auto --min-score N` for
+the score-triggered scale story.
+
+**Also corrected:** the roster is 49 creators across three platforms (28 TikTok / 16 YouTube /
+5 Instagram), not the 12 TikTok creators the commit history implies — so the evidence gatherer
+(`content_brain/evidence.py`) has an adapter per platform. `deliverables/case-study-approach.md`
+promised transcripts as a personalisation input on every platform; only YouTube has them, and the
+claim is now accurate.
+
+**Three bugs fixed on the way**, one of them security-relevant: `apify_run` was passing the API token
+as a query param, and `requests` puts the full URL into `HTTPError` — so any actor failure printed the
+token to stdout, and would have written it into GitHub Actions logs under the autonomy layer. It now
+uses an `Authorization` header. `load_env` was silently finding no `.env` under git worktrees. And
+YouTube comments were being dropped wholesale because they key their parent on `pageUrl`, not `url`.
+
+**Open:** confirm `@juliacourcelle` is `@juliacrcl`, then re-weight the scoring model against all
+three named partners.
+
 ## 2026-07-11 — Manual qualification is now a command (`scripts/qualify.py`)
 
 The human approval gate becomes a first-class engine action instead of an Airtable click. `qualify.py
@@ -216,6 +322,63 @@ cohort; then strata selection. Also — `data/` is gitignored, so the calibratio
 `spec/discovery-scoring.md` and `spec/cac-model.md` cite as evidence are **not in the repo**. The derived
 files (`features.json`, `audience.json`, `comments_normalised.json`) are small and are exactly the "AI receipts"
 the brief asks for. Decision needed: commit the derived artifacts, keep the raw scrapes ignored.
+
+## 2026-07-10 — The deck now wears Fleek's own branding
+
+Doug reviewed the first draft ("good first draft") and called the aesthetic: follow joinfleek.com. Brand
+values **measured off the live site with Playwright**, not guessed — yellow `#F8C642` (their Sign Up button),
+button black `#0E0E0E`, surface grey `#F2F4F7`, Montserrat 700, 4px radii, halftone-dot motif. Details in
+[`deck.md`](deck.md).
+
+Because every colour lived in `tokens.css`, the rebrand was a token swap plus four accent edits — the
+no-hardcoded-hex rule paying for itself. Montserrat is self-hosted (35KB variable woff2, OFL) so the deck
+still opens from `file://` with no CDN. Yellow is graphics-only where contrast demands (text uses a dark-gold
+derivative on light ground). The dot motif is title + hero only.
+
+**Bug found by rendering the PDF, again:** in print, `.slide` was `position: static`, so the dot
+pseudo-elements re-anchored to `.stage` — whose print height is the full 14-slide stack — and `height: 45%`
+became a six-page dot band that blanked page 1 and tripled the file size. Fixed with `position: relative`;
+the reviewer PDF re-verified page by page.
+
+Content untouched — Doug is still building out sections; slide 6's Airtable link and the ~18-min timing cut
+remain open.
+
+---
+
+## 2026-07-10 — The proof of how it was built is now part of the deliverable
+
+The brief tests AI-nativeness and asks for *"the actual prompts including the failures."* The engine existed;
+the evidence did not — `deliverables/evidence/` was named in the approach doc and empty. Three things landed,
+in this order, because the order matters. Full reasoning:
+[`decisions/2026-07-10-evidence-and-deck.md`](decisions/2026-07-10-evidence-and-deck.md).
+
+**Preserve.** Nine sessions, 13.7 MB, 59 real prompts, in one place, outside git, and 30 days from automatic
+deletion. Archived outside the working tree at `~/claude-transcript-archive/`; `cleanupPeriodDays: 365`.
+Deliberately *not* `_evidence_raw/` in the repo behind a `.gitignore` line — this repo is public, and an ignore
+rule prevents an accident, not a mistake.
+
+**Secure.** `gitleaks` wired as pre-commit, pre-push and CI *before* the extractor was written. Both hooks
+proved to block by planting a token. The archive audited: **zero real secrets** — every hit was a command
+reading `.env`, never a value.
+
+**Extract.** `scripts/extract_receipts.py` renders 17 curated exchanges verbatim from the raw transcripts,
+redacting on the way out. Deterministic, so the pages regenerate rather than drift.
+
+**Then the deck.** Vanilla HTML, 14 slides, dark to present and light to send —
+[`deck.md`](deck.md). This **reverses the Canva decision** of 2026-07-09, per Doug the same day. The reversal
+is logged on the original record, not backdated.
+
+**Two bugs found by driving the deck rather than reading it:** `1.3cqw` sat on its own container-query
+container and silently resolved against the viewport (26px type in a 1067px stage on a short, wide projector);
+and the speaker notes were printing into the PDF that goes to Fleek — page 11 was instructing *them* to pause
+for two seconds before speaking.
+
+**And a stale claim, still live.** `Fleek Wiki/index.md`'s first pillar bullet still asserted *"no structured
+creator program yet"* while the retraction sat fifty lines below in a `[!CAUTION]` block. Fixed.
+**A correction that lives only in the footnotes is not a correction.**
+
+---
+
 
 ## 2026-07-10 — The mission is real; two load-bearing claims were wrong
 
@@ -476,3 +639,32 @@ avatars/thumbnails, `set_stage`. `serve.py` (100) is now just the HTTP `Handler`
 serves from pipeline. No cycle (pipeline never imports serve). The four importers (`api/data.py`,
 `api/qualify.py`, `build_html.py`, `make_static.py`) now import from `pipeline`. Verified: all six files
 compile, all GET endpoints 200 (169 creators, 36 inspiration), qualify drawer renders end-to-end.
+
+## 2026-07-12 — Qualification: removed the token gate (it's a prototype)
+
+Reversed the earlier QUALIFY_TOKEN protection. Qualifying only flips a creator's Stage label
+Prospect↔Qualified — it never contacts anyone (outreach is a separate, draft-only step). For a
+case-study prototype on a demo base, a reversible status change doesn't warrant an auth wall, and the
+token prompt was friction in the live demo. `dashboard/api/qualify.py` now writes on any POST; the browser
+prompt is gone from `app.js`. QUALIFY_TOKEN removed from Vercel env and `.env`. If this ever becomes a real
+internal tool, a proper login goes back in — not a shared token.
+
+## 2026-07-13 — Trends page rebuilt as an editorial data-viz console (Fleek-light)
+
+Replaced the two hashtag bar charts with three richer, reference-inspired visualisations, all
+computed from the real posts (new module `dashboard/trend_viz.py`, kept out of pipeline.py for the
+500-line limit):
+- **Momentum over time** — a centered streamgraph, band thickness = weekly mentions per tag (answers
+  "what's rising"). 7 bands over 10 weeks.
+- **Co-occurrence map** — a force-directed network (layout simulated in the browser), tags linked when
+  they share a post, nodes coloured by family: Sourcing / Platform / Format / Style (answers "what
+  clusters"). Layout tuned to spread across the canvas with no node overlaps (verified headless).
+- **Movers** — biggest gainers + sharpest fallers vs 3 weeks ago, each with a sparkline (answers
+  "what's biggest & fastest"). Windowed 3-week-vs-3-week comparison so single-week ingest spikes don't
+  produce fake +999% movers.
+
+Kept Fleek's light theme (Doug's call) — a warm hue-sweep categorical palette on white, not the dark
+reference. New renderers (`streamgraph`, `networkGraph`, `sparkline`) in charts.js; styles in the new
+`trends.css` (inlined into the baked file by build_html). Deployed; live API + DOM verified (7 bands,
+16 nodes spread x73–492, 8 movers). Note: the browser-pane screenshot tool was glitching during this
+build — visual once-over on the live site still wanted.

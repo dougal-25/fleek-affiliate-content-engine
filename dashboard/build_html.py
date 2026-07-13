@@ -73,6 +73,8 @@ def main():
                         "<style>\n" + read("tokens.css") + "\n</style>")
     html = html.replace('<link rel="stylesheet" href="style.css">',
                         "<style>\n" + read("style.css") + "\n</style>")
+    html = html.replace('<link rel="stylesheet" href="trends.css">',
+                        "<style>\n" + read("trends.css") + "\n</style>")
     html = html.replace('<script src="charts.js"></script>',
                         "<script>window.__DATA__ = " + payload + "</script>\n"
                         "<script>\n" + read("charts.js") + "\n</script>")

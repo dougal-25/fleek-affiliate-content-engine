@@ -1,0 +1,466 @@
+@import url("tokens.css");
+
+/* An engineer's terminal. Monospace is reserved for what the machine said or did;
+   the sans is for argument. Nothing here is decoration. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Stage: a 16:9 box that fills the viewport and scales its own type ---- */
+
+.stage {
+  position: relative;
+  width: min(100vw, calc(100vh * 16 / 9));
+  height: min(100vh, calc(100vw * 9 / 16));
+  margin: auto;
+  container-type: inline-size;
+  overflow: hidden;
+}
+
+/* Type scales with the stage, not the viewport. `cqw` must be set on the container's
+   children — an element is never its own query container, so `font-size: 1.3cqw` on
+   .stage would silently resolve against the viewport and break on short, wide windows.
+   Tuned against the densest slide (phase-0); everything else is em-relative, so this
+   one number scales the whole deck. */
+.slide,
+.chrome {
+  font-size: 1.3cqw;
+}
+
+body {
+  display: grid;
+  place-items: center;
+}
+
+/* ---- Slides ---- */
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  /* Bottom padding clears the chrome strip — content must never run under it. */
+  padding: var(--space-6) var(--space-8) var(--space-8);
+  line-height: var(--leading-normal);
+}
+
+.slide[data-active] {
+  display: flex;
+  animation: rise var(--dur-slow) var(--ease-out);
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(0.6em); }
+  to   { opacity: 1; transform: none; }
+}
+
+.slide > * { max-width: 62em; }
+
+/* ---- Typography ---- */
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--t-sm);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-text-faint);
+  margin: 0 0 var(--space-4);
+}
+
+/* Fleek's spark, borrowed from their wordmark. Graphic, so pure brand yellow. */
+.eyebrow::before {
+  content: "✦ ";
+  color: var(--c-brand);
+}
+
+h1 {
+  font-size: var(--t-2xl);
+  line-height: var(--leading-tight);
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-5);
+}
+
+h2 {
+  font-size: var(--t-xl);
+  line-height: var(--leading-tight);
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.015em;
+  margin: 0 0 var(--space-4);
+}
+
+h3 {
+  font-size: var(--t-md);
+  font-weight: var(--weight-medium);
+  margin: 0 0 var(--space-3);
+}
+
+p { margin: 0 0 var(--space-4); }
+strong { font-weight: var(--weight-bold); }
+em { font-style: italic; color: var(--c-text-dim); }
+
+.lede {
+  font-size: var(--t-md);
+  line-height: var(--leading-snug);
+  color: var(--c-text-dim);
+  max-width: 44em;
+}
+
+.dim { color: var(--c-text-dim); }
+.false { color: var(--c-false); }
+.true { color: var(--c-true); }
+
+/* ---- The one number ---- */
+
+.figure {
+  font-family: var(--font-mono);
+  font-size: var(--t-2xl);
+  font-weight: var(--weight-bold);
+  color: var(--c-machine);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.figure-row {
+  display: flex;
+  gap: var(--space-8);
+  margin: var(--space-6) 0;
+}
+
+.figure-row .label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-text-faint);
+  margin-top: var(--space-2);
+}
+
+/* ---- Machine voice: mono, on a surface, amber-marked ---- */
+
+.terminal {
+  font-family: var(--font-mono);
+  font-size: var(--t-sm);
+  line-height: var(--leading-snug);
+  background: var(--c-surface);
+  border: var(--rule) solid var(--c-rule);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  white-space: pre-wrap;
+  color: var(--c-text-dim);
+  overflow: hidden;
+}
+
+.terminal .prompt::before {
+  content: "$ ";
+  color: var(--c-machine);
+}
+
+.stamp {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  color: var(--c-machine);
+  letter-spacing: 0.04em;
+}
+
+/* ---- The pushback strip: the deck's recurring argument ---- */
+
+.pushback {
+  margin-top: auto;
+  border-top: var(--rule) solid var(--c-rule);
+  padding-top: var(--space-4);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-2) var(--space-5);
+  align-items: baseline;
+}
+
+.pushback .tag {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-machine);
+  white-space: nowrap;
+}
+
+.pushback blockquote {
+  margin: 0;
+  font-size: var(--t-base);
+  line-height: var(--leading-snug);
+  color: var(--c-human);
+  border-left: var(--border-accent) solid var(--c-brand);
+  padding-left: var(--space-4);
+}
+
+.pushback .outcome {
+  grid-column: 2;
+  font-size: var(--t-sm);
+  color: var(--c-text-dim);
+  margin: 0;
+}
+
+/* ---- Hero slide: the 22:17 overrule. Louder than everything else. ---- */
+
+.slide--hero { justify-content: center; }
+.slide--hero h2 { margin-bottom: var(--space-5); }
+
+.exchange {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 66em;
+}
+
+.exchange blockquote {
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  border-left: var(--border-accent) solid var(--c-brand);
+  background: var(--c-surface);
+  border-radius: var(--radius);
+}
+
+.exchange .who {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-text-faint);
+  margin-bottom: var(--space-2);
+}
+
+.exchange .said--human {
+  font-size: var(--t-md);
+  color: var(--c-human);
+  line-height: var(--leading-snug);
+}
+
+.exchange .said--machine {
+  font-family: var(--font-mono);
+  font-size: var(--t-sm);
+  color: var(--c-text-dim);
+  line-height: var(--leading-snug);
+}
+
+.verdict {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3) var(--space-4);
+  font-size: var(--t-sm);
+  margin-top: var(--space-2);
+}
+
+.verdict .mark {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  color: var(--c-false);
+}
+
+/* ---- Tables: hashtags, segments, funnel ---- */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: var(--t-sm);
+  margin: var(--space-4) 0;
+}
+
+th, td {
+  text-align: left;
+  padding: 0.35em var(--space-4) 0.35em 0;
+  border-bottom: var(--rule) solid var(--c-rule);
+}
+
+th {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-text-faint);
+  font-weight: var(--weight-normal);
+}
+
+td.num, th.num { text-align: right; font-family: var(--font-mono); }
+td code { font-family: var(--font-mono); color: var(--c-machine); }
+
+/* ---- Provenance badges: simulated vs real. Never blurred. ---- */
+
+.badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius);
+  border: var(--rule) solid currentColor;
+  vertical-align: middle;
+}
+
+.badge--sim { color: var(--c-text-faint); }
+.badge--real { color: var(--c-true); }
+
+/* ---- Pipeline: the engine's stages ---- */
+
+.pipeline {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-2);
+  margin: var(--space-5) 0;
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+}
+
+.pipeline .step {
+  flex: 1;
+  padding: var(--space-3);
+  background: var(--c-surface);
+  border: var(--rule) solid var(--c-rule);
+  border-radius: var(--radius);
+  line-height: var(--leading-snug);
+}
+
+.pipeline .step b {
+  display: block;
+  color: var(--c-machine);
+  font-weight: var(--weight-bold);
+  margin-bottom: var(--space-1);
+}
+
+.pipeline .step--gate {
+  border-color: var(--c-brand);
+  border-style: dashed;
+}
+
+.pipeline .step--gate b { color: var(--c-human); }
+
+/* ---- Two-column layouts ---- */
+
+.cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.cols--wide { grid-template-columns: 1.35fr 1fr; }
+
+ul { margin: 0 0 var(--space-4); padding-left: var(--space-5); }
+li { margin-bottom: var(--space-2); }
+
+.cites {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  color: var(--c-text-faint);
+  margin-top: var(--space-4);
+}
+
+.cites a { color: var(--c-text-faint); }
+a { color: var(--c-machine); text-underline-offset: 0.2em; }
+
+/* ---- Fleek's halftone-dot motif. Title and hero only — one flourish, not a theme. ---- */
+
+#title::after,
+.slide--hero::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 22%;
+  height: 45%;
+  background-image: radial-gradient(var(--c-brand) 0.09em, transparent 0.09em);
+  background-size: 0.85em 0.85em;
+  /* fades toward the content so it never competes with the words */
+  -webkit-mask-image: radial-gradient(ellipse at top right, black 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse at top right, black 30%, transparent 75%);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* ---- Chrome: progress, counter, notes ---- */
+
+.chrome {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-8);
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  color: var(--c-text-faint);
+  pointer-events: none;
+}
+
+.progress {
+  position: absolute;
+  inset: 0 auto auto 0;
+  height: var(--border-accent);
+  background: var(--c-brand);
+  transition: width var(--dur-base) var(--ease-out);
+}
+
+.notes {
+  display: none;
+  margin-top: var(--space-5);
+  border-top: var(--rule) dashed var(--c-rule);
+  padding-top: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  color: var(--c-text-faint);
+  line-height: var(--leading-snug);
+  max-width: 62em;
+}
+
+body[data-notes] .slide[data-active] .notes { display: block; }
+
+/* ---- Print / PDF: light theme, every slide, notes visible ---- */
+
+@page { size: 297mm 167mm; margin: 0; }
+
+@media print {
+  html, body { height: auto; background: #fff; display: block; }
+
+  .stage {
+    width: 100%;
+    height: auto;
+    font-size: 10.5pt;
+    overflow: visible;
+  }
+
+  .slide {
+    /* relative, not static: each slide must stay the positioning context for its
+       own ::after (the dot motif). Static would re-anchor those pseudo-elements to
+       .stage — whose height in print is the whole 14-slide stack, so `height: 45%`
+       becomes a six-page dot band bleeding down every right edge. Seen, not theorised. */
+    position: relative;
+    inset: auto;
+    display: flex !important;
+    animation: none;
+    page-break-after: always;
+    break-after: page;
+    height: 167mm;
+    padding: 14mm 18mm;
+  }
+
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+  .chrome, .progress { display: none; }
+
+  /* Print serves two readers, and they must not get the same file.
+     Default (`p`, or ⌘P): the reviewer copy Fleek receives 24h ahead — no notes.
+     With notes toggled on (`s` then `p`): the presenter copy, for rehearsing.
+     Getting this backwards would send Fleek stage directions about themselves. */
+  .notes { display: none; }
+  body[data-notes] .slide .notes { display: block; }
+  a { color: inherit; text-decoration: underline; }
+}

@@ -16,6 +16,8 @@ import urllib.parse
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 
+from trend_viz import compute_cooccurrence, compute_movers, compute_stream
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 DATA_DIR = os.path.join(HERE, "data")
@@ -418,6 +420,10 @@ def compute_trends():
         "weekly_posts": sorted(({"week": w, "count": c} for w, c in weekly.items()),
                                key=lambda x: x["week"]),
         "top_posts": top_posts,
+        # richer trend-page visualisations (streamgraph / co-occurrence / movers)
+        "stream": compute_stream(posts, now),
+        "cooccurrence": compute_cooccurrence(posts, now),
+        "movers": compute_movers(posts, now),
     }
 
 

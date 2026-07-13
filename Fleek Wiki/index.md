@@ -4,7 +4,7 @@ The knowledge base behind the **Fleek affiliate content engine** — case-study 
 
 ## The four research pillars
 
-1. [[Fleek Company Profile]] — who Fleek is: $45M raised (incl. fresh $25M Series B, 8 Jul 2026), a16z/YC/eBay-backed, wholesale secondhand marketplace. Runs only informal `RFD-` referral codes today — **no structured creator program yet.**
+1. [[Fleek Company Profile]] — who Fleek is: ~$50M raised per the JD (public sources total ~$45M, incl. the $25M Series B of 8 Jul 2026 — use Fleek's own number when speaking to Fleek), a16z/YC/eBay-backed, wholesale secondhand marketplace. Runs a **1,000+ creator roster on an internal Content Brain**, with recruitment largely automated; the public surface shows only informal `RFD-` codes, which is why this vault originally — and wrongly — inferred there was no programme. Corrected 2026-07-10 against `mission/job-description.md`.
 2. [[Vintage Reseller Creator Ecosystem]] — the audience: nano/micro reseller-creators whose bale-unboxing and thrift-haul content already sells the format. They're *already buyers* of stock.
 3. [[Affiliate Program Playbooks]] — the operating manual: activation rate is the one real metric, GMV follows a power law, seed-then-concentrate, personalise briefs but don't over-script. (Half the open web here is blogspam — marked.)
 4. [[Competitor Creator Programs]] — the differentiation map: Whatnot is the benchmark; Vinted has *nothing*; nobody fuses commission with wholesale sourcing.

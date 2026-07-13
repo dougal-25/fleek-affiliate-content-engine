@@ -1,12 +1,13 @@
 """
-Vercel serverless function: POST /api/qualify → the manual-approval gate on the public site.
+Vercel serverless function: POST /api/qualify → manual qualification on the public site.
 
-Mirrors scripts/qualify.py: the discovery engine RECOMMENDS, a human QUALIFIES (Prospect->Qualified).
-Reversible (Qualified->Prospect). Approving a non-recommended creator is allowed but flagged.
+The discovery engine RECOMMENDS (scores prospects); a human QUALIFIES (Prospect->Qualified).
+Reversible (Qualified->Prospect). Approving a below-recommend-line creator is allowed but flagged.
 
-SAFE BY DEFAULT: writes are DISABLED unless QUALIFY_TOKEN is set in the Vercel project env.
-When set, every request must carry a matching X-Qualify-Token header. Body: {"key","stage"}.
-(The Airtable key stays server-side, exactly as /api/data does.)
+This only flips a creator's Stage label in Airtable — it never contacts anyone (outreach is a
+separate, draft-only step). One-click by design: this is a case-study prototype, and a reversible
+status change on a demo base doesn't warrant an auth wall. The Airtable key stays server-side.
+Body: {"handle","stage"}.
 """
 import json
 import os
@@ -28,12 +29,6 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_POST(self):
-        required = (os.environ.get("QUALIFY_TOKEN") or "").strip()
-        if not required:
-            return self._send({"error": "qualification is disabled on this deployment "
-                                        "(set QUALIFY_TOKEN to enable)"}, 403)
-        if (self.headers.get("X-Qualify-Token") or "").strip() != required:
-            return self._send({"error": "unauthorized"}, 401)
         try:
             length = int(self.headers.get("Content-Length", 0))
             body = json.loads(self.rfile.read(length) or b"{}")

@@ -1,5 +1,13 @@
 # 2026-07-09 — Round 2: Doug's Notion review comments, applied
 
+> [!IMPORTANT] **One row of this table was reversed the same day.** The *"Deck medium: Canva"* decision below
+> was overturned at 16:32 on 2026-07-09 — *"lets ditch canva and or gamma for now — we can leverage claude"* —
+> after Doug looked at competing Canva and Gamma drafts. The deck is vanilla HTML in the repo; see
+> [2026-07-10-evidence-and-deck.md](2026-07-10-evidence-and-deck.md) and [../deck.md](../deck.md).
+>
+> The row is left standing rather than edited. A decision record that quietly agrees with the present is
+> worth nothing — and this particular reversal is itself a receipt in the deck.
+
 Second pass over the case-study approach, folding in comments left on the Notion mirror. Lifted out of
 `deliverables/case-study-approach.md` §0.
 

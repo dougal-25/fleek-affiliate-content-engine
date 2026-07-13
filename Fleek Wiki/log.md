@@ -4,7 +4,28 @@ Dated record of what entered the vault and how. Newest first. Hub: [[index]].
 
 ---
 
-## 2026-07-09 (latest) — Post-level creator ingest: 588 real posts, four vault claims corrected
+## 2026-07-10 (latest) — The retraction reached the footnote but not the headline
+
+Found while sourcing facts for the presentation deck: [[index]]'s **first pillar bullet** still asserted
+*"Runs only informal `RFD-` referral codes today — no structured creator program yet"* and *"$45M raised"*.
+
+The thesis section fifty lines below had been properly revised on 2026-07-10, with a `[!CAUTION]` block
+explaining the claim was false. But the summary a reader meets first had not. A correction that lives only
+in the footnotes is not a correction — and this is the precise claim `mission/mission.md` warns *"would be a
+credibility loss in the first two minutes"* of the interview.
+
+**Fixed:** pillar 1 now states the 1,000+ creator roster and the internal Content Brain, per
+`mission/job-description.md`, and names the inference error that produced the original claim. Funding now
+reads *~$50M per the JD*, with the ~$45M public-source total noted — Fleek's own number when speaking to
+Fleek, per `mission/mission.md`.
+
+**Method lesson, again:** when a claim is retracted, grep for every place it was *asserted*, not just the
+page where it was argued. The summary, the index, the deck outline and the strategy doc all repeat headline
+claims — retracting one of them is not retracting the claim.
+
+---
+
+## 2026-07-09 — Post-level creator ingest: 588 real posts, four vault claims corrected
 
 **What**: Scraped what the top creators **actually post** — 300 TikTok posts (captions, hashtags, engagement) + 288 YouTube videos (titles, descriptions, links) from the 24 highest-scoring on-category creators in [[FR Creator Roster and Segments]].
 

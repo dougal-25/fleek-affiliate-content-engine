@@ -131,5 +131,108 @@ function lineChart(container, xLabels, series) {
   container.append(svg);
 }
 
-window.Charts = { hBarChart, funnelChart, lineChart, fmt, esc };
+/* smoothed path through points [{x,y}] (Catmull-Rom → cubic bezier) */
+function smooth(pts) {
+  if (pts.length < 2) return "";
+  let d = `M ${pts[0].x} ${pts[0].y}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    const c1x = p1.x + (p2.x - p0.x) / 6, c1y = p1.y + (p2.y - p0.y) / 6;
+    const c2x = p2.x - (p3.x - p1.x) / 6, c2y = p2.y - (p3.y - p1.y) / 6;
+    d += ` C ${c1x} ${c1y} ${c2x} ${c2y} ${p2.x} ${p2.y}`;
+  }
+  return d;
+}
+
+/* Streamgraph — centered silhouette; band thickness = weekly mentions. series=[{tag,values[]}] */
+function streamgraph(container, weeks, series, colors) {
+  container.innerHTML = "";
+  if (!series.length) { container.innerHTML = '<p class="empty-note">No data.</p>'; return; }
+  const W = 1000, H = 300, padX = 24, padTop = 16, padBot = 28;
+  const n = weeks.length, plotW = W - padX * 2, plotH = H - padTop - padBot;
+  const totals = weeks.map((_, i) => series.reduce((s, ser) => s + (ser.values[i] || 0), 0));
+  const maxTotal = Math.max(...totals, 1);
+  const scale = plotH / maxTotal;
+  const x = i => padX + (n < 2 ? plotW / 2 : (i / (n - 1)) * plotW);
+  const yOf = v => padTop + plotH - v * scale;
+  const svg = el("svg", { class: "chart-svg", viewBox: `0 0 ${W} ${H}`, role: "img" });
+
+  const cum = weeks.map((_, i) => (maxTotal - totals[i]) / 2);  // centered baseline (value units)
+  series.forEach((ser, s) => {
+    const bottom = [], top = [];
+    weeks.forEach((_, i) => {
+      const lo = cum[i], hi = cum[i] + (ser.values[i] || 0);
+      bottom.push({ x: x(i), y: yOf(lo) });
+      top.push({ x: x(i), y: yOf(hi) });
+      cum[i] = hi;
+    });
+    const d = smooth(top) + " L " + bottom.slice().reverse().map(p => `${p.x} ${p.y}`).join(" L ") + " Z";
+    const band = el("path", { d, fill: colors[s % colors.length], stroke: "var(--surface)", "stroke-width": 2 });
+    hover(band, () => `<b>#${esc(ser.tag)}</b><br>${ser.values.reduce((a, b) => a + b, 0)} mentions`);
+    svg.append(band);
+  });
+  weeks.forEach((w, i) => { if (i % 1 === 0) svg.append(el("text", { x: x(i), y: H - 8, "text-anchor": "middle", class: "axis-lbl" }, w)); });
+  container.append(svg);
+}
+
+/* Force-directed co-occurrence map. nodes=[{tag,count,category}] edges=[{a,b,weight}] */
+function networkGraph(container, nodes, edges, catColors) {
+  container.innerHTML = "";
+  const W = 620, H = 460, cx = W / 2, cy = H / 2;
+  const N = nodes.map((d, i) => ({ ...d,
+    x: cx + Math.cos(i / nodes.length * 2 * Math.PI) * 150,
+    y: cy + Math.sin(i / nodes.length * 2 * Math.PI) * 150, vx: 0, vy: 0 }));
+  const idx = Object.fromEntries(N.map((d, i) => [d.tag, i]));
+  const E = edges.filter(e => e.a in idx && e.b in idx);
+  const maxC = Math.max(...N.map(d => d.count), 1);
+  const rOf = c => 8 + Math.sqrt(c / maxC) * 20;
+  for (let it = 0; it < 320; it++) {                       // simple spring layout
+    for (let i = 0; i < N.length; i++) for (let j = i + 1; j < N.length; j++) {
+      const a = N[i], b = N[j]; let dx = a.x - b.x, dy = a.y - b.y;
+      let dist = Math.hypot(dx, dy) || 0.1;
+      // strong short-range repulsion + a floor so big nodes never overlap
+      const rep = 4200 / (dist * dist) + Math.max(0, (rOf(a.count) + rOf(b.count) + 14 - dist)) * 0.6;
+      a.vx += dx / dist * rep; a.vy += dy / dist * rep; b.vx -= dx / dist * rep; b.vy -= dy / dist * rep;
+    }
+    for (const e of E) {
+      const a = N[idx[e.a]], b = N[idx[e.b]]; let dx = b.x - a.x, dy = b.y - a.y;
+      let dist = Math.hypot(dx, dy) || 0.1; const k = (dist - 95) * 0.018 * Math.min(e.weight / 6, 2);
+      a.vx += dx / dist * k; a.vy += dy / dist * k; b.vx -= dx / dist * k; b.vy -= dy / dist * k;
+    }
+    for (const d of N) {
+      d.vx += (cx - d.x) * 0.004; d.vy += (cy - d.y) * 0.004;   // gentle gravity to center
+      d.x += Math.max(-10, Math.min(10, d.vx)); d.y += Math.max(-10, Math.min(10, d.vy));
+      d.vx *= 0.86; d.vy *= 0.86;
+      d.x = Math.max(34, Math.min(W - 34, d.x)); d.y = Math.max(26, Math.min(H - 26, d.y));
+    }
+  }
+  const svg = el("svg", { class: "chart-svg", viewBox: `0 0 ${W} ${H}`, role: "img" });
+  const maxW = Math.max(...E.map(e => e.weight), 1);
+  for (const e of E) {
+    const a = N[idx[e.a]], b = N[idx[e.b]];
+    svg.append(el("line", { x1: a.x, y1: a.y, x2: b.x, y2: b.y, stroke: "var(--border)",
+      "stroke-width": 1 + (e.weight / maxW) * 3, "stroke-opacity": 0.7 }));
+  }
+  for (const d of N) {
+    const g = el("g", {});
+    const c = el("circle", { cx: d.x, cy: d.y, r: rOf(d.count), fill: catColors[d.category] || "var(--chart-muted)",
+      stroke: "var(--surface)", "stroke-width": 2 });
+    hover(c, () => `<b>#${esc(d.tag)}</b><br>${d.category} · ${d.count} posts`);
+    g.append(c, el("text", { x: d.x, y: d.y + rOf(d.count) + 12, "text-anchor": "middle", class: "net-lbl" }, "#" + d.tag));
+    svg.append(g);
+  }
+  container.append(svg);
+}
+
+/* tiny sparkline node for the movers list */
+function sparkline(values, color) {
+  const W = 96, H = 28, max = Math.max(...values, 1);
+  const pts = values.map((v, i) => ({ x: (i / (values.length - 1)) * W, y: H - 3 - (v / max) * (H - 6) }));
+  const svg = el("svg", { class: "spark", viewBox: `0 0 ${W} ${H}`, width: W, height: H });
+  svg.append(el("path", { d: smooth(pts), fill: "none", stroke: color, "stroke-width": 2, "stroke-linecap": "round" }));
+  svg.append(el("circle", { cx: pts[pts.length - 1].x, cy: pts[pts.length - 1].y, r: 2.5, fill: color }));
+  return svg;
+}
+
+window.Charts = { hBarChart, funnelChart, lineChart, streamgraph, networkGraph, sparkline, fmt, esc };
 })();

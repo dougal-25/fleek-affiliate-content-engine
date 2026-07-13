@@ -125,3 +125,9 @@ onboarding.
    (France is the flagship community market).
 5. **Attribution hardening** — code + link + post-purchase survey triangulation, so weekly
    reallocation runs on numbers the finance team trusts.
+6. **Re-weighting agent for creator scoring** — the v1 scoring weights are a stated theory with one
+   calibration point (see `spec/decisions/2026-07-10-outreach-drafts.md`). With volume (~100+ funnel
+   outcomes) the weights get *fitted* — deterministic aggregates in (conversion, CAC per scored
+   band), a regression does the fitting, and the agent's job is the judgment layer: read the fit,
+   propose new weights with a rationale, human approves. Weights are per-market config: each new geo
+   gets its own wiki pass, its own known-good calibration partners, and its own weights.

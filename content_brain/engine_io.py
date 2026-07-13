@@ -10,7 +10,6 @@ import json
 import os
 import re
 import time
-import urllib.parse
 from typing import Any
 
 import requests
@@ -28,7 +27,7 @@ def find_env(start: str | None = None) -> str | None:
         if os.path.exists(candidate):
             return candidate
         parent = os.path.dirname(d)
-        if parent == d:
+        if parent == d:  # hit the filesystem root
             return None
         d = parent
 
@@ -61,6 +60,12 @@ def save_artifact(run_dir: str, name: str, obj) -> str:
 
 
 # ---------------- Apify ----------------
+
+# Counted, not assumed — this number goes in the outreach job's "how does this scale?" receipt.
+# apify_run (below) returns a run object with cost, but the outreach evidence gatherer increments
+# this so the receipt can report call/item counts without threading run metadata everywhere.
+APIFY_STATS = {"calls": 0, "items": 0}
+
 
 def apify_tiktok_scrape(hashtags: list[str], per_hashtag: int, token: str) -> list[dict]:
     """Run clockworks/tiktok-scraper synchronously; return raw video items."""
@@ -354,7 +359,9 @@ class Airtable:
         return r.json()["id"]
 
     def select(self, table: str, formula: str | None = None) -> list[dict]:
-        """Fetch records, optionally filtered by an Airtable formula. Follows pagination."""
+        """Fetch whole records (with id), optionally filtered by an Airtable formula. Follows
+        pagination. Used by the brief job (Stage=Onboarded selection) and the single-record
+        update path. Distinct from `list`, which returns plain field dicts for the outreach job."""
         tid = self.tables[table]
         url = f"https://api.airtable.com/v0/{self.base_id}/{tid}"
         out: list[dict] = []
@@ -374,8 +381,30 @@ class Airtable:
                 return out
             time.sleep(0.25)  # stay under 5 req/s
 
+    def list(self, table: str, formula: str | None = None, max_records: int = 100) -> list[dict]:
+        """Fetch records as plain field dicts, optionally server-side filtered. Follows pagination.
+        Used by the outreach job's selection (Stage/Score/Outreach-Status formulae). Distinct from
+        `list_records`, which returns whole records (with id) for the discovery/update path."""
+        tid = self.tables[table]
+        url = f"https://api.airtable.com/v0/{self.base_id}/{tid}"
+        params: dict[str, Any] = {"pageSize": 100}
+        if formula:
+            params["filterByFormula"] = formula
+        out: list[dict] = []
+        while len(out) < max_records:
+            r = requests.get(url, headers=self.h, params=params, timeout=30)
+            r.raise_for_status()
+            body = r.json()
+            out.extend(rec["fields"] for rec in body["records"])
+            offset = body.get("offset")
+            if not offset:
+                break
+            params["offset"] = offset
+            time.sleep(0.25)  # stay under 5 req/s
+        return out[:max_records]
+
     def list_records(self, table: str) -> list[dict]:
-        """Unfiltered fetch — thin alias over select(), kept for existing callers."""
+        """Unfiltered fetch of whole records — thin alias over select(), kept for existing callers."""
         return self.select(table)
 
     def update(self, table: str, record_id: str, fields: dict) -> None:
@@ -442,16 +471,36 @@ def creator_key(platform: str, handle: str) -> str:
 
 # ---------------- Claude ----------------
 
-def claude_json(prompt: str, system: str, max_tokens: int = 1500) -> Any:
-    """Single Claude call that must return JSON. Robust parse with fenced-block fallback."""
+# Running tally so a job can print what it actually spent (the "how does this scale?" receipt).
+CLAUDE_STATS = {"calls": 0, "input_tokens": 0, "output_tokens": 0, "cache_read_tokens": 0}
+
+
+def claude_json(prompt: str, system: str, max_tokens: int = 1500, cache: bool = False) -> Any:
+    """Single Claude call that must return JSON. Robust parse with fenced-block fallback.
+
+    `cache=True` marks the system prompt as an ephemeral cache breakpoint. Jobs that reuse
+    one long system prompt across many creators (outreach, briefs) then pay for it once
+    per 5-minute window instead of once per creator — which is what makes a 1,000-creator
+    run affordable rather than theoretical. Off by default so existing callers are unchanged;
+    the outreach job opts in.
+    """
     import anthropic
     client = anthropic.Anthropic()
+    system_block: Any = (
+        [{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}]
+        if cache else system
+    )
     msg = client.messages.create(
         model="claude-opus-4-8",
         max_tokens=max_tokens,
-        system=system,
+        system=system_block,
         messages=[{"role": "user", "content": prompt}],
     )
+    u = msg.usage
+    CLAUDE_STATS["calls"] += 1
+    CLAUDE_STATS["input_tokens"] += u.input_tokens
+    CLAUDE_STATS["output_tokens"] += u.output_tokens
+    CLAUDE_STATS["cache_read_tokens"] += getattr(u, "cache_read_input_tokens", 0) or 0
     text = "".join(b.text for b in msg.content if getattr(b, "type", None) == "text").strip()
     try:
         return json.loads(text)
