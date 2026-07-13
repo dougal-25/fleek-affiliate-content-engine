@@ -59,8 +59,10 @@ def main():
             else:
                 p["thumb"] = None
 
+    with open(os.path.join(HERE, "api", "_static", "briefs.json")) as f:
+        briefs = json.load(f)
     data = {"creators": creators, "funnel": funnel, "trends": trends,
-            "inspiration": inspiration, "avatars": avatars}
+            "inspiration": inspiration, "briefs": briefs, "avatars": avatars}
     # </script> inside a JSON string would end the script block early
     payload = json.dumps(data).replace("</", "<\\/")
 
@@ -75,10 +77,12 @@ def main():
                         "<style>\n" + read("style.css") + "\n</style>")
     html = html.replace('<link rel="stylesheet" href="trends.css">',
                         "<style>\n" + read("trends.css") + "\n</style>")
+    html = html.replace('<link rel="stylesheet" href="briefs.css">',
+                        "<style>\n" + read("briefs.css") + "\n</style>")
     html = html.replace('<script src="charts.js"></script>',
                         "<script>window.__DATA__ = " + payload + "</script>\n"
                         "<script>\n" + read("charts.js") + "\n</script>")
-    for script in ("translations.js", "helpers.js", "views.js", "app.js"):
+    for script in ("translations.js", "helpers.js", "views.js", "app.js", "briefs.js"):
         html = html.replace(f'<script src="{script}"></script>',
                             "<script>\n" + read(script) + "\n</script>")
 

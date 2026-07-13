@@ -1,0 +1,448 @@
+{
+ "creators": [
+  {
+   "handle": "juliacourcelle",
+   "platform": "youtube",
+   "followers": 5560,
+   "tier": "nano",
+   "lifecycle": "dormant",
+   "score": 62,
+   "cac": 45,
+   "code": "RFD-JULIA",
+   "codeCount": 25,
+   "postsTotal": 25,
+   "oneLiner": "Turn her live RFD-JULIA code into tracked orders — a Vinted margin reveal.",
+   "channelLabel": "DM",
+   "contactValue": "YouTube / Instagram DM",
+   "format": "Grossiste breakdown",
+   "topPosts": [
+    {
+     "label": "Auto Vinted",
+     "v": 8869,
+     "l": 238
+    },
+    {
+     "label": "Repart de 0",
+     "v": 8160,
+     "l": 210
+    },
+    {
+     "label": "Guide Fleek",
+     "v": 8056,
+     "l": 195
+    },
+    {
+     "label": "Stratégie AR",
+     "v": 7215,
+     "l": 199
+    }
+   ],
+   "evCaption": "Her grossiste-vs-Vinted videos over-index — <b>GUIDE FLEEK</b> hit 8K. The brief extends her proven format; it doesn't invent one.",
+   "hooks": [
+    {
+     "fr": "J'ai commandé pour X€ chez Fleek — je vous montre EXACTEMENT combien j'ai revendu sur Vinted",
+     "en": "I ordered €X worth from Fleek — I'll show you EXACTLY how much I resold it for on Vinted"
+    },
+    {
+     "fr": "Grossistes pour Vinted en 2026 : j'ai comparé les marges réelles, un seul tient la route",
+     "en": "Wholesalers for Vinted in 2026: I compared the real margins — only one holds up"
+    },
+    {
+     "fr": "Je repars de 0 en achat-revente — et voici où je me fournis en gros maintenant",
+     "en": "I'm starting over from scratch in buy-to-resell — and here's where I source wholesale now"
+    }
+   ],
+   "captions": [
+    {
+     "fr": "J'ai commandé chez Fleek et je vous montre TOUT : le coût d'achat, le tri, et surtout combien j'ai revendu sur Vinted. Grossiste sérieux, premier choix, marges réelles à l'appui. Code RFD-JULIA = -10% sur ta 1ère commande (lien en commentaire épinglé) 🚀 #friperie #achatrevente #vinted",
+     "en": "I ordered from Fleek and I'm showing you EVERYTHING: the purchase cost, the sorting, and above all how much I resold on Vinted. Serious wholesaler, grade-A, real margins to back it up. Code RFD-JULIA = -10% on your 1st order (link in pinned comment) 🚀 #thrift #buytoresell #vinted"
+    }
+   ],
+   "outreach": {
+    "channel": "dm",
+    "subjectFr": null,
+    "subjectEn": null,
+    "bodyFr": "Salut Julia ! On adore ce que tu fais avec l'achat-revente Vinted 👏 On a vu que tu partages déjà Fleek (code RFD-JULIA) — merci ! On aimerait t'aider à en tirer plus : un brief perso, un code suivi, et un contact dédié chez nous. Ça te dit qu'on en parle ?",
+    "bodyEn": "Hi Julia! We love what you do with Vinted buy-to-resell 👏 We saw you already share Fleek (code RFD-JULIA) — thank you! We'd like to help you get more from it: a personalised brief, a tracked code, and a dedicated contact on our side. Fancy a chat?",
+    "humanNote": "Re-activation tone — she's already posting, so we thank first, then offer support. A human sends it."
+   },
+   "doNotMention": [
+    "Do not mention any competing wholesaler's discount code in the same post",
+    "Never say Fleek is 'for beginners' or 'easy to start with' — pro resellers read that as not-for-me",
+    "Don't promise specific resale margins; show your own numbers instead",
+    "Don't claim exclusive or guaranteed stock"
+   ],
+   "full": {
+    "brief_id": "BRF-1Fxk-001",
+    "creator_id": "rec1sLivFDBJr1Fxk",
+    "campaign": "FR launch — activation",
+    "objective": "Drive first wholesale orders from FR resellers via one day-in-the-life post.",
+    "content_ideas": [
+     {
+      "title": "Le vrai prix d'un restock whatnot",
+      "premise": "A day-in-the-life breaking down what the whole restock actually cost, unit by unit.",
+      "why_this_creator": "Their day-in-the-life posts outperform; result-first hooks convert for them."
+     },
+     {
+      "title": "Je source mon stock en direct",
+      "premise": "Live-sourcing walkthrough ending on the code.",
+      "why_this_creator": "Their audience already responds to sourcing content."
+     },
+     {
+      "title": "Ce que je paie vs ce que je revends",
+      "premise": "Margin maths on screen, receipts visible.",
+      "why_this_creator": "Transparency is the proven conversion mechanic in this segment."
+     }
+    ],
+    "hooks": [
+     "(result-first) Ce que j'ai vraiment payé pour tout ce lot whatnot…",
+     "(result-first) J'ai sourcé tout mon restock au même endroit — voici les chiffres.",
+     "(result-first) Tu revends en France ? Regarde ça avant ton prochain achat."
+    ],
+    "format": "day-in-the-life",
+    "talking_points": [
+     "Open on the real cost per unit, on screen",
+     "Say who this is for: resellers running a business, not casual shoppers",
+     "Show the grading of the inventory, not just the pile",
+     "Give the code RFD-JULIA before the 60-second mark",
+     "Close on the deadline"
+    ],
+    "thumbnail_direction": "Creator holding one graded piece, price sticker visible, hard price number as text overlay. No brand logo — the number earns the click.",
+    "cta_stack": [
+     "Code RFD-JULIA — 10% off first wholesale order",
+     "Link in bio to the graded inventory feed",
+     "Deadline: code expires end of month",
+     "Affiliate: 10% of first-order revenue"
+    ],
+    "example_captions": [
+     "Le vrai prix de mon restock. Code RFD-JULIA pour -10% sur ta première commande. #friperie #achatrevente #grossiste",
+     "Sourcer en gros, sans y passer le week-end. Code RFD-JULIA en bio. #revente #secondemain #friperieengros"
+    ],
+    "posting_schedule": "Post Wednesday evening (their strongest window), code live for 30 days, one reminder story at day 7.",
+    "dos": [
+     "Use your proven day-in-the-life format",
+     "Show real unit prices on screen",
+     "Say who it's for: resellers, not casual shoppers"
+    ],
+    "donts": [
+     "Don't read brand copy verbatim",
+     "Don't bury the code after the 60-second mark",
+     "Don't pitch it as retail shopping"
+    ],
+    "do_not_mention": [
+     "Do not mention any competing wholesaler's discount code in the same post",
+     "Never say Fleek is 'for beginners' or 'easy to start with' — pro resellers read that as not-for-me",
+     "Don't promise specific resale margins; show your own numbers instead",
+     "Don't claim exclusive or guaranteed stock"
+    ],
+    "reference_examples": [
+     "Your own best 90-day post (day-in-the-life/result-first)",
+     "Archetype: @behindthesale — real unit costs shown on camera"
+    ],
+    "success_target": "10+ first orders at CAC under segment average"
+   }
+  },
+  {
+   "handle": "felixbeauregard",
+   "platform": "youtube",
+   "followers": 90200,
+   "tier": "micro",
+   "lifecycle": "new",
+   "score": 82,
+   "cac": 350,
+   "code": null,
+   "codeCount": 0,
+   "postsTotal": 25,
+   "oneLiner": "Onboard a top sourcing educator — a graded-wholesale test video.",
+   "channelLabel": "DM",
+   "contactValue": "YouTube / Instagram DM",
+   "format": "Sourcing test",
+   "topPosts": [
+    {
+     "label": "Débuter 0€",
+     "v": 30614,
+     "l": 971
+    },
+    {
+     "label": "Se fournir",
+     "v": 16275,
+     "l": 488
+    },
+    {
+     "label": "Business 2026",
+     "v": 7808,
+     "l": 326
+    },
+    {
+     "label": "Niches",
+     "v": 5265,
+     "l": 164
+    }
+   ],
+   "evCaption": "His sourcing how-tos are his ceiling — <b>0€</b> hit 31K, <b>Se fournir</b> hit 16K. The brief rides that exact lane.",
+   "hooks": [
+    {
+     "fr": "J'ai commandé un lot de gros gradé pour voir si un revendeur sérieux peut vraiment s'en sortir.",
+     "en": "I ordered a graded wholesale lot to see whether a serious reseller can really make it work."
+    },
+    {
+     "fr": "Je compare mes fournisseurs actuels avec une marketplace de gros — sans filtre, chiffres à l'appui.",
+     "en": "I'm comparing my current suppliers with a wholesale marketplace — no filter, numbers to back it up."
+    },
+    {
+     "fr": "Voici ce que donne vraiment une commande de gros quand on revend sur Vinted au sérieux.",
+     "en": "Here's what a wholesale order really delivers when you resell on Vinted seriously."
+    }
+   ],
+   "captions": [
+    {
+     "fr": "Je teste une marketplace de gros gradé pour la revente Vinted. Commande à l'aveugle, gradation sur la table, marges calculées en direct — sans filtre. Code FLEEK-LpKm = 10% sur ta première commande de gros (lien en description, offre limitée). #achatrevente #vinted #fournisseur",
+     "en": "I'm testing a graded wholesale marketplace for Vinted resale. Blind order, grading on the table, margins calculated live — no filter. Code FLEEK-LpKm = 10% on your first wholesale order (link in description, limited offer). #buytoresell #vinted #supplier"
+    }
+   ],
+   "outreach": {
+    "channel": "dm",
+    "subjectFr": null,
+    "subjectEn": null,
+    "bodyFr": "Salut Félix ! Ton contenu sur le sourcing et les marges est exactement ce que cherchent les revendeurs sérieux. On lance Fleek en France — une marketplace de gros gradé, prête à lister. On aimerait te proposer un partenariat : code perso, 10% pour ton audience, et de vrais chiffres à tester en direct. Partant pour en discuter ?",
+    "bodyEn": "Hi Félix! Your content on sourcing and margins is exactly what serious resellers look for. We're launching Fleek in France — a graded, ready-to-list wholesale marketplace. We'd like to offer you a partnership: a personal code, 10% for your audience, and real numbers to test on camera. Up for a chat?",
+    "humanNote": "Onboarding tone — brief #1, no track record claimed. Aligns with his supplier funnel rather than competing. A human sends it."
+   },
+   "doNotMention": [
+    "Do not call Fleek 'parfait pour débutants' or 'pour bien commencer' — Fleek is a serious/pro supply source, and beginner framing is the exact positioning we must not reinforce.",
+    "Do not use his '500€ pour accéder à mes fournisseurs privés' funnel language in a way that positions Fleek as the beginner on-ramp beneath his private suppliers.",
+    "Do not mention or link any competing wholesale supplier or their discount codes in the same video/description.",
+    "Do not invent or cite past Fleek results — this is his first campaign, there is no track record.",
+    "Do not promise specific profit figures, guaranteed margins, or resale speed Fleek can't back."
+   ],
+   "full": {
+    "brief_id": "BRF-LpKm-001",
+    "creator_id": "recHxKd0rCZLOLpKm",
+    "campaign": "FR launch — activation",
+    "objective": "Get serious Vinted resellers in his audience to place a first wholesale order on Fleek using code FLEEK-LpKm, framing Fleek as a graded, ready-to-list supply source for people already investing real money in stock.",
+    "content_ideas": [
+     {
+      "title": "Je teste un fournisseur de stock gradé pour la revente Vinted (commande de gros à l'aveugle)",
+      "premise": "Félix orders a wholesale lot from Fleek on camera, unboxes it, grades each piece and calculates realistic Vinted resale margins so his audience sees exactly what a serious supply source delivers.",
+      "why_this_creator": "His two highest-view videos are 'Comment se fournir en vêtements' (16.3K) and warehouse visits ('J'ai visité les plus gros entrepôts de vêtements vintage d'Inde'); a real unboxing-and-margin test is the native extension of that sourcing content and lets the bale unboxing BE the product demo."
+     },
+     {
+      "title": "J'ai comparé mes fournisseurs actuels avec une marketplace de gros gradée",
+      "premise": "A side-by-side of sourcing options (price per piece, grading, minimum order, time to list) where Fleek is positioned as the graded, ready-to-list option for resellers who value time over pure kilo-price.",
+      "why_this_creator": "He built authority on 'la face cachée des fournisseurs' and ranking content ('les niches les plus rentables'); a transparent comparison format matches his analytical register and lets him place Fleek alongside — not against — his own supplier funnel."
+     },
+     {
+      "title": "Combien je peux revendre sur Vinted avec une seule commande de gros ?",
+      "premise": "He takes one Fleek order, lists every piece with real target prices, and tallies projected profit versus the order cost — an economics reveal for viewers with 500€ ready to invest.",
+      "why_this_creator": "His standing CTA already filters for viewers 'qui ont 500€ de côté à investir dans du stock' — this idea speaks directly to that self-selected buyer and turns his existing investment CTA toward a trackable Fleek order."
+     }
+    ],
+    "hooks": [
+     "'J'ai commandé un lot de gros gradé pour voir si un revendeur sérieux peut vraiment s'en sortir.'",
+     "'Je compare mes fournisseurs actuels avec une marketplace de gros — sans filtre, chiffres à l'appui.'",
+     "'Voici ce que donne vraiment une commande de gros quand on revend sur Vinted au sérieux.'"
+    ],
+    "format": "Dedicated sourcing test / warehouse-style unboxing video on YouTube with on-camera grading and a live margin calculation — his proven high-view sourcing format.",
+    "talking_points": [
+     "Set up the test honestly: you're trying a graded wholesale marketplace to see if the stock is list-ready for a serious Vinted operation.",
+     "Show the order arriving and grade the pieces on camera — condition, brand mix, sellability, no cherry-picking.",
+     "Run the numbers out loud: order cost vs realistic Vinted resale prices, time saved because stock is already graded and ready to list.",
+     "Position Fleek as a complement to how you already source — a supply option for resellers who want graded, ready-to-list stock, not a beginner shortcut.",
+     "Be transparent that it's a paid partnership and that you negotiated a code for your audience so you can prove the numbers.",
+     "Deliver the CTA: the 10% code on the first wholesale order, link in description, valid for a limited window."
+    ],
+    "thumbnail_direction": "Félix mid-unboxing holding up two or three graded garments, with the order laid out in frame. Text overlay: 'FOURNISSEUR DE GROS — LE TEST'. Earns the click because it reads as a genuine sourcing test from a trusted analyst, not an ad, matching the visual language of his warehouse videos.",
+    "cta_stack": [
+     "Announce the code verbally at the margin-reveal moment: 'Code FLEEK-LpKm = 10% sur ta première commande de gros.'",
+     "Pin the tracked link + code as the FIRST line of the description and the top pinned comment, above any other link.",
+     "State the deadline: '-10% valable jusqu'au [date, ~10 days after upload]' to create urgency inside the 14-day window.",
+     "Frame the incentive as a serious-reseller test, not a starter deal: 'Si tu investis déjà dans du stock, teste-le et compare tes marges.'"
+    ],
+    "example_captions": [
+     "Je teste une marketplace de gros gradé pour la revente Vinted. Commande à l'aveugle, gradation sur la table, marges calculées en direct — sans filtre. Code FLEEK-LpKm = 10% sur ta première commande de gros (lien en description, offre limitée). #achatrevente #vinted #friperieengros #revente #fournisseur",
+     "J'ai comparé une commande de gros gradée à mes sources habituelles : prix à la pièce, qualité, temps de mise en ligne. Les chiffres sont dans la vidéo. -10% avec FLEEK-LpKm sur ta première commande. #achatreventevinted #sourcing #revente #vintedtips #fournisseur"
+    ],
+    "posting_schedule": "Publish within 14 days, ideally a weekday evening (Tue–Thu, ~18h–20h CET) when his how-to audience watches after work; set the code deadline ~10 days after upload so the urgency lands inside the activation window and we get first-order data fast.",
+    "dos": [
+     "Lead with the sourcing-test / unboxing format — his highest-view videos are 'comment se fournir' and warehouse tours, so stay in that lane.",
+     "Show real grading and real margins on camera; his audience trusts him for numbers, not hype.",
+     "Frame Fleek as a graded, ready-to-list supply source that saves listing time for people already investing in stock.",
+     "Put the tracked link and FLEEK-LpKm code above every other link in the description and pin the comment — an unmanaged link buried below competitors converts to nobody.",
+     "Be openly transparent it's a partnership and that the code is something he negotiated for his audience."
+    ],
+    "donts": [
+     "Don't make it a generic shout-out with no unboxing or numbers — his audience skips content without a concrete sourcing angle.",
+     "Don't bury the Fleek link under his other funnel links in the description.",
+     "Don't overclaim guaranteed profit — show the margins as a real test, not a promise.",
+     "Don't frame the video around 'commencer avec 0€' — that beginner framing is his other content, not this one.",
+     "Don't promise stock quality he hasn't verified on camera; let the grading speak."
+    ],
+    "do_not_mention": [
+     "Do not call Fleek 'parfait pour débutants' or 'pour bien commencer' — Fleek is a serious/pro supply source, and beginner framing is the exact positioning we must not reinforce.",
+     "Do not use his '500€ pour accéder à mes fournisseurs privés' funnel language in a way that positions Fleek as the beginner on-ramp beneath his private suppliers.",
+     "Do not mention or link any competing wholesale supplier or their discount codes in the same video/description.",
+     "Do not invent or cite past Fleek results — this is his first campaign, there is no track record.",
+     "Do not promise specific profit figures, guaranteed margins, or resale speed Fleek can't back."
+    ],
+    "reference_examples": [
+     "His own 'Comment se fournir en vêtements pour l'achat-revente Vinted en 2026 ?' (16.3K views) and 'J'ai visité les plus gros entrepôts de vêtements vintage d'Inde' — the sourcing formats this brief extends.",
+     "@behindthesale archetype — sourcing transparency: real unit costs and margins shown on camera, the exact credibility move for his margin reveal.",
+     "@juliacrcl archetype — reseller education that sells the supply chain, showing how to teach the business while positioning a supply source as pro-grade."
+    ],
+    "success_target": "8–15 first wholesale orders attributed to FLEEK-LpKm within 21 days of posting, at a measured CAC at or below the 350€ discovery estimate — this is a first-data test, not a scale bet."
+   }
+  },
+  {
+   "handle": "lina_momo_",
+   "platform": "tiktok",
+   "followers": 196300,
+   "tier": "mid",
+   "lifecycle": "active",
+   "score": 72,
+   "cac": 90,
+   "code": null,
+   "codeCount": 0,
+   "postsTotal": 30,
+   "oneLiner": "Her first Fleek post — tie graded stock to her Whatnot lives.",
+   "channelLabel": "Email",
+   "contactValue": "Bio email on file",
+   "format": "Whatnot live",
+   "topPosts": [
+    {
+     "label": "Rant influ",
+     "v": 573300,
+     "l": 55800
+    },
+    {
+     "label": "Mariage ép.1",
+     "v": 558600,
+     "l": 65100
+    },
+    {
+     "label": "Perte poids",
+     "v": 300400,
+     "l": 22100
+    },
+    {
+     "label": "Mariage p.2",
+     "v": 229200,
+     "l": 25700
+    }
+   ],
+   "evCaption": "Huge reach (573K) but from lifestyle rants. Her one <b>commerce</b> post — a Whatnot referral — hit 74K with real clicks. That's the format the brief copies, not the viral rants.",
+   "hooks": [
+    {
+     "fr": "Seulement pour mes abonnés : 10% sur ta première commande en gros avec mon code, rdv dimanche 18h pour le live",
+     "en": "Subscribers only: 10% on your first wholesale order with my code — see you Sunday 6pm for the live"
+    },
+    {
+     "fr": "Épisode 1 : le vrai coût du stock que je revends en live — personne n'en parle",
+     "en": "Episode 1: the real cost of the stock I resell live — nobody talks about this"
+    },
+    {
+     "fr": "Désolée mais racheter du neuf pour revendre en 2026, ça n'a aucun sens — je vous montre comment je source",
+     "en": "Sorry but buying new to resell in 2026 makes no sense — let me show you how I source"
+    }
+   ],
+   "captions": [
+    {
+     "fr": "Comment je remplis mon stock pour mes lives 👀 J'ai testé de sourcer en gros au lieu d'acheter pièce par pièce — je vous montre le vrai coût. Code FLEEK-u5IL = 10% sur ta première commande en gros, lien en bio. Rdv dimanche 18h ❤️ #videdressing #whatnot #achatrevente",
+     "en": "How I stock up for my lives 👀 I tried sourcing wholesale instead of buying piece by piece — I'll show you the real cost. Code FLEEK-u5IL = 10% on your first wholesale order, link in bio. See you Sunday 6pm ❤️ #closetsale #whatnot #buytoresell"
+    }
+   ],
+   "outreach": {
+    "channel": "email",
+    "subjectFr": "Fleek × Lina — un code rien que pour ta communauté",
+    "subjectEn": "Fleek × Lina — a code just for your community",
+    "bodyFr": "Bonjour Lina,\n\nTes lives Whatnot et ton ton cash-and-honest cartonnent — c'est exactement l'énergie qui convertit. On lance Fleek en France : du stock gradé, en gros, pour revendeurs. On aimerait t'offrir un code exclusif (10% pour tes abonnés) et un brief taillé pour tes lives. On regarde ça ensemble cette semaine ?\n\nÀ très vite,\nL'équipe Fleek",
+    "bodyEn": "Hi Lina,\n\nYour Whatnot lives and your cash-and-honest tone are killing it — that's exactly the energy that converts. We're launching Fleek in France: graded stock, wholesale, for resellers. We'd like to offer you an exclusive code (10% for your subscribers) and a brief tailored to your lives. Shall we look at it together this week?\n\nSpeak soon,\nThe Fleek team",
+    "humanNote": "Email, because she has a bio email on file — so it's subject + body, not a DM. Always-on tone. A human sends it."
+   },
+   "doNotMention": [
+    "Never call Fleek 'parfait pour débuter' or 'idéal pour se lancer' — Fleek is a professional sourcing supply chain; beginner framing damages the positioning we're trying to prove.",
+    "Don't promote any competing wholesale supplier code (e.g. bestvintagewholesale/JULIA-style codes) in the same post as her Fleek code.",
+    "Don't cite any past Fleek results or conversion numbers — this is brief #1 and none exist.",
+    "Don't position bulk sourcing as 'just to try it out' or a low-commitment gimmick — it undercuts the wholesale-buyer intent we're testing for.",
+    "Don't imply the graded stock is low quality or 'random' — speak to premier choix / graded selection, not gamble."
+   ],
+   "full": {
+    "brief_id": "BRF-u5IL-001",
+    "creator_id": "recFb6DtjUTpHu5IL",
+    "campaign": "FR launch — activation",
+    "objective": "Get Lina's first Fleek post live within 14 days and test whether her live-buying audience contains anyone who wants to buy graded stock in bulk to resell — measured in first wholesale orders, not views.",
+    "content_ideas": [
+     {
+      "title": "« Comment je remplis mon stock pour mes lives Whatnot »",
+      "premise": "Lina unboxes a Fleek graded lot on camera before a Whatnot vide-dressing session and shows how she restocks what she sells live — the bale unboxing IS the product demo.",
+      "why_this_creator": "Her one commerce post that drove clear action was a Whatnot referral ('15€ offert via mon lien en bio', 74.4k views) — her audience already tolerates a referral link and watches her sell live. Tying Fleek to the stock behind her lives is the only native bridge from her vide-dressing to wholesale."
+     },
+     {
+      "title": "« Épisode 1 : le vrai coût derrière mes ventes en live »",
+      "premise": "A serialised storytime where she reveals, episode by episode, what her stock actually costs her and does the margin math on a Fleek lot, ending on a 'suite demain' cliffhanger.",
+      "why_this_creator": "Her two biggest hits were the serialised wedding series (558.6k then 229.2k) with explicit 'on en reparle demain' / 'ABONNE TOI' cliffhangers — she demonstrably sustains multi-part attention. Applying her proven storytime engine to sourcing economics is the safest format bet she has."
+     },
+     {
+      "title": "« Désolée mais racheter du neuf pour revendre, ça n'a aucun sens »",
+      "premise": "A personal-conviction rant to camera on why sourcing graded secondhand in volume beats buying retail to flip, landing on her Fleek code.",
+      "why_this_creator": "Her contrarian first-person format travels furthest — 'je suis très en colère…' hit 573.3k and 'je me sens pas du tout concernée par la trend du sac Chanel' hit 209.3k. Her opinion feels like her, not a brand read, which is exactly how she should introduce a code."
+     }
+    ],
+    "hooks": [
+     "« Seulement pour mes abonnés : 10% sur ta première commande en gros avec mon code, rdv dimanche 18h pour le live »",
+     "« Épisode 1 : le vrai coût du stock que je revends en live — personne n'en parle »",
+     "« Désolée mais racheter du neuf pour revendre en 2026, ça n'a aucun sens — je vous montre comment je source »"
+    ],
+    "format": "Whatnot live vide-dressing with an on-camera Fleek lot unboxing + subscriber-only referral code — her one proven direct-commerce format, extended to show the sourcing behind the sale.",
+    "talking_points": [
+     "Open with the subscriber-only framing — a code just for her people, active now (scarcity is what worked on her Whatnot post).",
+     "Show the actual Fleek graded lot arriving and opening on camera — let the unboxing be the demo, no brand script.",
+     "Walk through what the lot cost her per piece vs what those pieces sell for in her lives — real numbers, her own margin.",
+     "Explain this is how she keeps her lives stocked without hunting piece by piece — position it as her sourcing upgrade, not a starter kit.",
+     "Direct the 10% code to anyone who also sells live or on Vinted and wants to stop sourcing one item at a time.",
+     "Close on a next-step hook ('suite au prochain live') so the momentum carries to a second post."
+    ],
+    "thumbnail_direction": "Lina mid-unboxing an open Fleek lot, hands full of garments, surprised/pleased expression. Text overlay: « LE COÛT RÉEL DE MON STOCK ». It earns the click because it pairs her recognisable face with a money/reveal promise, matching the price-reveal hooks that drive resale content.",
+    "cta_stack": [
+     "Say the code aloud and pin it: « Code FLEEK-u5IL = 10% sur ta première commande en gros »",
+     "Put the Fleek link in bio and reference 'lien en bio' on camera (mirrors her working Whatnot referral placement)",
+     "Add urgency: « Code valable pour ma première fournée d'abonnés seulement »",
+     "Frame the incentive as an exclusive she negotiated for her audience, not a public discount"
+    ],
+    "example_captions": [
+     "Comment je remplis mon stock pour mes lives 👀 J'ai testé de sourcer en gros au lieu d'acheter pièce par pièce — je vous montre le vrai coût. Code FLEEK-u5IL = 10% sur ta première commande en gros, lien en bio. Rdv dimanche 18h ❤️ #friperie #videdressing #whatnot #achatrevente #secondemain",
+     "Désolée mais racheter du neuf pour revendre ça n'a aucun sens 😅 Épisode 1 : je vous montre comment je source mon stock en gros. 10% sur ta première commande avec mon code en bio, seulement pour mes abonnés. On en reparle au prochain live ✨ #friperieengros #revente #secondemainvintage #whatnotfrance #videdressing"
+    ],
+    "posting_schedule": "Post the TikTok teaser 2–3 days before a weekend Whatnot live (her audience responded to a 'rdv dimanche 18h' commerce hook), then run the live and drop the code during it. Whole sequence inside the 14-day window; anchor the live to Sunday evening when she has previously scheduled selling.",
+    "dos": [
+     "Lead with the subscriber-only code and scarcity — that specific framing is the one commerce hook that moved her audience (74.4k views, active clicks).",
+     "Keep her warm, opinionated first-person voice and let her improvise — her authentic rant/storytime formats out-travel anything scripted.",
+     "Show real per-piece cost and resale margin on camera — the price/economics reveal is what converts a shopper into a sourcing mindset.",
+     "Use her proven serialisation ('suite au prochain live') so brief #1 sets up a measurable second touch.",
+     "Tie Fleek explicitly to restocking her Whatnot lives — the only native path from her vide-dressing to wholesale."
+    ],
+    "donts": [
+     "Don't run a generic haul with no angle — attach the sourcing/economics story or it won't convert.",
+     "Don't bury the code at the end of a lifestyle post (wedding/skincare/weight-loss) — those audiences are casual buyers, keep this post commerce-first.",
+     "Don't over-produce or read a brand script — her polished/branded content underperforms her raw opinion pieces.",
+     "Don't frame it as clearing her own wardrobe (vide-dressing) — that signals 'no bulk needed'; frame it as sourcing stock to resell.",
+     "Don't promise guaranteed earnings or 'easy money' — no Fleek attribution exists for her, so make no performance claims."
+    ],
+    "do_not_mention": [
+     "Never call Fleek 'parfait pour débuter' or 'idéal pour se lancer' — Fleek is a professional sourcing supply chain; beginner framing damages the positioning we're trying to prove.",
+     "Don't promote any competing wholesale supplier code (e.g. bestvintagewholesale/JULIA-style codes) in the same post as her Fleek code.",
+     "Don't cite any past Fleek results or conversion numbers — this is brief #1 and none exist.",
+     "Don't position bulk sourcing as 'just to try it out' or a low-commitment gimmick — it undercuts the wholesale-buyer intent we're testing for.",
+     "Don't imply the graded stock is low quality or 'random' — speak to premier choix / graded selection, not gamble."
+    ],
+    "reference_examples": [
+     "Her own best commerce post: the Whatnot referral ('15€ offert via mon lien en bio', 74.4k views) — replicate its scarcity + subscriber-exclusive structure with the Fleek code.",
+     "Her serialised wedding storytime (558.6k → 229.2k) — reuse the 'Épisode 1… suite demain' engine for the sourcing-economics angle.",
+     "@behindthesale archetype — sourcing transparency: shows real unit costs and margins on camera. Emulate the on-camera margin math.",
+     "@theliveneedham archetype — live selling that converts during the stream, not after. Emulate dropping the code live, not as a follow-up."
+    ],
+    "success_target": "5+ first wholesale orders attributed to FLEEK-u5IL at CAC under EUR90, from the first post + live within 14 days."
+   }
+  }
+ ],
+ "note": "Demo briefs — 3 real French creators, generated by content_brain (Opus 4.8). Emails redacted for the public dashboard."
+}

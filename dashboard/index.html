@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="trends.css">
+<link rel="stylesheet" href="briefs.css">
 </head>
 <body>
 
@@ -23,6 +24,7 @@
     <button class="tab" data-view="funnel" role="tab">Recruitment funnel</button>
     <button class="tab" data-view="trends" role="tab">Trends &amp; keywords</button>
     <button class="tab" data-view="inspiration" role="tab">Inspiration</button>
+    <button class="tab" data-view="briefs" role="tab">Brief Studio</button>
   </nav>
   <div class="topbar-right">
     <button id="lang-toggle" class="lang-toggle" title="Translate keywords & niches">🇫🇷 Original</button>
@@ -139,6 +141,11 @@
   <div class="insp-grid" id="insp-grid"></div>
 </section>
 
+<!-- ============ BRIEF STUDIO ============ -->
+<section id="view-briefs" class="view">
+  <div id="bf-root"></div>
+</section>
+
 </main>
 
 <!-- creator detail drawer -->
@@ -161,5 +168,6 @@
 <script src="helpers.js"></script>
 <script src="views.js"></script>
 <script src="app.js"></script>
+<script src="briefs.js"></script>
 </body>
 </html>
