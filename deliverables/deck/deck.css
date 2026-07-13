@@ -368,6 +368,192 @@ li { margin-bottom: var(--space-2); }
 .cites a { color: var(--c-text-faint); }
 a { color: var(--c-machine); text-underline-offset: 0.2em; }
 
+/* ---- Receipt cards: PROMPT → INPUT → OUTPUT. One AI exchange per slide. ---- */
+
+.eyebrow .dot { font-size: 0.9em; }
+.eyebrow .dot--live { color: var(--c-true); }
+.eyebrow .dot--sim { color: var(--c-text-faint); }
+
+.receipt {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 60em;
+}
+
+.receipt .card {
+  border: var(--rule) solid var(--c-rule);
+  border-left-width: 3px;
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-4);
+  background: var(--c-surface);
+}
+
+.receipt .card .r-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-2);
+  color: var(--c-text-faint);
+}
+
+.receipt .r-prompt { border-left-color: var(--c-brand); background: var(--c-bg); }
+.receipt .r-prompt .r-label { color: var(--c-machine); }
+.receipt .r-prompt p {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--t-base);
+  line-height: var(--leading-snug);
+  color: var(--c-human);
+}
+.receipt .r-prompt p::before { content: "› "; color: var(--c-brand); }
+
+.receipt .r-input { border-left-color: var(--c-text-faint); }
+.receipt .r-input pre {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--t-sm);
+  line-height: var(--leading-snug);
+  color: var(--c-text-dim);
+  white-space: pre-wrap;
+}
+.receipt .r-input .fn { color: var(--c-machine); font-weight: var(--weight-bold); }
+
+.receipt .r-output { border-left-color: var(--c-true); background: var(--c-bg); }
+.receipt .r-output .r-label { color: var(--c-true); }
+
+.flow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+.flow .n {
+  font-family: var(--font-mono);
+  font-size: var(--t-lg);
+  font-weight: var(--weight-bold);
+  line-height: 1;
+  color: var(--c-text);
+}
+.flow .n--win { color: var(--c-true); }
+.flow .n small {
+  display: block;
+  font-size: var(--t-xs);
+  font-weight: var(--weight-normal);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-text-faint);
+  margin-top: var(--space-2);
+}
+.flow .arr { color: var(--c-brand); font-family: var(--font-mono); font-size: var(--t-md); }
+
+/* ---- The call table: qualify / watch / cut, with reasons. ---- */
+
+.chipline { display: flex; gap: var(--space-3); margin: 0 0 var(--space-4); flex-wrap: wrap; }
+.chipline .chip {
+  border: var(--rule) solid var(--c-rule);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--t-sm);
+}
+.chipline .chip b { font-size: var(--t-md); display: block; line-height: 1.1; }
+.chip--q b { color: var(--c-true); }
+.chip--w b { color: var(--c-machine); }
+.chip--x b { color: var(--c-false); }
+
+table.calls { font-size: var(--t-xs); }
+table.calls td, table.calls th { padding: 0.32em var(--space-3) 0.32em 0; }
+table.calls .why { color: var(--c-text-dim); }
+table.calls .bad { color: var(--c-false); }
+
+.call {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.08em;
+  padding: 0.1em 0.5em;
+  border-radius: var(--radius);
+  border: var(--rule) solid currentColor;
+}
+.call--q { color: var(--c-true); }
+.call--w { color: var(--c-machine); }
+.call--x { color: var(--c-false); }
+
+/* ---- Scoring weight bars ---- */
+
+.weights { display: grid; gap: var(--space-2); max-width: 40em; }
+.weights .w {
+  display: grid;
+  grid-template-columns: 11em 1fr 2.5em;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--t-sm);
+}
+.weights .w .bar {
+  height: 0.9em;
+  background: var(--c-surface-2);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.weights .w .bar i {
+  display: block;
+  height: 100%;
+  background: var(--c-brand);
+}
+.weights .w .pts { font-family: var(--font-mono); font-weight: var(--weight-bold); text-align: right; }
+.weights .why { font-size: var(--t-xs); color: var(--c-text-dim); margin: 0 0 var(--space-2); }
+
+/* ---- Tech stack grid ---- */
+
+.stack {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+  max-width: 62em;
+}
+.stack .tool {
+  border: var(--rule) solid var(--c-rule);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+  padding: var(--space-3) var(--space-4);
+}
+.stack .tool b {
+  display: block;
+  font-size: var(--t-base);
+  margin-bottom: var(--space-1);
+}
+.stack .tool span {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  color: var(--c-text-dim);
+  line-height: var(--leading-snug);
+}
+.stack .tool .role {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-machine);
+  margin-bottom: var(--space-1);
+}
+
+/* ---- Screenshots: framed, honest crops ---- */
+
+.shot {
+  border: var(--rule) solid var(--c-rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--c-surface);
+}
+.shot img { display: block; width: 100%; height: auto; }
+.shot--crop { max-height: 18.5em; }
+.shot--crop img { object-fit: cover; object-position: top; height: 18.5em; }
+.shot + .cites { margin-top: var(--space-2); }
+
 /* ---- Fleek's halftone-dot motif. Title and hero only — one flourish, not a theme. ---- */
 
 #title::after,

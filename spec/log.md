@@ -5,6 +5,31 @@ Dated record of design intent changing. Newest first. Decisions with reasoning g
 
 ---
 
+## 2026-07-13 — Visual redesign: receipts, the call table, the stack — 16 slides
+
+Doug supplied reference slides from another AI-session deck and called the direction: too text-heavy;
+screenshots, tables and simple graphics — he narrates the detail himself. Full spec addendum in
+[`deck.md`](deck.md). The deck grew 14 → 16 slides, deliberately — visual slides present faster.
+
+- **Receipt format** (the reference's PROMPT → INPUT → OUTPUT cards, in Fleek's palette): slides 4, 5 and 9
+  now carry Doug's real Claude exchanges verbatim — "not rich enough" → 21 pages → 588 posts → 4 claims
+  corrected; the Apify ask → 120 → 39 → 169; the outreach spec → "Salut Alicia" → ⚠×2 → 0 sent. Page-level
+  `● LIVE` / `● SIMULATED` dots replace per-figure-only badging.
+- **The call table** (slide 8, new — Doug named it the slide he wanted): qualify · watch · cut with reasons,
+  from the live Airtable — 7 qualified / 36 recommended / 126 gated, real rows (@coco_duc 84 … @juliacrcl 100
+  WATCH ⚠ known partner … @50.grass CUT, synthetic lawn). The supplier-scored-92 row shown honestly.
+- **Scoring slide** (7, new): the 50/20/20/10 weights as bars with a one-line *why* under each, followers = 0
+  points, and the calibration table (both named partners rank top-2; both known-wrong score <10; n=5 labelled
+  an anchor). Percentile-bar pushback moved here from the budget slide.
+- **Tech-stack slide** (3, new, replacing "how I worked"): nine tools, role-labelled, one line each.
+- **Live dashboard screenshots** captured with Playwright into `deck/assets/` (creators grid, funnel, trends)
+  and embedded on slides 4, 6, 10; print and artifact builds inline them as data URIs.
+
+Verified: all 16 slides fit at 1280×800 (fonts + images awaited before measuring), dark theme sound, PDF
+16 pages with page 1 rendering and no notes leak, roster numbers pulled live from Airtable read-only.
+
+---
+
 ## 2026-07-13 — The deck was rebuilt against the real engine
 
 The 14-slide deck predated 30 commits of shipped work (live dashboard, market-driven discovery, outreach

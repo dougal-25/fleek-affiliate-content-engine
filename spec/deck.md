@@ -42,6 +42,26 @@ rendered as slides (undesigned, code-block soup, no spine).
   - `index.html?notes` (or press `s`, then `p`) → the **presenter copy**, for rehearsal.
 - Not required to work on a phone.
 
+## Visual redesign — 2026-07-13 (Doug's direction, reference slides supplied)
+
+**References:** three slides from another AI-session deck Doug supplied: (1) a receipt page — eyebrow badge
+`LIVE · <tool>`, headline, then three stacked cards **PROMPT → INPUT → OUTPUT**, the output card carrying one
+big number sequence (`576 → 547 → 243`); (2) the same format with a `SIMULATED · EXTERNAL RAILS` badge —
+live and simulated are labelled at the page level; (3) a **creative-health call table** — rows of creators
+with KPI columns, weak cells tinted, and a CALL column (`SCALE / MAINTAIN / REPLACE / CUT`) with summary
+count chips above.
+
+**Mood/feel:** unchanged — Fleek brand. **Anti-example:** the deck's own previous text-heavy slides;
+paragraphs are replaced by screenshots, tables and receipt cards. Doug narrates the detail himself.
+
+**Hero moments:** the roster **call table** (who qualifies, who gets cut, and why — Doug named it) and the
+receipt format carrying his real Claude back-and-forths (source: `deliverables/evidence/`, verbatim).
+
+**New requirements:** a **tech-stack slide**; a **scoring slide** answering "how is the score calculated and
+weighted, and why" (50/20/20/10 with rationale + the calibration table against Fleek's real partners); live
+**dashboard screenshots** embedded as deck assets (`deck/assets/`), captured from
+fleek-affiliate-dashboard.vercel.app; LIVE / SIMULATED badges promoted to page level, receipt-style.
+
 ## Content rules
 
 - **14 core slides**, appendix behind them. Twenty minutes is ~90 seconds a slide; 25+ slides means rushing

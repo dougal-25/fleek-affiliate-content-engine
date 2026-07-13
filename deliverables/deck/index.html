@@ -48,231 +48,263 @@
 </section>
 
 <!-- 3 ─────────────────────────────────────────────────────────────────────── -->
-<section class="slide" id="how-i-worked">
-  <p class="eyebrow">The brief: "Do not hide the AI. Show it to us."</p>
-  <h2>So here it is — including where it was wrong.</h2>
-  <div class="cols cols--wide">
-    <div>
-      <p>Nine Claude Code sessions over two days. <strong>59 prompts, 684 tool calls, 18 commits.</strong>
-        Every one is on disk.</p>
-      <p>The receipts in this deck are not reconstructed from memory. A script reads the raw transcripts,
-        redacts the credentials and renders them verbatim, with the timestamp they were typed at.</p>
-      <p class="lede">If I'd rewritten my own prompts afterwards, they'd read better. That would also make
-        them worthless as evidence.</p>
-    </div>
-    <div class="terminal"><span class="prompt">python scripts/extract_receipts.py</span>
-wrote deliverables/evidence/how-i-worked.md
-wrote deliverables/evidence/phase-0-knowledge.md
-wrote deliverables/evidence/discovery.md
-wrote deliverables/evidence/outreach.md
-wrote deliverables/evidence/budget.md
-wrote deliverables/evidence/hero-overruled.md
-wrote deliverables/evidence/index.md
-
-<span class="prompt">python scripts/extract_receipts.py --verify</span>
-verify: clean — 0 unredacted match(es) across 7 pages</div>
+<section class="slide" id="stack">
+  <p class="eyebrow"><span class="dot dot--live">●</span> The stack — every piece API-driven, so every piece schedulable</p>
+  <h2>Nine tools. One engine. No Zapier.</h2>
+  <div class="stack">
+    <div class="tool"><span class="role">judgment</span><b>Claude Code</b><span>builds the engine, classifies creators, drafts outreach — structured outputs</span></div>
+    <div class="tool"><span class="role">research</span><b>Perplexity API</b><span>teaches the engine — cited wiki pages on FR reselling</span></div>
+    <div class="tool"><span class="role">platform data</span><b>Apify</b><span>feeds the engine — TikTok + Instagram scrapes as JSON, cents per run</span></div>
+    <div class="tool"><span class="role">database</span><b>Airtable</b><span>one base, every view — roster, funnel, runs, drafts</span></div>
+    <div class="tool"><span class="role">glue</span><b>Python, stdlib</b><span>deterministic code for money and gates — no framework</span></div>
+    <div class="tool"><span class="role">surface</span><b>Vercel</b><span>the live dashboard — one serverless function, redacted</span></div>
+    <div class="tool"><span class="role">knowledge</span><b>Obsidian wiki</b><span>the vault that teaches "good" — cited, versioned in git</span></div>
+    <div class="tool"><span class="role">memory</span><b>GitHub</b><span>every decision, reversal and receipt in the history</span></div>
+    <div class="tool"><span class="role">enrichment</span><b>Firecrawl</b><span>link-in-bio → contact routes; Apollo only as B2B fallback</span></div>
   </div>
-  <div class="pushback">
-    <span class="tag">Overruled</span>
-    <blockquote>lets ditch canva and or gamma for now — we can leverage claude</blockquote>
-    <p class="outcome"><span class="stamp">2026-07-09 16:32</span> — I had it build competing Canva and Gamma
-      drafts, looked at both, and dropped them. You're reading the result. The decision record that said
-      "Canva" is superseded, not backdated.</p>
-  </div>
-  <aside class="notes">This slide sets up the recurring strip. Point at it once, explicitly: "every section
-    has one of these." Then don't explain it again.</aside>
+  <p class="cites" style="margin-top:var(--space-4)">Rule of thumb: Perplexity teaches the engine, Apify feeds it, Claude judges, Python moves money.</p>
+  <aside class="notes">One line per tool, out loud, ten seconds total — the grid does the work. The honest
+    line if asked about fit: "I run Claude + Apify + Airtable glued with Python. The same architecture drops
+    onto whatever Fleek runs internally."</aside>
 </section>
 
 <!-- 4 ─────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="phase-0">
-  <p class="eyebrow">Phase 0 — before finding a single creator</p>
-  <h2>Teach the system what "good" looks like in French reselling.</h2>
+  <p class="eyebrow"><span class="dot dot--live">●</span> live · claude code + perplexity</p>
+  <h2>First, teach the system what "good" looks like.</h2>
   <div class="cols cols--wide">
-    <div>
-      <p>A research agent (Claude + Perplexity) built a cited knowledge base: platform landscape, reseller
-        archetypes, community vocabulary, the formats that are working now.</p>
-      <p>It feeds everything downstream — discovery keywords, scoring factors, personalisation variables,
-        brief content. <em>The wiki teaches the engine; the scrapers feed it.</em></p>
-      <p>Then the scrape validated the wiki's guesses against <strong>588 real posts</strong>. Four claims
-        were corrected by contact with data.</p>
+    <div class="receipt">
+      <div class="card r-prompt">
+        <span class="r-label">prompt — Doug, verbatim</span>
+        <p>quite frankly, I don't think it's rich enough. The research task doesn't seem to have populated the
+          wiki base with enough material</p>
+      </div>
+      <div class="card r-input">
+        <span class="r-label">input</span>
+        <pre><span class="fn">wiki-knowledge-base-builder</span> — rejected the summary
+sweep, switched to deep-reads of named FR primary
+sources · 25 questions, hard cap 35 calls</pre>
+      </div>
+      <div class="card r-output">
+        <span class="r-label">output</span>
+        <div class="flow">
+          <span class="n">21<small>cited pages</small></span>
+          <span class="arr">→</span>
+          <span class="n">588<small>real posts ingested</small></span>
+          <span class="arr">→</span>
+          <span class="n n--win">4<small>wiki claims corrected</small></span>
+        </div>
+      </div>
     </div>
     <div>
-      <h3>Hashtags <span class="badge badge--real">validated against real posts</span></h3>
-      <table>
-        <tr><th>Tag</th><th class="num">Signal</th></tr>
-        <tr><td><code>#whatnotpartner</code></td><td class="num">786k median plays</td></tr>
-        <tr><td><code>#friperie</code></td><td class="num">core lane</td></tr>
-        <tr><td><code>#friperiemontpellier</code></td><td class="num">45 — geo tags are real</td></tr>
-        <tr><td><code>#vintedtips</code></td><td class="num">pro lane</td></tr>
-        <tr><td><code>#secondemain</code></td><td class="num">broad</td></tr>
-      </table>
-      <p class="cites">They say <code>kilo</code> (96), <code>premier choix</code> (60), <code>en gros</code> (33).
-        They never say <code>ballot</code> or <code>crème</code> (1 each) — supplier jargon, not creator language.</p>
+      <div class="shot shot--crop"><img src="assets/dash-trends.jpg" alt="Live trends: top FR hashtags by posts and views, computed from ingested posts"></div>
+      <p class="cites">Live on the dashboard: they say <code>kilo</code>, never <code>ballot</code> —
+        creator language, not supplier jargon. <code>#friperiemontpellier</code>: geo-tags are real in France.</p>
     </div>
   </div>
-  <div class="pushback">
-    <span class="tag">Overruled</span>
-    <blockquote>quite frankly, I don't think it's rich enough. The research task doesn't seem to have populated the wiki base with enough material</blockquote>
-    <p class="outcome"><span class="stamp">2026-07-09 16:03</span> — The agent reported success. The vault was
-      thin. I rejected the whole run rather than build on it, and gave it a primary source to read instead.
-      That's where the vault's best pages came from.</p>
-  </div>
-  <aside class="notes">The vocabulary point lands hard with anyone who's done FR outreach: "friperie" is a
-    word no English-language reasoning surfaces. Human domain knowledge is still the scarce input.</aside>
+  <aside class="notes">The story in one line: the agent said done, I said not good enough, and the deep-read
+    method that came out of that rejection produced the vault's best pages — later corrected BY the scrape.
+    Research proposes, data verifies. "Friperie" is the word no English-language reasoning surfaces.</aside>
 </section>
 
 <!-- 5 ─────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="discovery">
-  <p class="eyebrow">Part 1 — Discovery, ICP and scoring</p>
-  <h2>Trust beats reach, so don't score on followers.</h2>
-  <div class="pipeline">
-    <div class="step"><b>1 · Market</b>One FR market profile — lexicon, hashtags, segments</div>
-    <div class="step"><b>2 · Scrape</b>Apify — TikTok tags + Instagram graph-walk</div>
-    <div class="step"><b>3 · Gate</b>Genuine reseller AND clothing AND not a supplier</div>
-    <div class="step"><b>4 · Score</b>Fit rubric, calibrated on Fleek's real partners</div>
-    <div class="step step--gate"><b>5 · Human gate</b>Engine recommends; a person qualifies</div>
-  </div>
-  <div class="cols">
-    <div>
-      <p>Everything France-specific lives in <strong>one market profile</strong> — adding Germany is writing
-        <code>markets/germany.py</code>, not editing the engine. TikTok and Instagram co-primary;
-        <strong>YouTube dropped from active search</strong>. The score predicts one thing:
-        <strong>will this creator drive reseller signups at low CAC</strong> — followers aren't a factor.
-        Calibrated against the partners Fleek named, not guesses.</p>
-      <p class="cites">First live run: 120 upserted, 39 recommended, roster now 169 · Apify cents per run</p>
+  <p class="eyebrow"><span class="dot dot--live">●</span> live · apify + claude · part 1, discovery</p>
+  <h2>Scrape the market, gate hard, recommend — never auto-qualify.</h2>
+  <div class="receipt">
+    <div class="card r-prompt">
+      <span class="r-label">prompt — Doug, verbatim</span>
+      <p>Is my apify setup so i can run multiple scrapes across social channels… to find the best as well as
+        up and comming france based clothing resellers. think friperie, think vintage resale</p>
     </div>
-    <div>
-      <h3>What the scrape found that we didn't ask for</h3>
-      <p><code>@juliacrcl</code> — one of Fleek's own named top performers — is running <code>RFD-JULIA</code>
-        in <strong>25 of 25 videos</strong>, and promoting a <span class="false">competing wholesaler</span>
-        in the same descriptions. She sat in our Airtable as a cold prospect, scored below the bar.</p>
-      <p class="lede">A live, unmanaged affiliate scored as a stranger. That's the activation problem in one row —
-        and it's why the bar is now a percentile, not an absolute.</p>
+    <div class="card r-input">
+      <span class="r-label">input</span>
+      <pre><span class="fn">run_discovery.py</span> --market france
+tiktok hashtags + instagram graph-walk from verified seeds
+gates: genuine reseller AND clothing AND not a supplier</pre>
+    </div>
+    <div class="card r-output">
+      <span class="r-label">output — first live run</span>
+      <div class="flow">
+        <span class="n">120<small>creators upserted</small></span>
+        <span class="arr">→</span>
+        <span class="n">39<small>recommended by the engine</small></span>
+        <span class="arr">→</span>
+        <span class="n n--win">169<small>roster · pennies of Apify</small></span>
+      </div>
     </div>
   </div>
   <div class="pushback">
     <span class="tag">Overruled</span>
     <blockquote>Those are the affiliates, that is the type of affiliate, not the audience… perhaps the scoring system doesn't work</blockquote>
-    <p class="outcome"><span class="stamp">2026-07-10 00:43</span> — The model had filed "pro reseller /
-      hobbyist" under <em>audience</em> when they are <em>affiliate types</em>. Left alone, that schema error
-      propagates into every scoring weight and every segment name downstream. Schema errors are the expensive
-      kind: they look like working code.</p>
+    <p class="outcome"><span class="stamp">2026-07-10 00:43</span> — The model filed "pro reseller / hobbyist"
+      under <em>audience</em> when they're <em>affiliate types</em>. Schema errors are the expensive kind:
+      they look like working code.</p>
   </div>
-  <aside class="notes">If they ask one question about this deck, it'll be about scoring. Have the rubric open
-    in the appendix. The Julia finding is your strongest single piece of field evidence — it validates their
-    own thesis using their own named partner.</aside>
+  <aside class="notes">Adding Germany = writing markets/germany.py, not editing the engine. YouTube dropped
+    from active search deliberately (long-form, pro-credibility — roadmap). Followers are not a scoring
+    factor. If asked how it found what hashtags to scrape: the wiki taught it — previous slide.</aside>
 </section>
 
 <!-- 6 ─────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="shortlist">
-  <p class="eyebrow">Part 1b — the shortlist, made touchable</p>
-  <h2>The roster isn't a spreadsheet. It's a live dashboard.</h2>
+  <p class="eyebrow"><span class="dot dot--live">●</span> live · airtable → vercel · part 1b</p>
+  <h2>The roster isn't a spreadsheet.</h2>
   <div class="cols cols--wide">
     <div>
-      <div class="figure-row">
-        <div><span class="figure">169</span><span class="label">scored FR creators <span class="badge badge--real">real</span></span></div>
-        <div><span class="figure">32<span class="dim" style="font-size:0.4em">/100</span></span><span class="label">avg fit score</span></div>
-        <div><span class="figure">£85</span><span class="label">median predicted CAC</span></div>
-      </div>
-      <p>Every card is a real French creator the engine found, enriched and scored: photo, handle, platform,
-        followers, segment, keyword tags, fit score, predicted CAC, confidence, funnel stage. Filter live by
-        <em>pro reseller / hobbyist</em>, niche, platform, confidence — in front of the room.</p>
-      <p><strong>Built to feel like Fleek's own product</strong> — their Montserrat, their coral and gold,
-        pulled from joinfleek.com. Not an admin panel. Something they'd recognise as theirs.</p>
+      <div class="shot"><img src="assets/dash-creators.jpg" alt="Live dashboard: 169 scored FR creators as filterable cards, funnel-grouped, Fleek-branded"></div>
+      <p class="cites"><a href="https://fleek-affiliate-dashboard.vercel.app">fleek-affiliate-dashboard.vercel.app</a> —
+        deployed, data fresh from Airtable, credentials redacted server-side. Open it live in the room.</p>
     </div>
     <div>
-      <h3>It's deployed, not a screenshot</h3>
-      <p>Live at <a href="https://fleek-affiliate-dashboard.vercel.app">fleek-affiliate-dashboard.vercel.app</a>
-        — one serverless function, data pulled fresh from Airtable, credentials redacted server-side. The
-        <span class="badge badge--real">LIVE · AIRTABLE</span> badge is real.</p>
-      <p class="lede">10 → 10,000 is a <code>result_limit</code> and a bigger bill, not a rebuild. The ceiling
-        is the market — ~20,000 FR resellers — not the pipeline.</p>
+      <div class="figure-row" style="flex-direction:column; gap:var(--space-4); margin:0">
+        <div><span class="figure">169</span><span class="label">scored FR creators <span class="badge badge--real">real</span></span></div>
+        <div><span class="figure">6.9M</span><span class="label">combined reach</span></div>
+        <div><span class="figure">£85</span><span class="label">median predicted CAC</span></div>
+      </div>
+      <p class="cites" style="margin-top:var(--space-4)">Built in Fleek's own brand — Montserrat, coral, gold —
+        so it reads as their product, not an admin panel. Ships live <em>and</em> as one offline HTML file.</p>
+    </div>
+  </div>
+  <aside class="notes">Don't talk over the screenshot — open the real thing and filter to "pro resellers":
+    the segment Fleek says it can't reach, on cards. Offline file is the wifi backup. 10→10,000 is a
+    result_limit, not a rebuild; the ceiling is the ~20k FR market.</aside>
+</section>
+
+<!-- 7 · SCORING ───────────────────────────────────────────────────────────── -->
+<section class="slide" id="scoring">
+  <p class="eyebrow"><span class="dot dot--live">●</span> live · calibrated on Fleek's real partners</p>
+  <h2>The score predicts one thing: will their audience buy stock.</h2>
+  <div class="cols cols--wide">
+    <div>
+      <div class="weights">
+        <div class="w"><span>Audience quality</span><span class="bar"><i style="width:50%"></i></span><span class="pts">50</span></div>
+        <p class="why">Half the score — because the customer is the <em>viewer</em>, not the creator. Pro-reseller viewers weigh full, hobbyists 0.8, general fashion ~0.</p>
+        <div class="w"><span>Sourcing intent</span><span class="bar"><i style="width:20%"></i></span><span class="pts">20</span></div>
+        <p class="why">Do they talk sourcing, kilos, marges? A haul channel isn't a sourcing channel.</p>
+        <div class="w"><span>Creator credibility</span><span class="bar"><i style="width:20%"></i></span><span class="pts">20</span></div>
+        <p class="why">Do they demonstrably resell — Whatnot, Discord, coaching? Trust converts; reach doesn't.</p>
+        <div class="w"><span>Fleek warmth</span><span class="bar"><i style="width:10%"></i></span><span class="pts">10</span></div>
+        <p class="why">Already mentions Fleek or carries an RFD- code. Small on purpose — warmth is a tiebreak, not a strategy.</p>
+      </div>
+      <p class="cites">Followers: <strong>0 points</strong>. Confidence is a gate, not points. Weights are v1 —
+        a stated theory the funnel re-fits with outcomes, per cohort.</p>
+    </div>
+    <div>
+      <h3>Does it agree with reality?</h3>
+      <table>
+        <tr><th>Creator</th><th class="num">Fit</th><th>Truth</th></tr>
+        <tr><td>@behindthesale</td><td class="num true">77</td><td class="why">named Fleek partner — ranks 1st</td></tr>
+        <tr><td>@juliacrcl</td><td class="num true">71</td><td class="why">named Fleek partner — ranks 2nd</td></tr>
+        <tr><td>@nathanviall3</td><td class="num">63</td><td class="why">pro seller, hobbyist audience</td></tr>
+        <tr><td>@giu.cst</td><td class="num false">10</td><td class="why">253k followers, wrong audience</td></tr>
+        <tr><td>@juliettekitsch</td><td class="num false">1</td><td class="why">aesthetic, zero resale intent</td></tr>
+      </table>
+      <p class="cites">Both known-good partners rank top-2; both known-wrong score &lt;10. n=5 — an anchor,
+        not a training set, and labelled so.</p>
     </div>
   </div>
   <div class="pushback">
     <span class="tag">Overruled</span>
-    <blockquote>the deliverable is one self-contained HTML file — double-click to open, works offline, zero moving parts in the room</blockquote>
-    <p class="outcome"><span class="stamp">2026-07-10</span> — I'd packaged it server-first. Doug overruled it
-      for the room: build to a single file that can't fail on someone else's wifi. It ships <em>both</em> now —
-      the offline file and the live Vercel deploy.</p>
+    <blockquote>the bar is a percentile of the live distribution, not an absolute number</blockquote>
+    <p class="outcome"><span class="stamp">2026-07-10</span> — My hard-coded cutoff of 70 rejected
+      <code>@juliacrcl</code>, who scores 62 on TikTok. Doug made the bar the top ~50% of the live roster — it
+      lands exactly where the proven partner sits. Activation's job is to raise scores; the same percentile
+      then selects a stronger cohort.</p>
   </div>
-  <aside class="notes">Open the live dashboard here, don't screenshot it. Filter to "pro resellers" live —
-    that's the segment Fleek says it can't reach, and the cards prove you found them. If wifi dies, the
-    self-contained HTML on the desktop is the backup. Real handles on screen: @laprovidencewholesale (92),
-    @coco_duc (84), @bartorico_ (82).</aside>
+  <aside class="notes">Why 50 on audience: the referral code converts VIEWERS into resellers — the creator is
+    the channel, the audience is the customer. Why warmth is only 10: an RFD- code proves contact, not
+    conversion power. The engagement-rate trap: @giu.cst has the HIGHEST engagement in the set at 8.1% — and
+    the worst fit. Her comments are sellers advertising their own closets.</aside>
 </section>
 
-<!-- 7 ─────────────────────────────────────────────────────────────────────── -->
+<!-- 8 · THE CALL TABLE ────────────────────────────────────────────────────── -->
+<section class="slide" id="calls">
+  <p class="eyebrow"><span class="dot dot--live">●</span> live · the roster, called — qualify · watch · cut</p>
+  <h2>Who's in, who's next, who's out — and why.</h2>
+  <div class="chipline">
+    <span class="chip chip--q"><b>7</b>qualified — human-approved</span>
+    <span class="chip chip--w"><b>36</b>recommended — in review</span>
+    <span class="chip chip--x"><b>126</b>watching / gated out</span>
+  </div>
+  <table class="calls">
+    <tr><th>Creator</th><th class="num">Fit</th><th>Segment</th><th>Why</th><th>Call</th></tr>
+    <tr><td>@coco_duc</td><td class="num">84</td><td>Reseller educator</td><td class="why">9,000+ Vinted sales, teaches sourcing to FR resellers</td><td><span class="call call--q">QUALIFIED</span></td></tr>
+    <tr><td>@bartorico_</td><td class="num">82</td><td>Reseller educator</td><td class="why">91k followers whose audience is actively seeking sourcing</td><td><span class="call call--q">QUALIFIED</span></td></tr>
+    <tr><td>@five_max_</td><td class="num">82</td><td>Thrift flipper</td><td class="why">physical Paris thrift op, 40,000+ pieces — buys stock constantly</td><td><span class="call call--q">QUALIFIED</span></td></tr>
+    <tr><td>@laprovidencewholesale</td><td class="num">92</td><td class="bad">Wholesaler / supplier</td><td class="why">top score, but a <em>supplier</em> — partnership talk, not affiliate</td><td><span class="call call--q">QUALIFIED</span></td></tr>
+    <tr><td>@juliacrcl</td><td class="num">100</td><td>Thrift flipper</td><td class="why bad">⚠ likely existing Fleek partner — re-activation, never a cold pitch</td><td><span class="call call--w">WATCH</span></td></tr>
+    <tr><td>@saw2hands</td><td class="num">76</td><td>Live seller</td><td class="why">111k Whatnot sales, 2.4k followers — invisible to any follower floor</td><td><span class="call call--w">WATCH</span></td></tr>
+    <tr><td>@giu.cst</td><td class="num bad">10</td><td>General fashion</td><td class="why bad">253k followers, best engagement in set — audience is sellers, not buyers</td><td><span class="call call--x">CUT</span></td></tr>
+    <tr><td>@alex_yeddertcg</td><td class="num bad">—</td><td class="bad">Off-vertical</td><td class="why bad">passed every IG gate; his TikTok bio: Pokémon TCG. Second platform = lie detector</td><td><span class="call call--x">CUT</span></td></tr>
+    <tr><td>@50.grass</td><td class="num bad">—</td><td class="bad">Off-vertical</td><td class="why bad">perfect pro lexicon — sells synthetic lawn. Forced the clothing gate</td><td><span class="call call--x">CUT</span></td></tr>
+  </table>
+  <aside class="notes">This is the slide that answers "we don't want 10 names you already knew." Every row is
+    real. Point at @saw2hands — the pro Fleek says it can't reach, invisible to follower floors, found two
+    hops out of Julia's graph. And @giu.cst is the whole thesis in one row: highest engagement, worst fit —
+    trust beats reach. The supplier row: honesty about an edge the gates and a human must argue over.</aside>
+</section>
+
+<!-- 9 ─────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="outreach">
-  <p class="eyebrow">Part 2 — Outreach</p>
+  <p class="eyebrow"><span class="dot dot--live">●</span> live · claude · part 2, outreach</p>
   <h2>The engine drafts. A human sends. Always.</h2>
-  <div class="cols cols--wide">
-    <div>
-      <p>Human qualifies a creator → the draft job fires. It reads their real recent posts, picks
-        <strong>one or two facts from a value palette</strong> that fit their niche, and writes a
-        <strong>3-touch French sequence</strong>. Every figure is wiki-sourced; anything it can't source it
-        flags <code>human_check</code> rather than invent.</p>
-      <p><strong>First name, never the handle, never invented.</strong> <code>"Alicia 🌙"</code> →
-        <em>Salut Alicia</em>. <code>"CODE DES GRANDS ✦ Friperies"</code> → no name, opens on their content.
-        A shop name is not a name.</p>
-      <p><strong>It cannot send.</strong> There is no send code path in the repo — no <code>smtplib</code>, no
-        DM client. The gate holds because the capability is absent, not because a flag is off.</p>
+  <div class="receipt">
+    <div class="card r-prompt">
+      <span class="r-label">prompt — Doug's spec</span>
+      <p>qualification is the trigger. Drafts use first names, never handles, never invented. And it still
+        never sends.</p>
     </div>
-    <div class="terminal"><span class="prompt">run_outreach.py --qualified</span>
-creator   <span style="color:var(--c-machine)">@sososolyspam</span>
-niche     perfume wholesaler
-palette   grading vocab → <span class="false">dropped, N/A</span>
-          <span class="false">⚠ niche mismatch — human_check</span>
-<span class="dim">→ the factual-discipline rule caught a
-  mis-qualified creator on its first run</span>
-
-creator   <span style="color:var(--c-machine)">@juliacourcelle</span>
-flag      <span class="false">⚠ POSSIBLE KNOWN PARTNER</span>
-          may be @juliacrcl — reframe as
-          re-activation, not a cold pitch
-
-status    <span style="color:var(--c-machine)">DRAFT — human reads, edits, sends</span></div>
+    <div class="card r-input">
+      <span class="r-label">input</span>
+      <pre><span class="fn">run_outreach.py</span> --qualified
+their real posts → value palette (wiki-sourced facts only)
+→ 3-touch FR sequence · no send code path exists in the repo</pre>
+    </div>
+    <div class="card r-output">
+      <span class="r-label">output — first live run</span>
+      <div class="flow">
+        <span class="n">"Salut Alicia"<small>real name from "Alicia 🌙" — a shop name gets no name</small></span>
+        <span class="arr">→</span>
+        <span class="n false" style="font-size:var(--t-md)">⚠ ×2<small>perfume-wholesaler mis-qual caught · Julia flagged VERIFY</small></span>
+        <span class="arr">→</span>
+        <span class="n n--win">0<small>sent — drafts await a human</small></span>
+      </div>
+    </div>
   </div>
   <div class="pushback">
     <span class="tag">Overruled</span>
     <blockquote>known partners stay in the pipeline, flagged — visibility beats removal</blockquote>
     <p class="outcome"><span class="stamp">2026-07-10</span> — I'd hard-excluded Fleek's known partners so the
-      engine couldn't cold-pitch them. Doug overturned it: hiding a creator protects against the mistake by
-      making them invisible; a <span class="false">⚠️ VERIFY</span> banner protects the human by informing them.
-      Nothing sends, so visibility wins.</p>
+      engine couldn't cold-pitch them. Doug overturned it: hiding protects by making the risk invisible; a
+      <span class="false">⚠ VERIFY</span> banner protects by informing the human. Nothing sends, so visibility wins.</p>
   </div>
-  <aside class="notes">"Where does the human stay in the loop" is asked twice in their brief. The value palette
-    is the answer to "what does a new FR partner need to hear": direct global supply (2,000+ suppliers), Make
-    an Offer, ~10-piece MOQ, 30-day BNPL, Fleek Sort grading. The perfume-wholesaler catch is the proof the
-    factual-discipline rule works — a real safeguard, not a claim.</aside>
+  <aside class="notes">The value palette IS "what a new FR partner needs to hear": 2,000+ suppliers /
+    100+ countries, Make an Offer, ~10-piece MOQ, 30-day BNPL, Fleek Sort grading. Anything beyond the palette
+    → human_check, never invented — that rule caught the perfume wholesaler on its first run. "Where does the
+    human stay in the loop" is asked twice in their brief; this slide is the answer.</aside>
 </section>
 
 <!-- 8 ─────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="funnel">
-  <p class="eyebrow">Part 3 — Cold outreach to signed contract</p>
+  <p class="eyebrow"><span class="dot dot--live">●</span> live · airtable · part 3, the funnel</p>
   <h2>The engine recommends. A human qualifies. Nothing skips the gate.</h2>
   <div class="cols cols--wide">
     <div>
-      <table>
-        <tr><th>Stage <span class="badge badge--real">live · Airtable</span></th><th class="num">Now</th></tr>
-        <tr><td>Prospect</td><td class="num">162</td></tr>
-        <tr><td>Qualified <span class="dim">(human-approved)</span></td><td class="num">7</td></tr>
-        <tr><td>Contacted → Repeat posting</td><td class="num">0</td></tr>
-      </table>
-      <p class="lede">Honest, not impressive — and that's the point. 162 recommended, 7 qualified, nothing past
-        the gate, because outreach never auto-sends. The funnel is a <em>view of the same database</em>, not a
-        second system.</p>
-      <p class="cites">The 10-stage economics — Prospect → Qualified → … → Repeat poster — is on the dashboard's
-        funnel page with an illustrative projection <span class="badge badge--sim">modelled</span>, clearly
-        labelled. The cliff is Signed → first post: that gap is the whole job.</p>
+      <div class="shot shot--crop"><img src="assets/dash-funnel.jpg" alt="Live recruitment pipeline: 162 Prospect, 7 Qualified, 0 beyond"></div>
+      <p class="cites">Live from Airtable. Honest, not impressive — nothing is past Qualified <em>because
+        outreach never auto-sends</em>. The funnel is a view of the same database, not a second system.</p>
     </div>
     <div>
-      <h3>Why the gate is manual, on purpose</h3>
-      <p>Passing the bar sets <code>Recommended = true</code>. <strong>Stage stays Prospect</strong> until a
-        person runs <code>qualify.py @handle</code> — which refuses to guess an ambiguous handle and flags any
-        approval the engine <em>didn't</em> recommend as a human override.</p>
-      <p>Qualification is what releases the draft. <em>"A signed partner is someone we want to work with"</em> —
-        so approval is deliberate, never automatic.</p>
+      <h3>The gate is a command</h3>
+      <div class="terminal"><span class="prompt">qualify.py --list</span>
+<span class="dim">162 in review queue</span>
+<span class="prompt">qualify.py @coco_duc</span>
+Prospect → Qualified ✓
+<span class="prompt">qualify.py @somebrand</span>
+<span class="false">⚠ not engine-recommended —
+  approving on your judgment</span></div>
+      <p class="cites">Qualification releases the outreach draft. Approval is deliberate — never automatic.</p>
     </div>
   </div>
   <div class="pushback">
@@ -280,16 +312,16 @@ status    <span style="color:var(--c-machine)">DRAFT — human reads, edits, sen
     <blockquote>qualifying a creator stays a manual approval until the system is consistent — we want to work with them</blockquote>
     <p class="outcome"><span class="stamp">2026-07-11</span> — The first run auto-qualified 39 creators on score
       alone. Doug turned it off and I <strong>migrated all 39 back to Prospect + Recommended</strong>. The
-      engine is a targeted Kalodata: it suggests with reasons; the human curates.</p>
+      engine suggests with reasons; the human curates.</p>
   </div>
-  <aside class="notes">The empty funnel is a feature, not a gap — say so before they can read it as "he didn't
-    finish." Nothing is contacted because the send gate is permanent and qualification is manual. One Airtable
-    base, three views (cards / funnel / scores). "The pipeline does not live in your head" is their line — use it.</aside>
+  <aside class="notes">Say it before they can read the empty funnel as unfinished: nothing is Contacted because
+    the send gate is permanent. The 10-stage economics with the modelled projection lives on the dashboard's
+    funnel page, clearly labelled. The cliff that matters is Signed → first post — that gap is the whole job.</aside>
 </section>
 
 <!-- 9 ─────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="activation">
-  <p class="eyebrow">Part 4 — Activation. "The whole game."</p>
+  <p class="eyebrow"><span class="dot dot--sim">●</span> simulated · brief generator mechanism · part 4 — "the whole game"</p>
   <h2>Nobody hand-writes 475 briefs. So the engine writes them.</h2>
   <div class="cols cols--wide">
     <div>
@@ -330,7 +362,7 @@ written    data/briefs/CRE-0042.json</div>
 
 <!-- 10 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide" id="budget">
-  <p class="eyebrow">Part 5 — Budget, CAC, 30/60/90</p>
+  <p class="eyebrow"><span class="dot dot--sim">●</span> simulated · the allocator mechanism · part 5</p>
   <h2>Models write briefs. Code moves money — and CAC is a constraint, not the selector.</h2>
   <div class="cols cols--wide">
     <div>
@@ -357,12 +389,11 @@ customers. money follows the second.</span></div>
     </div>
   </div>
   <div class="pushback">
-    <span class="tag">Overruled</span>
-    <blockquote>the bar is a percentile of the live distribution, not an absolute number</blockquote>
-    <p class="outcome"><span class="stamp">2026-07-10</span> — I'd hard-coded a score cutoff of 70. It rejected
-      <code>@juliacrcl</code> — one of Fleek's own top partners, who scores 62. Doug made the bar the top ~50%
-      of the live roster instead; it lands on 62, exactly where the proven partner sits. Activation's job is to
-      raise scores so the same percentile selects a stronger cohort.</p>
+    <span class="tag">Constrained</span>
+    <blockquote>I do not want to use 8 million tokens. I do not want to exhaust all the token usage</blockquote>
+    <p class="outcome"><span class="stamp">2026-07-09 11:45</span> — The first thing Doug said about the
+      research agent, before what it should <em>do</em>, was what it must not <em>cost</em>. The Perplexity
+      call cap, the cheap model, the scrape limits all descend from this line.</p>
   </div>
   <aside class="notes">Say the simulation is synthetic, unprompted — volunteering it buys credibility for
     everything real. The strong, honest line: "I could show you a confident CAC number. It would be fiction. The
