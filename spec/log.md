@@ -615,3 +615,23 @@ case-study prototype on a demo base, a reversible status change doesn't warrant 
 token prompt was friction in the live demo. `dashboard/api/qualify.py` now writes on any POST; the browser
 prompt is gone from `app.js`. QUALIFY_TOKEN removed from Vercel env and `.env`. If this ever becomes a real
 internal tool, a proper login goes back in — not a shared token.
+
+## 2026-07-13 — Trends page rebuilt as an editorial data-viz console (Fleek-light)
+
+Replaced the two hashtag bar charts with three richer, reference-inspired visualisations, all
+computed from the real posts (new module `dashboard/trend_viz.py`, kept out of pipeline.py for the
+500-line limit):
+- **Momentum over time** — a centered streamgraph, band thickness = weekly mentions per tag (answers
+  "what's rising"). 7 bands over 10 weeks.
+- **Co-occurrence map** — a force-directed network (layout simulated in the browser), tags linked when
+  they share a post, nodes coloured by family: Sourcing / Platform / Format / Style (answers "what
+  clusters"). Layout tuned to spread across the canvas with no node overlaps (verified headless).
+- **Movers** — biggest gainers + sharpest fallers vs 3 weeks ago, each with a sparkline (answers
+  "what's biggest & fastest"). Windowed 3-week-vs-3-week comparison so single-week ingest spikes don't
+  produce fake +999% movers.
+
+Kept Fleek's light theme (Doug's call) — a warm hue-sweep categorical palette on white, not the dark
+reference. New renderers (`streamgraph`, `networkGraph`, `sparkline`) in charts.js; styles in the new
+`trends.css` (inlined into the baked file by build_html). Deployed; live API + DOM verified (7 bands,
+16 nodes spread x73–492, 8 movers). Note: the browser-pane screenshot tool was glitching during this
+build — visual once-over on the live site still wanted.

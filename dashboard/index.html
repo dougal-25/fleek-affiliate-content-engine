@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="trends.css">
 </head>
 <body>
 
@@ -77,29 +78,38 @@
 <!-- ============ TRENDS ============ -->
 <section id="view-trends" class="view">
   <div class="stat-strip" id="trend-stats"></div>
-  <div class="panel-row">
+
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Momentum over time</h2>
+      <p class="panel-sub">Answers: <b>what's rising</b> · streamgraph, band thickness = weekly mentions</p>
+    </div>
+    <div id="stream-chart"></div>
+    <div class="legend-row" id="stream-legend"></div>
+  </div>
+
+  <div class="trends-grid">
     <div class="panel">
-      <div class="panel-head"><h2>Top hashtags by posts</h2>
-        <p class="panel-sub">Across the ingested FR reseller posts</p></div>
-      <div id="volume-chart"></div>
+      <div class="panel-head">
+        <h2>Co-occurrence map</h2>
+        <p class="panel-sub">Answers: <b>what clusters</b> · tags linked when they share a post</p>
+      </div>
+      <div id="cooc-chart"></div>
+      <div class="legend-row" id="cooc-legend"></div>
     </div>
     <div class="panel">
-      <div class="panel-head"><h2>Top hashtags by views</h2>
-        <p class="panel-sub">Where the audience actually is</p></div>
-      <div id="engagement-chart"></div>
+      <div class="panel-head">
+        <h2>Movers</h2>
+        <p class="panel-sub">Answers: <b>what's biggest &amp; fastest</b> · vs 3 weeks ago</p>
+      </div>
+      <div class="movers" id="movers-list"></div>
     </div>
   </div>
-  <div class="panel-row">
-    <div class="panel">
-      <div class="panel-head"><h2>Rising now</h2>
-        <p class="panel-sub">Last 90 days vs the 90 before — feed these into outreach &amp; briefs</p></div>
-      <ul class="rising-list" id="rising-list"></ul>
-    </div>
-    <div class="panel">
-      <div class="panel-head"><h2>Top-performing posts</h2>
-        <p class="panel-sub">The formats worth briefing</p></div>
-      <table class="posts-table" id="posts-table"></table>
-    </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>Top-performing posts</h2>
+      <p class="panel-sub">The formats worth briefing</p></div>
+    <table class="posts-table" id="posts-table"></table>
   </div>
 </section>
 
