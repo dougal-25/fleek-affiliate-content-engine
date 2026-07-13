@@ -5,6 +5,24 @@ Dated record of design intent changing. Newest first. Decisions with reasoning g
 
 ---
 
+## 2026-07-18 — One score for every creator, wired into the dashboard
+
+The dashboard was showing three scoring schemes at once (live 4-factor, a legacy 6-factor breakdown in the
+snapshot, and the spec-only FIT rubric), so panels disagreed creator-to-creator and the "Score breakdown"
+section silently vanished for the 13 of 49 creators whose legacy string lacked `/max` denominators.
+
+Fixed by wiring the deck's **FIT rubric** (Audience quality 50 · Sourcing intent 20 · Creator credibility 20
+· Fleek warmth 10) as the one universal score, computed in `dashboard/pipeline.py enrich()` — the single path
+both live Airtable and the static snapshot flow through, so consistency is structural. Panel redesigned:
+ring + four pillar bars for **every** creator, audience/keyword pills coloured by reseller bucket, one risk
+pill; the prose "Why they fit"/"Watch out"/"Audience & bio" sections cut (the four bars are the quantified
+why). Full spec + build notes: `spec/score-dashboard.md`.
+
+The one judgment call — the audience tag → pro/hobbyist/consumer bucket map — lives in the spec table, tuneable.
+Verified in-browser (high-fit 73 and low-fit 30 render identical five-section panels). Remaining step, noted
+in `discovery-scoring.md §9.5`: `run_discovery.py` still writes the older 4-factor LLM score to Airtable;
+the two write-paths should converge on FIT.
+
 ## 2026-07-12 — Budget engine steers on two signals, not just CAC
 
 `content_brain/budget.py` now reads CAC **and** posting rate. Why: Fleek is judged on *% of partners

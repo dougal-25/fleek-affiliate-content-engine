@@ -213,9 +213,12 @@ being resellers. This is the two-field distinction in its sharpest form.
 
 ## 9.5 Arithmetic ownership, the variance test, and the refit loop
 
-Two rubrics live in this repo. The **FIT rubric** (§5) is deterministic and code-owned — but it is
-*designed, not yet wired*: `Fit Score` is a defined field nothing computes. The **live** discovery score is
-the LLM read in `run_discovery.py`, and until 2026-07-11 it let the model return the total.
+Two rubrics live in this repo. The **FIT rubric** (§5) is deterministic and code-owned. As of 2026-07-18 it
+is **wired in the dashboard** (`dashboard/pipeline.py compute_fit`, spec/score-dashboard.md): every creator
+gets the four pillars computed the same way, and it is the score the dashboard now shows. It is not yet the
+score `run_discovery.py` writes to Airtable — that path still uses the 4-factor LLM read below; unifying the
+two write-paths is the remaining step. The **live** discovery score is the LLM read in `run_discovery.py`,
+and until 2026-07-11 it let the model return the total.
 
 **The arithmetic moved into code (`run_discovery.compute_fit`).** The model now returns four 0–10 ratings
 with evidence; code multiplies by the documented weights (credibility 40 · audience 30 · wholesale 20 ·
