@@ -5,12 +5,17 @@
    distinction is deterministic and explainable: heavy wholesale content, or strong reseller
    credibility plus wholesale sourcing keywords. */
 const PRO_KEYWORDS = /grossiste|wholesale|en gros|fournisseur|balle|bulk|b2b|destockage/i;
+// niches that mean the creator makes money from reselling (independent of the engine's sub-scores,
+// which are absent for freshly-discovered prospects)
+const PRO_SEGMENTS = new Set(["Wholesaler / supplier", "Wholesale buyer", "Reseller educator",
+  "Sourcing vlogger", "Live seller"]);
 function subScore(c, name) {
   const m = (c["Score Breakdown"] || "").match(new RegExp(name + String.raw`:\s*(\d+)\s*/`, "i"));
   return m ? +m[1] : 0;
 }
 function creatorType(c) {
-  const pro = subScore(c, "wholesale content") >= 6 ||
+  const pro = PRO_SEGMENTS.has(c.Segment) ||
+    subScore(c, "wholesale content") >= 6 ||
     (subScore(c, "reseller credibility") >= 18 && PRO_KEYWORDS.test(c["Content Keywords"] || ""));
   return pro ? "Pro reseller" : "Hobbyist";
 }
@@ -50,16 +55,19 @@ async function loadCreators() {
 }
 
 function renderStats() {
-  const scores = creators.map(c => c.Score || 0);
+  // fit score is only meaningful for creators the engine has actually scored (freshly
+  // discovered prospects sit at 0 until scored) — averaging over those would understate quality
+  const scored = creators.map(c => c.Score || 0).filter(s => s > 0);
+  const avgScore = scored.length ? Math.round(scored.reduce((a, b) => a + b, 0) / scored.length) : 0;
   const cacs = creators.map(c => c["Predicted CAC"]).filter(Boolean).sort((a, b) => a - b);
   const medCac = cacs.length ? cacs[Math.floor(cacs.length / 2)] : 0;
   const reach = creators.reduce((s, c) => s + (c.Followers || 0), 0);
   const pro = creators.filter(c => c._type === "Pro reseller").length;
   const stats = [
-    [creators.length, "scored FR creators"],
+    [creators.length, "creators discovered"],
     [`${pro} / ${creators.length - pro}`, "pro resellers / hobbyists"],
     [fmt(reach), "combined reach"],
-    [Math.round(scores.reduce((a, b) => a + b, 0) / (scores.length || 1)) + "/100", "avg fit score"],
+    [avgScore + "/100", "avg fit score (scored)"],
     ["£" + medCac, "median predicted CAC"],
   ];
   $("#creator-stats").replaceChildren(...stats.map(([num, lbl]) => {
